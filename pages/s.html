@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>veinte - settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            z-index: -2;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* main container */
+        .main-container {
+            min-height: 100vh;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* page content */
+        .page {
+            padding-left: 110px;
+            padding-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* settings container */
+        .settings-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .settings-category {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .settings-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .settings-description {
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+
+        /* theme options */
+        .theme-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .theme-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover, .theme-btn.active {
+            border-color: white;
+            transform: scale(1.1);
+        }
+
+        .theme-default {
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+        }
+
+        .theme-blue {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+        }
+
+        .theme-pink {
+            background: linear-gradient(135deg, #2d1a2e, #3e1621);
+        }
+
+        .theme-green {
+            background: linear-gradient(135deg, #1a2e1a, #163e1c);
+        }
+
+        .theme-brown {
+            background: linear-gradient(135deg, #2e2a1a, #3e3616);
+        }
+
+        /* tab cloaker form */
+        .tab-cloaker-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tab-cloaker-form input, .tab-cloaker-form select {
+            padding: 12px;
+            border-radius: 15px;
+            border: none;
+            background: var(--input-bg);
+            color: white;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        .tab-cloaker-form select option {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .tab-cloaker-form button {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        .tab-cloaker-form button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+            }
+
+            .page {
+                padding-left: 20px;
+                padding-bottom: 100px;
+            }
+
+            .settings-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+
+    <!-- main container -->
+    <div class="main-container">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="index.html" class="sidebar-icon" title="home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="g.html" class="sidebar-icon" title="games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="p.html" class="sidebar-icon" title="proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="t.html" class="sidebar-icon" title="tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="s.html" class="sidebar-icon active" title="settings">
+                <i class="fas fa-cog"></i>
+            </a>
+        </nav>
+
+        <!-- settings page -->
+        <div class="page">
+            <div class="settings-container">
+                <div class="settings-category">
+                    <h2 class="settings-title">theme</h2>
+                    <p class="settings-description">choose your preferred theme</p>
+                    <div class="theme-options">
+                        <div class="theme-btn theme-default active" data-theme="default" title="default"></div>
+                        <div class="theme-btn theme-blue" data-theme="blue" title="blue"></div>
+                        <div class="theme-btn theme-pink" data-theme="pink" title="pink"></div>
+                        <div class="theme-btn theme-green" data-theme="green" title="green"></div>
+                        <div class="theme-btn theme-brown" data-theme="brown" title="brown"></div>
+                    </div>
+                </div>
+
+                <div class="settings-category">
+                    <h2 class="settings-title">tab cloaker</h2>
+                    <p class="settings-description">change the tab title and icon to match school sites</p>
+                    <div class="tab-cloaker-form">
+                        <input type="text" id="tabTitle" placeholder="tab title">
+                        <input type="text" id="tabIcon" placeholder="tab icon url">
+                        <select id="presetCloaks">
+                            <option value="">-- select preset --</option>
+                            <option value="google">google classroom</option>
+                            <option value="ixl">ixl</option>
+                            <option value="deltamath">deltamath</option>
+                            <option value="canvas">canvas</option>
+                            <option value="schoology">schoology</option>
+                        </select>
+                        <button onclick="applytabcloak()">apply cloak</button>
+                        <button onclick="resettabcloak()">reset cloak</button>
+                    </div>
+                </div>
+
+                <div class="settings-category">
+                    <h2 class="settings-title">about</h2>
+                    <p class="settings-description">veinte is a clean, modern gaming and utility platform.</p>
+                </div>
+
+                <div class="settings-category">
+                    <h2 class="settings-title">credits</h2>
+                    <p class="settings-description">created with ❤️ by the veinte team</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localstorage.getitem('veintetheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+                // update active theme button
+                document.queryselectorall('.theme-btn').foreach(btn => {
+                    btn.classlist.remove('active');
+                });
+                document.queryselector(`[data-theme="${savedtheme}"]`).classlist.add('active');
+            }
+        }
+
+        function applytheme(theme) {
+            const root = document.documentelement;
+            
+            const themes = {
+                default: {
+                    primaryBg: '#000000',
+                    secondaryBg: '#1a1a1a',
+                    cardBg: 'rgba(255, 255, 255, 0.1)'
+                },
+                blue: {
+                    primaryBg: '#1a1a2e',
+                    secondaryBg: '#16213e',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                },
+                pink: {
+                    primaryBg: '#2d1a2e',
+                    secondaryBg: '#3e1621',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                },
+                green: {
+                    primaryBg: '#1a2e1a',
+                    secondaryBg: '#163e1c',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                },
+                brown: {
+                    primaryBg: '#2e2a2a',
+                    secondaryBg: '#3e3616',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                }
+            };
+
+            const selectedtheme = themes[theme];
+            root.style.setproperty('--primary-bg', selectedtheme.primaryBg);
+            root.style.setproperty('--secondary-bg', selectedtheme.secondaryBg);
+            root.style.setproperty('--card-bg', selectedtheme.cardBg);
+
+            // save theme to localStorage
+            localstorage.setitem('veintetheme', theme);
+        }
+
+        // theme button click handlers
+        document.queryselectorall('.theme-btn').foreach(btn => {
+            btn.addeventlistener('click', () => {
+                document.queryselectorall('.theme-btn').foreach(b => b.classlist.remove('active'));
+                btn.classlist.add('active');
+                
+                const theme = btn.dataset.theme;
+                applytheme(theme);
+            });
+        });
+
+        // tab cloaker presets
+        document.getelementbyid('presetCloaks').addeventlistener('change', (e) => {
+            const presets = {
+                google: { title: 'google classroom', icon: 'https://ssl.gstatic.com/classroom/favicon.png' },
+                ixl: { title: 'ixl | math, language arts, science, social studies, and spanish', icon: 'https://www.ixl.com/favicon.ico' },
+                deltamath: { title: 'deltamath', icon: 'https://www.deltamath.com/favicon.ico' },
+                canvas: { title: 'canvas', icon: 'https://du11hjcvx0uq9.cloudfront.net/dist/images/favicon-e10d657c73.ico' },
+                schoology: { title: 'home | schoology', icon: 'https://asset.schoology.com/sites/all/themes/schoology_theme/images/favicon.ico' }
+            };
+
+            const preset = presets[e.target.value];
+            if (preset) {
+                document.getelementbyid('tabTitle').value = preset.title;
+                document.getelementbyid('tabIcon').value = preset.icon;
+            }
+        });
+
+        function applytabcloak() {
+            const title = document.getelementbyid('tabTitle').value;
+            const icon = document.getelementbyid('tabIcon').value;
+            
+            if (title) document.title = title;
+            if (icon) {
+                const link = document.queryselector("link[rel~='icon']");
+                if (link) link.href = icon;
+            }
+        }
+
+        function resettabcloak() {
+            document.title = 'veinte';
+            const link = document.queryselector("link[rel~='icon']");
+            if (link) link.href = '';
+            document.getelementbyid('tabTitle').value = '';
+            document.getelementbyid('tabIcon').value = '';
+            document.getelementbyid('presetCloaks').value = '';
+        }
+
+        // mouse shadow follower
+        document.addeventlistener('mousemove', (e) => {
+            const shadow = document.getelementbyid('mouseshadow');
+            shadow.style.left = e.clientx + 'px';
+            shadow.style.top = e.clienty + 'px';
+        });
+
+        // initialize on load
+        window.addeventlistener('load', () => {
+            applysavedtheme();
+        });
+    </script>
+</body>
+</html>
