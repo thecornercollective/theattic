@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link id="favicon" rel="icon" href="" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -26,6 +27,9 @@
             --card-bg: rgba(255, 255, 255, 0.1);
             --input-bg: rgba(200, 200, 200, 0.15);
             --shadow-color: rgba(255, 255, 255, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
         }
 
         body {
@@ -42,8 +46,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
             z-index: -2;
+            transition: background 0.5s ease;
         }
 
         .grainy-bg::before {
@@ -112,7 +117,8 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+            transition: background 0.5s ease;
             animation: fadeIn 2s ease-in-out;
         }
 
@@ -255,6 +261,7 @@
             padding: 30px;
             margin-bottom: 30px;
             backdrop-filter: blur(10px);
+            transition: background 0.5s ease;
         }
 
         .trending-title {
@@ -347,6 +354,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             flex-shrink: 0;
+            transition: background 0.5s ease;
         }
 
         .game-card:hover {
@@ -427,6 +435,7 @@
             display: none !important;
         }
     </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
     <div class="grainy-bg"></div>
@@ -722,6 +731,55 @@
     </div>
 
     <script>
+        // theme definitions with full color schemes
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            blue: {
+                primaryBg: '#0f1624',
+                secondaryBg: '#1a2332',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0f1624',
+                gradientMiddle: '#1a2332',
+                gradientEnd: '#162a4a'
+            },
+            pink: {
+                primaryBg: '#1a0f14',
+                secondaryBg: '#2d1a2e',
+                cardBg: 'rgba(219, 112, 147, 0.15)',
+                inputBg: 'rgba(219, 112, 147, 0.2)',
+                gradientStart: '#1a0f14',
+                gradientMiddle: '#2d1a2e',
+                gradientEnd: '#3e1621'
+            },
+            green: {
+                primaryBg: '#0f1a0f',
+                secondaryBg: '#1a2e1a',
+                cardBg: 'rgba(60, 179, 113, 0.15)',
+                inputBg: 'rgba(60, 179, 113, 0.2)',
+                gradientStart: '#0f1a0f',
+                gradientMiddle: '#1a2e1a',
+                gradientEnd: '#163e1c'
+            },
+            purple: {
+                primaryBg: '#1a0f24',
+                secondaryBg: '#2a1a2e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f24',
+                gradientMiddle: '#2a1a2e',
+                gradientEnd: '#3e1636'
+            }
+        };
+
         // apply saved theme
         function applysavedtheme() {
             const savedtheme = localStorage.getItem('veintetheme');
@@ -730,9 +788,36 @@
             }
         }
 
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            
+            // Update all CSS variables
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            // Also update intro page background
+            const introPage = document.getElementById('introPage');
+            if (introPage) {
+                introPage.style.background = `linear-gradient(135deg, ${theme.gradientStart} 0%, ${theme.gradientMiddle} 50%, ${theme.gradientEnd} 100%)`;
+            }
+
+            // save theme to localStorage
+            localStorage.setItem('veintetheme', themeName);
+        }
+
         // initialize particles
         function createparticles() {
             const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
             for (let i = 0; i < 50; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
@@ -747,8 +832,10 @@
         // mouse shadow follower
         document.addEventListener('mousemove', (e) => {
             const shadow = document.getElementById('mouseShadow');
-            shadow.style.left = e.clientX + 'px';
-            shadow.style.top = e.clientY + 'px';
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
         });
 
         // intro animation
