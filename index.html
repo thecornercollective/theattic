@@ -427,7 +427,6 @@
             display: none !important;
         }
     </style>
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
     <div class="grainy-bg"></div>
@@ -725,7 +724,7 @@
     <script>
         // apply saved theme
         function applysavedtheme() {
-            const savedtheme = localstorage.getitem('veintetheme');
+            const savedtheme = localStorage.getItem('veintetheme');
             if (savedtheme) {
                 applytheme(savedtheme);
             }
@@ -733,63 +732,63 @@
 
         // initialize particles
         function createparticles() {
-            const particlescontainer = document.getelementbyid('particles');
+            const particlescontainer = document.getElementById('particles');
             for (let i = 0; i < 50; i++) {
-                const particle = document.createelement('div');
-                particle.classname = 'particle';
-                particle.style.top = math.random() * 100 + '%';
-                particle.style.left = math.random() * 100 + '%';
-                particle.style.animationdelay = math.random() * 20 + 's';
-                particle.style.animationduration = (15 + math.random() * 10) + 's';
-                particlescontainer.appendchild(particle);
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
             }
         }
 
         // mouse shadow follower
-        document.addeventlistener('mousemove', (e) => {
-            const shadow = document.getelementbyid('mouseshadow');
-            shadow.style.left = e.clientx + 'px';
-            shadow.style.top = e.clienty + 'px';
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            shadow.style.left = e.clientX + 'px';
+            shadow.style.top = e.clientY + 'px';
         });
 
         // intro animation
         function startintro() {
-            const welcometext = document.getelementbyid('welcometext');
-            const nicknamecontainer = document.getelementbyid('nicknamecontainer');
+            const welcometext = document.getElementById('welcomeText');
+            const nicknamecontainer = document.getElementById('nicknameContainer');
             
             // show welcome text
-            welcometext.classlist.add('show');
+            welcometext.classList.add('show');
             
             // after 2 seconds, fade out welcome and show nickname input
-            settimeout(() => {
-                welcometext.classlist.remove('show');
-                welcometext.classlist.add('hide');
+            setTimeout(() => {
+                welcometext.classList.remove('show');
+                welcometext.classList.add('hide');
                 
-                settimeout(() => {
+                setTimeout(() => {
                     welcometext.style.display = 'none';
                     nicknamecontainer.style.display = 'flex';
-                    document.getelementbyid('nicknameinput').focus();
+                    document.getElementById('nicknameInput').focus();
                 }, 1000);
             }, 2000);
         }
 
         // handle nickname input
-        document.getelementbyid('nicknameinput').addeventlistener('keypress', (e) => {
-            if (e.key === 'enter') {
+        document.getElementById('nicknameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
                 const nickname = e.target.value;
-                localstorage.setitem('veintenickname', nickname);
+                localStorage.setItem('veintenickname', nickname);
                 entermainsite();
             }
         });
 
         function entermainsite() {
-            const introPage = document.getelementbyid('intropage');
-            const maincontainer = document.getelementbyid('maincontainer');
+            const introPage = document.getElementById('introPage');
+            const maincontainer = document.getElementById('mainContainer');
             
             introPage.style.transition = 'opacity 1s ease-out';
             introPage.style.opacity = '0';
             
-            settimeout(() => {
+            setTimeout(() => {
                 introPage.style.display = 'none';
                 maincontainer.style.display = 'block';
                 startslideshow();
@@ -801,17 +800,17 @@
         let slideshowinterval;
 
         function startslideshow() {
-            const slides = document.queryselectorall('.slide');
+            const slides = document.querySelectorAll('.slide');
             
-            slideshowinterval = setinterval(() => {
-                slides[currentslide].classlist.remove('active');
+            slideshowinterval = setInterval(() => {
+                slides[currentslide].classList.remove('active');
                 currentslide = (currentslide + 1) % slides.length;
-                slides[currentslide].classlist.add('active');
+                slides[currentslide].classList.add('active');
             }, 4000);
 
             // add click listeners to slides
-            slides.foreach(slide => {
-                slide.addeventlistener('click', () => {
+            slides.forEach(slide => {
+                slide.addEventListener('click', () => {
                     const gameid = slide.dataset.game;
                     window.location.href = 'play.html?game=' + gameid;
                 });
@@ -819,8 +818,8 @@
         }
 
         // game card click handlers
-        document.queryselectorall('.game-card').foreach(card => {
-            card.addeventlistener('click', () => {
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('click', () => {
                 const gameid = card.dataset.game;
                 window.location.href = 'play.html?game=' + gameid;
             });
@@ -828,13 +827,13 @@
 
         // scroll games in catalog
         function scrollgames(category, direction) {
-            const row = document.getelementbyid(category + 'games');
+            const row = document.getElementById(category + 'games');
             const scrollamount = 750;
-            row.scrollby({ left: direction * scrollamount, behavior: 'smooth' });
+            row.scrollBy({ left: direction * scrollamount, behavior: 'smooth' });
         }
 
         // initialize on load
-        window.addeventlistener('load', () => {
+        window.addEventListener('load', () => {
             applysavedtheme();
             createparticles();
             startintro();
