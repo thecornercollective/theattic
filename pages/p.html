@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>veinte - proxy</title>
+    <title>veinte - browser</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
             --text-color: #ffffff;
             --sidebar-bg: rgba(255, 255, 255, 0.1);
             --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
             --gradient-start: #000000;
             --gradient-middle: #1a1a1a;
             --gradient-end: #000000;
@@ -32,7 +33,7 @@
         body {
             background: var(--primary-bg);
             color: var(--text-color);
-            overflow-x: hidden;
+            overflow: hidden;
             min-height: 100vh;
         }
 
@@ -60,6 +61,35 @@
             pointer-events: none;
         }
 
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
         /* mouse shadow follower */
         .mouse-shadow {
             position: fixed;
@@ -76,6 +106,8 @@
         /* main container */
         .main-container {
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* sidebar */
@@ -117,234 +149,319 @@
             transform: scale(1.1);
         }
 
-        /* proxy container */
-        .proxy-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px 110px 20px 110px;
-        }
-
-        .proxy-header {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 15px 20px;
+        /* browser container */
+        .browser-container {
+            flex: 1;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            padding-left: 110px;
+            padding-top: 10px;
+        }
+
+        /* tab bar */
+        .tab-bar {
+            display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            gap: 8px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px 15px 0 0;
+            margin-right: 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tab-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: var(--card-bg);
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            max-width: 250px;
             backdrop-filter: blur(10px);
-            transition: background 0.5s ease;
+            animation: tabSlide 0.3s ease;
         }
 
-        .proxy-title {
-            font-size: 1.2rem;
-            font-weight: 300;
-            text-align: center;
-            flex-grow: 1;
+        @keyframes tabSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .header-btn {
+        .tab.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .tab-icon {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .tab-title {
+            flex: 1;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tab-close {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            opacity: 0.6;
+            transition: all 0.2s ease;
+        }
+
+        .tab-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            opacity: 1;
+        }
+
+        .new-tab-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            flex-shrink: 0;
         }
 
-        .header-btn:hover {
+        .new-tab-btn:hover {
             background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
+            transform: rotate(90deg);
         }
 
-        .proxy-tabs {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding: 15px;
-            background: var(--card-bg);
-            border-radius: 15px;
-            margin-bottom: 20px;
-            transition: background 0.5s ease;
-        }
-
-        .proxy-tab {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
+        /* address bar */
+        .address-bar-container {
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            font-weight: 300;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            margin-right: 20px;
+            border-radius: 0;
         }
 
-        .proxy-tab:hover, .proxy-tab.active {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .tab-close {
-            font-size: 0.8rem;
-            opacity: 0.6;
+        .nav-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
             cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
         }
 
-        .tab-close:hover {
-            opacity: 1;
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
         }
 
-        .proxy-bookmarks {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 15px;
-            padding: 20px;
-            background: var(--card-bg);
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .address-bar {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
             border-radius: 20px;
-            margin-bottom: 20px;
-            transition: background 0.5s ease;
+            background: var(--input-bg);
+            color: white;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
-        .bookmark-item {
+        .address-bar:focus {
+            background: rgba(200, 200, 200, 0.25);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .address-bar::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* browser content */
+        .browser-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            margin-right: 20px;
+            border-radius: 0 0 15px 15px;
+            overflow: hidden;
+            height: calc(100vh - 140px);
+        }
+
+        .iframe-container {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* new tab page */
+        .new-tab-page {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+        }
+
+        .new-tab-logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .new-tab-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .new-tab-subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .quick-link {
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
-        .bookmark-item:hover {
+        .quick-link:hover {
             background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
+            transform: translateY(-5px);
         }
 
-        .bookmark-icon {
+        .quick-link-icon {
             font-size: 2rem;
             margin-bottom: 10px;
         }
 
-        .bookmark-name {
-            font-weight: 300;
+        .quick-link-title {
             font-size: 0.9rem;
         }
 
-        /* extensions menu */
-        .extensions-menu {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 30px;
-            z-index: 1000;
-            min-width: 350px;
-            backdrop-filter: blur(20px);
-            display: none;
-            transition: background 0.5s ease;
+        /* loading indicator */
+        .loading-bar {
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
         }
 
-        .extensions-menu.active {
-            display: block;
+        .loading-bar.active {
+            animation: loading 1.5s ease-in-out;
         }
 
-        .extensions-menu-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .extensions-menu-title {
-            font-size: 1.3rem;
-            font-weight: 300;
-        }
-
-        .extensions-menu-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            opacity: 0.6;
-        }
-
-        .extensions-menu-close:hover {
-            opacity: 1;
-        }
-
-        .extension-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .extension-info h4 {
-            font-weight: 300;
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .extension-info p {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.6);
-        }
-
-        .extension-toggle {
-            width: 45px;
-            height: 24px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .extension-toggle.active {
-            background: #4CAF50;
-        }
-
-        .extension-toggle::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .extension-toggle.active::after {
-            left: 23px;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 999;
-            display: none;
-        }
-
-        .overlay.active {
-            display: block;
+        @keyframes loading {
+            0% {
+                width: 0%;
+                opacity: 1;
+            }
+            50% {
+                width: 70%;
+                opacity: 1;
+            }
+            100% {
+                width: 100%;
+                opacity: 0;
+            }
         }
 
         /* responsive */
@@ -360,13 +477,23 @@
                 flex-direction: row;
             }
 
-            .proxy-container {
-                padding: 20px 20px 90px 20px;
+            .browser-container {
+                padding-left: 20px;
+                padding-bottom: 90px;
             }
 
-            .extensions-menu {
-                min-width: 300px;
-                padding: 20px;
+            .tab-bar {
+                padding: 8px 10px;
+            }
+
+            .tab {
+                padding: 8px 15px;
+                min-width: 120px;
+            }
+
+            .quick-links {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
             }
         }
     </style>
@@ -374,104 +501,61 @@
 </head>
 <body>
     <div class="grainy-bg"></div>
+    <div class="particles" id="particles"></div>
     <div class="mouse-shadow" id="mouseShadow"></div>
-
-    <!-- overlay -->
-    <div class="overlay" id="overlay" onclick="closeextensions()"></div>
-
-    <!-- extensions menu -->
-    <div class="extensions-menu" id="extensionsMenu">
-        <div class="extensions-menu-header">
-            <h3 class="extensions-menu-title">veinte extensions</h3>
-            <button class="extensions-menu-close" onclick="closeextensions()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="extension-card">
-            <div class="extension-info">
-                <h4>dark mode</h4>
-                <p>enable dark mode on all websites</p>
-            </div>
-            <div class="extension-toggle" onclick="toggleextension(this)"></div>
-        </div>
-        <div class="extension-card">
-            <div class="extension-info">
-                <h4>ad blocker</h4>
-                <p>block ads and trackers</p>
-            </div>
-            <div class="extension-toggle" onclick="toggleextension(this)"></div>
-        </div>
-        <div class="extension-card">
-            <div class="extension-info">
-                <h4>ai lens</h4>
-                <p>coming soon</p>
-            </div>
-            <div class="extension-toggle" style="opacity: 0.5;"></div>
-        </div>
-        <div class="extension-card">
-            <div class="extension-info">
-                <h4>dev tools</h4>
-                <p>access developer tools</p>
-            </div>
-            <div class="extension-toggle" onclick="toggleextension(this)"></div>
-        </div>
-    </div>
 
     <!-- main container -->
     <div class="main-container">
         <!-- sidebar -->
         <nav class="sidebar">
-            <a href="https://twentyfolds.github.io/veinte/home" class="sidebar-icon" title="home">
+            <a href="home.html" class="sidebar-icon" title="home">
                 <i class="fas fa-home"></i>
             </a>
-            <a href="/veinte/pages/g" class="sidebar-icon active" title="games">
+            <a href="g.html" class="sidebar-icon" title="games">
                 <i class="fas fa-gamepad"></i>
             </a>
-            <a href="/veinte/pages/p" class="sidebar-icon" title="proxy">
-                <i class="fas fa-search"></i>
+            <a href="p.html" class="sidebar-icon active" title="browser">
+                <i class="fas fa-globe"></i>
             </a>
-            <a href="/veinte/pages/t" class="sidebar-icon" title="tools">
+            <a href="t.html" class="sidebar-icon" title="tools">
                 <i class="fas fa-tools"></i>
             </a>
-            <a href="/veinte/pages/s" class="sidebar-icon" title="settings">
+            <a href="s.html" class="sidebar-icon" title="settings">
                 <i class="fas fa-cog"></i>
             </a>
         </nav>
 
-        <!-- proxy page -->
-        <div class="proxy-container">
-            <div class="proxy-header">
-                <button class="header-btn" onclick="addproxytab()">
-                    <i class="fas fa-plus"></i>
-                </button>
-                <div class="proxy-title">veinte</div>
-                <button class="header-btn" onclick="openextensions()">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
-            </div>
-            
-            <div class="proxy-tabs" id="proxyTabs">
-                <div class="proxy-tab active">
-                    <i class="fas fa-globe"></i> new tab <span class="tab-close"><i class="fas fa-times"></i></span>
-                </div>
+        <!-- browser container -->
+        <div class="browser-container">
+            <!-- tab bar -->
+            <div class="tab-bar" id="tabBar">
+                <!-- tabs will be added here dynamically -->
             </div>
 
-            <div class="proxy-bookmarks">
-                <div class="bookmark-item" onclick="openbookmark('https://www.tiktok.com')">
-                    <div class="bookmark-icon"><i class="fab fa-tiktok"></i></div>
-                    <div class="bookmark-name">tiktok</div>
-                </div>
-                <div class="bookmark-item" onclick="openbookmark('https://www.youtube.com')">
-                    <div class="bookmark-icon"><i class="fab fa-youtube"></i></div>
-                    <div class="bookmark-name">youtube</div>
-                </div>
-                <div class="bookmark-item" onclick="openbookmark('https://gemini.google.com')">
-                    <div class="bookmark-icon"><i class="fas fa-robot"></i></div>
-                    <div class="bookmark-name">gemini</div>
-                </div>
-                <div class="bookmark-item" onclick="openbookmark('https://chat.openai.com')">
-                    <div class="bookmark-icon"><i class="fas fa-comments"></i></div>
-                    <div class="bookmark-name">chatgpt</div>
+            <!-- address bar -->
+            <div class="address-bar-container">
+                <button class="nav-btn" id="backBtn" onclick="goBack()" title="Back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button class="nav-btn" id="forwardBtn" onclick="goForward()" title="Forward">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="nav-btn" id="refreshBtn" onclick="refreshPage()" title="Refresh">
+                    <i class="fas fa-redo"></i>
+                </button>
+                <input type="text" class="address-bar" id="addressBar" placeholder="Search or enter URL" onkeypress="handleAddressBar(event)">
+                <button class="search-btn" onclick="navigateToUrl()" title="Go">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- loading bar -->
+            <div class="loading-bar" id="loadingBar"></div>
+
+            <!-- browser content -->
+            <div class="browser-content">
+                <div class="iframe-container" id="iframeContainer">
+                    <!-- iframe or new tab page will be shown here -->
                 </div>
             </div>
         </div>
@@ -484,6 +568,7 @@
                 primaryBg: '#000000',
                 secondaryBg: '#1a1a1a',
                 cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
                 gradientStart: '#000000',
                 gradientMiddle: '#1a1a1a',
                 gradientEnd: '#000000'
@@ -492,6 +577,7 @@
                 primaryBg: '#0f1624',
                 secondaryBg: '#1a2332',
                 cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
                 gradientStart: '#0f1624',
                 gradientMiddle: '#1a2332',
                 gradientEnd: '#162a4a'
@@ -500,6 +586,7 @@
                 primaryBg: '#1a0f14',
                 secondaryBg: '#2d1a2e',
                 cardBg: 'rgba(219, 112, 147, 0.15)',
+                inputBg: 'rgba(219, 112, 147, 0.2)',
                 gradientStart: '#1a0f14',
                 gradientMiddle: '#2d1a2e',
                 gradientEnd: '#3e1621'
@@ -508,6 +595,7 @@
                 primaryBg: '#0f1a0f',
                 secondaryBg: '#1a2e1a',
                 cardBg: 'rgba(60, 179, 113, 0.15)',
+                inputBg: 'rgba(60, 179, 113, 0.2)',
                 gradientStart: '#0f1a0f',
                 gradientMiddle: '#1a2e1a',
                 gradientEnd: '#163e1c'
@@ -516,6 +604,7 @@
                 primaryBg: '#1a0f24',
                 secondaryBg: '#2a1a2e',
                 cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
                 gradientStart: '#1a0f24',
                 gradientMiddle: '#2a1a2e',
                 gradientEnd: '#3e1636'
@@ -540,6 +629,7 @@
             root.style.setProperty('--primary-bg', theme.primaryBg);
             root.style.setProperty('--secondary-bg', theme.secondaryBg);
             root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
             root.style.setProperty('--gradient-start', theme.gradientStart);
             root.style.setProperty('--gradient-middle', theme.gradientMiddle);
             root.style.setProperty('--gradient-end', theme.gradientEnd);
@@ -548,39 +638,276 @@
             localStorage.setItem('veintetheme', themeName);
         }
 
-        // proxy functions
-        function addproxytab() {
-            const tabscontainer = document.getElementById('proxytabs');
-            const newtab = document.createElement('div');
-            newtab.className = 'proxy-tab';
-            newtab.innerHTML = '<i class="fas fa-globe"></i> new tab <span class="tab-close"><i class="fas fa-times"></i></span>';
-            newtab.querySelector('.tab-close').addEventListener('click', (e) => {
-                e.stopPropagation();
-                newtab.remove();
+        // ==================== BROWSER FUNCTIONALITY ====================
+        
+        let tabs = [];
+        let activeTabId = null;
+        let tabCounter = 0;
+
+        // Scramjet proxy base URL
+        const PROXY_BASE = 'https://scramjet.workers.dev/';
+
+        // Initialize browser
+        function initBrowser() {
+            createNewTab();
+        }
+
+        // Create new tab
+        function createNewTab(url = null) {
+            const tabId = ++tabCounter;
+            const tab = {
+                id: tabId,
+                title: 'New Tab',
+                url: url || null,
+                history: [],
+                historyIndex: -1
+            };
+            
+            tabs.push(tab);
+            renderTabs();
+            switchToTab(tabId);
+        }
+
+        // Render tabs
+        function renderTabs() {
+            const tabBar = document.getElementById('tabBar');
+            tabBar.innerHTML = '';
+            
+            tabs.forEach(tab => {
+                const tabElement = document.createElement('div');
+                tabElement.className = `tab ${tab.id === activeTabId ? 'active' : ''}`;
+                tabElement.onclick = () => switchToTab(tab.id);
+                tabElement.innerHTML = `
+                    <span class="tab-icon"><i class="fas fa-globe"></i></span>
+                    <span class="tab-title">${tab.title}</span>
+                    <span class="tab-close" onclick="event.stopPropagation(); closeTab(${tab.id})">
+                        <i class="fas fa-times"></i>
+                    </span>
+                `;
+                tabBar.appendChild(tabElement);
             });
-            tabscontainer.appendChild(newtab);
+            
+            // Add new tab button
+            const newTabBtn = document.createElement('button');
+            newTabBtn.className = 'new-tab-btn';
+            newTabBtn.onclick = createNewTab;
+            newTabBtn.innerHTML = '<i class="fas fa-plus"></i>';
+            tabBar.appendChild(newTabBtn);
         }
 
-        function openbookmark(url) {
-            // in real implementation, this would open in the proxy iframe
+        // Switch to tab
+        function switchToTab(tabId) {
+            activeTabId = tabId;
+            renderTabs();
+            updateBrowserContent();
         }
 
-        // extensions menu
-        function openextensions() {
-            document.getElementById('extensionsmenu').classList.add('active');
-            document.getElementById('overlay').classList.add('active');
+        // Close tab
+        function closeTab(tabId) {
+            const tabIndex = tabs.findIndex(t => t.id === tabId);
+            if (tabIndex === -1) return;
+            
+            tabs.splice(tabIndex, 1);
+            
+            if (tabs.length === 0) {
+                createNewTab();
+            } else if (activeTabId === tabId) {
+                // Switch to the last tab if the active tab was closed
+                const newIndex = Math.min(tabIndex, tabs.length - 1);
+                activeTabId = tabs[newIndex].id;
+            }
+            
+            renderTabs();
+            updateBrowserContent();
         }
 
-        function closeextensions() {
-            document.getElementById('extensionsmenu').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
+        // Update browser content
+        function updateBrowserContent() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            const container = document.getElementById('iframeContainer');
+            const addressBar = document.getElementById('addressBar');
+            
+            if (!tab) return;
+            
+            if (!tab.url) {
+                // Show new tab page
+                container.innerHTML = `
+                    <div class="new-tab-page">
+                        <div class="new-tab-logo"><i class="fas fa-globe-americas"></i></div>
+                        <h1 class="new-tab-title">Welcome to Veinte Browser</h1>
+                        <p class="new-tab-subtitle">Fast, secure, and private browsing</p>
+                        
+                        <div class="quick-links">
+                            <div class="quick-link" onclick="navigateTo('https://www.google.com')">
+                                <div class="quick-link-icon"><i class="fab fa-google"></i></div>
+                                <div class="quick-link-title">Google</div>
+                            </div>
+                            <div class="quick-link" onclick="navigateTo('https://www.youtube.com')">
+                                <div class="quick-link-icon"><i class="fab fa-youtube"></i></div>
+                                <div class="quick-link-title">YouTube</div>
+                            </div>
+                            <div class="quick-link" onclick="navigateTo('https://www.tiktok.com')">
+                                <div class="quick-link-icon"><i class="fab fa-tiktok"></i></div>
+                                <div class="quick-link-title">TikTok</div>
+                            </div>
+                            <div class="quick-link" onclick="navigateTo('https://twitter.com')">
+                                <div class="quick-link-icon"><i class="fab fa-twitter"></i></div>
+                                <div class="quick-link-title">Twitter</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                addressBar.value = '';
+            } else {
+                // Show iframe with proxy
+                const proxyUrl = getProxyUrl(tab.url);
+                container.innerHTML = `<iframe src="${proxyUrl}" id="browserFrame"></iframe>`;
+                addressBar.value = tab.url;
+            }
+            
+            updateNavButtons();
         }
 
-        function toggleextension(toggle) {
-            toggle.classList.toggle('active');
+        // Get proxy URL
+        function getProxyUrl(url) {
+            // Make sure URL has protocol
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            
+            // Use scramjet proxy
+            return `${PROXY_BASE}${url}`;
         }
 
-        // mouse shadow follower
+        // Navigate to URL
+        function navigateTo(url) {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (!tab) return;
+            
+            // Check if it's a search query
+            if (!url.includes('.') && !url.startsWith('http')) {
+                url = `https://www.google.com/search?q=${encodeURIComponent(url)}`;
+            }
+            
+            // Make sure URL has protocol
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            
+            tab.url = url;
+            tab.title = getDomainName(url);
+            
+            // Add to history
+            if (tab.historyIndex < tab.history.length - 1) {
+                tab.history = tab.history.slice(0, tab.historyIndex + 1);
+            }
+            tab.history.push(url);
+            tab.historyIndex = tab.history.length - 1;
+            
+            renderTabs();
+            updateBrowserContent();
+            showLoading();
+        }
+
+        // Get domain name from URL
+        function getDomainName(url) {
+            try {
+                const urlObj = new URL(url);
+                return urlObj.hostname.replace('www.', '');
+            } catch {
+                return 'Page';
+            }
+        }
+
+        // Handle address bar input
+        function handleAddressBar(event) {
+            if (event.key === 'Enter') {
+                navigateToUrl();
+            }
+        }
+
+        // Navigate to URL from address bar
+        function navigateToUrl() {
+            const addressBar = document.getElementById('addressBar');
+            const url = addressBar.value.trim();
+            
+            if (url) {
+                navigateTo(url);
+            }
+        }
+
+        // Go back
+        function goBack() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (!tab || tab.historyIndex <= 0) return;
+            
+            tab.historyIndex--;
+            tab.url = tab.history[tab.historyIndex];
+            tab.title = getDomainName(tab.url);
+            
+            renderTabs();
+            updateBrowserContent();
+        }
+
+        // Go forward
+        function goForward() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (!tab || tab.historyIndex >= tab.history.length - 1) return;
+            
+            tab.historyIndex++;
+            tab.url = tab.history[tab.historyIndex];
+            tab.title = getDomainName(tab.url);
+            
+            renderTabs();
+            updateBrowserContent();
+        }
+
+        // Refresh page
+        function refreshPage() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (!tab || !tab.url) return;
+            
+            updateBrowserContent();
+            showLoading();
+        }
+
+        // Update navigation buttons
+        function updateNavButtons() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            const backBtn = document.getElementById('backBtn');
+            const forwardBtn = document.getElementById('forwardBtn');
+            
+            backBtn.disabled = !tab || tab.historyIndex <= 0;
+            forwardBtn.disabled = !tab || tab.historyIndex >= tab.history.length - 1;
+        }
+
+        // Show loading animation
+        function showLoading() {
+            const loadingBar = document.getElementById('loadingBar');
+            loadingBar.classList.add('active');
+            
+            setTimeout(() => {
+                loadingBar.classList.remove('active');
+            }, 1500);
+        }
+
+        // Initialize particles
+        function createparticles() {
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
+            }
+        }
+
+        // Mouse shadow follower
         document.addEventListener('mousemove', (e) => {
             const shadow = document.getElementById('mouseShadow');
             if (shadow) {
@@ -589,9 +916,11 @@
             }
         });
 
-        // initialize on load
+        // Initialize on load
         window.addEventListener('load', () => {
             applysavedtheme();
+            createparticles();
+            initBrowser();
         });
     </script>
 </body>
