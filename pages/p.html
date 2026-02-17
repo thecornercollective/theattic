@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link id="favicon" rel="icon" href="" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -23,6 +24,9 @@
             --text-color: #ffffff;
             --sidebar-bg: rgba(255, 255, 255, 0.1);
             --card-bg: rgba(255, 255, 255, 0.1);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
         }
 
         body {
@@ -39,8 +43,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
             z-index: -2;
+            transition: background 0.5s ease;
         }
 
         .grainy-bg::before {
@@ -128,6 +133,7 @@
             align-items: center;
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
+            transition: background 0.5s ease;
         }
 
         .proxy-title {
@@ -165,6 +171,7 @@
             background: var(--card-bg);
             border-radius: 15px;
             margin-bottom: 20px;
+            transition: background 0.5s ease;
         }
 
         .proxy-tab {
@@ -202,6 +209,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             margin-bottom: 20px;
+            transition: background 0.5s ease;
         }
 
         .bookmark-item {
@@ -241,6 +249,7 @@
             min-width: 350px;
             backdrop-filter: blur(20px);
             display: none;
+            transition: background 0.5s ease;
         }
 
         .extensions-menu.active {
@@ -469,62 +478,87 @@
     </div>
 
     <script>
+        // theme definitions with full color schemes
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            blue: {
+                primaryBg: '#0f1624',
+                secondaryBg: '#1a2332',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                gradientStart: '#0f1624',
+                gradientMiddle: '#1a2332',
+                gradientEnd: '#162a4a'
+            },
+            pink: {
+                primaryBg: '#1a0f14',
+                secondaryBg: '#2d1a2e',
+                cardBg: 'rgba(219, 112, 147, 0.15)',
+                gradientStart: '#1a0f14',
+                gradientMiddle: '#2d1a2e',
+                gradientEnd: '#3e1621'
+            },
+            green: {
+                primaryBg: '#0f1a0f',
+                secondaryBg: '#1a2e1a',
+                cardBg: 'rgba(60, 179, 113, 0.15)',
+                gradientStart: '#0f1a0f',
+                gradientMiddle: '#1a2e1a',
+                gradientEnd: '#163e1c'
+            },
+            purple: {
+                primaryBg: '#1a0f24',
+                secondaryBg: '#2a1a2e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                gradientStart: '#1a0f24',
+                gradientMiddle: '#2a1a2e',
+                gradientEnd: '#3e1636'
+            }
+        };
+
         // apply saved theme
         function applysavedtheme() {
-            const savedtheme = localstorage.getitem('veintetheme');
+            const savedtheme = localStorage.getItem('veintetheme');
             if (savedtheme) {
                 applytheme(savedtheme);
             }
         }
 
-        function applytheme(theme) {
-            const root = document.documentelement;
-            
-            const themes = {
-                default: {
-                    primaryBg: '#000000',
-                    secondaryBg: '#1a1a1a',
-                    cardBg: 'rgba(255, 255, 255, 0.1)'
-                },
-                blue: {
-                    primaryBg: '#1a1a2e',
-                    secondaryBg: '#16213e',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                pink: {
-                    primaryBg: '#2d1a2e',
-                    secondaryBg: '#3e1621',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                green: {
-                    primaryBg: '#1a2e1a',
-                    secondaryBg: '#163e1c',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                brown: {
-                    primaryBg: '#2e2a1a',
-                    secondaryBg: '#3e3616',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                }
-            };
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
 
-            const selectedtheme = themes[theme];
-            root.style.setproperty('--primary-bg', selectedtheme.primaryBg);
-            root.style.setproperty('--secondary-bg', selectedtheme.secondaryBg);
-            root.style.setproperty('--card-bg', selectedtheme.cardBg);
+            const root = document.documentElement;
+            
+            // Update all CSS variables
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            // save theme to localStorage
+            localStorage.setItem('veintetheme', themeName);
         }
 
         // proxy functions
         function addproxytab() {
-            const tabscontainer = document.getelementbyid('proxytabs');
-            const newtab = document.createelement('div');
-            newtab.classname = 'proxy-tab';
-            newtab.innerhtml = '<i class="fas fa-globe"></i> new tab <span class="tab-close"><i class="fas fa-times"></i></span>';
-            newtab.queryselector('.tab-close').addeventlistener('click', (e) => {
-                e.stoppropagation();
+            const tabscontainer = document.getElementById('proxytabs');
+            const newtab = document.createElement('div');
+            newtab.className = 'proxy-tab';
+            newtab.innerHTML = '<i class="fas fa-globe"></i> new tab <span class="tab-close"><i class="fas fa-times"></i></span>';
+            newtab.querySelector('.tab-close').addEventListener('click', (e) => {
+                e.stopPropagation();
                 newtab.remove();
             });
-            tabscontainer.appendchild(newtab);
+            tabscontainer.appendChild(newtab);
         }
 
         function openbookmark(url) {
@@ -533,28 +567,30 @@
 
         // extensions menu
         function openextensions() {
-            document.getelementbyid('extensionsmenu').classlist.add('active');
-            document.getelementbyid('overlay').classlist.add('active');
+            document.getElementById('extensionsmenu').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
         }
 
         function closeextensions() {
-            document.getelementbyid('extensionsmenu').classlist.remove('active');
-            document.getelementbyid('overlay').classlist.remove('active');
+            document.getElementById('extensionsmenu').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
         }
 
         function toggleextension(toggle) {
-            toggle.classlist.toggle('active');
+            toggle.classList.toggle('active');
         }
 
         // mouse shadow follower
-        document.addeventlistener('mousemove', (e) => {
-            const shadow = document.getelementbyid('mouseshadow');
-            shadow.style.left = e.clientx + 'px';
-            shadow.style.top = e.clienty + 'px';
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
         });
 
         // initialize on load
-        window.addeventlistener('load', () => {
+        window.addEventListener('load', () => {
             applysavedtheme();
         });
     </script>
