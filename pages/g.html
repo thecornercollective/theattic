@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>veinte - games</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            z-index: -2;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        /* main container */
+        .main-container {
+            min-height: 100vh;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* page content */
+        .page {
+            padding-left: 110px;
+            padding-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* search bar */
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 25px;
+            background: var(--input-bg);
+            color: white;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* games grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            padding: 10px 0;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .game-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .game-card-title {
+            padding: 15px;
+            font-weight: 300;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+            }
+
+            .page {
+                padding-left: 20px;
+                padding-bottom: 100px;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 15px;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- main container -->
+    <div class="main-container">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="index.html" class="sidebar-icon" title="home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="g.html" class="sidebar-icon active" title="games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="p.html" class="sidebar-icon" title="proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="t.html" class="sidebar-icon" title="tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="s.html" class="sidebar-icon" title="settings">
+                <i class="fas fa-cog"></i>
+            </a>
+        </nav>
+
+        <!-- games page -->
+        <div class="page">
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="search games..." onkeyup="searchGames()">
+            </div>
+            <div class="games-grid" id="gamesGrid">
+                <!-- games populated by js -->
+            </div>
+            <div class="no-results hidden" id="noResults">no games found</div>
+        </div>
+    </div>
+
+    <script>
+        // all games data
+        const games = [
+            { id: 'game1', name: 'super game', img: 'https://via.placeholder.com/160x150/1a1a1a/ffffff?text=super+game', category: 'popular' },
+            { id: 'game2', name: 'mega runner', img: 'https://via.placeholder.com/160x150/2a2a2a/ffffff?text=mega+runner', category: 'popular' },
+            { id: 'game3', name: 'action blast', img: 'https://via.placeholder.com/160x150/3a3a3a/ffffff?text=action+blast', category: 'popular' },
+            { id: 'game4', name: 'speed racer', img: 'https://via.placeholder.com/160x150/4a4a4a/ffffff?text=speed+ racer', category: 'popular' },
+            { id: 'game5', name: 'puzzle master', img: 'https://via.placeholder.com/160x150/5a5a5a/ffffff?text=puzzle+master', category: 'popular' },
+            { id: 'game6', name: 'space quest', img: 'https://via.placeholder.com/160x150/6a6a6a/ffffff?text=space+quest', category: 'popular' },
+            { id: 'game7', name: 'sky fighter', img: 'https://via.placeholder.com/160x150/7a7a7a/ffffff?text=sky+fighter', category: 'popular' },
+            { id: 'game8', name: 'candy crush', img: 'https://via.placeholder.com/160x150/8a8a8a/ffffff?text=candy+crush', category: 'popular' },
+            { id: 'action1', name: 'battle royale', img: 'https://via.placeholder.com/160x150/ff0000/ffffff?text=battle+royale', category: 'action' },
+            { id: 'action2', name: 'fighter z', img: 'https://via.placeholder.com/160x150/ff3300/ffffff?text=fighter+z', category: 'action' },
+            { id: 'action3', name: 'war zone', img: 'https://via.placeholder.com/160x150/ff6600/ffffff?text=war+zone', category: 'action' },
+            { id: 'action4', name: 'combat elite', img: 'https://via.placeholder.com/160x150/ff9900/ffffff?text=combat+elite', category: 'action' },
+            { id: 'action5', name: 'strike force', img: 'https://via.placeholder.com/160x150/ffcc00/ffffff?text=strike+force', category: 'action' },
+            { id: 'action6', name: 'ninja attack', img: 'https://via.placeholder.com/160x150/ffff00/ffffff?text=ninja+attack', category: 'action' },
+            { id: 'action7', name: 'sniper elite', img: 'https://via.placeholder.com/160x150/ff6600/ffffff?text=sniper+elite', category: 'action' },
+            { id: 'action8', name: 'tank battle', img: 'https://via.placeholder.com/160x150/ff3300/ffffff?text=tank+battle', category: 'action' },
+            { id: 'horror1', name: 'dark mansion', img: 'https://via.placeholder.com/160x150/4a0000/ffffff?text=dark+mansion', category: 'horror' },
+            { id: 'horror2', name: 'creepy house', img: 'https://via.placeholder.com/160x150/660000/ffffff?text=creepy+house', category: 'horror' },
+            { id: 'horror3', name: 'zombie apocalypse', img: 'https://via.placeholder.com/160x150/800000/ffffff?text=zombie+apocalypse', category: 'horror' },
+            { id: 'horror4', name: 'ghost town', img: 'https://via.placeholder.com/160x150/990000/ffffff?text=ghost+town', category: 'horror' },
+            { id: 'horror5', name: 'nightmare', img: 'https://via.placeholder.com/160x150/b30000/ffffff?text=nightmare', category: 'horror' },
+            { id: 'horror6', name: 'scary maze', img: 'https://via.placeholder.com/160x150/cc0000/ffffff?text=scary+maze', category: 'horror' },
+            { id: 'horror7', name: 'evil clown', img: 'https://via.placeholder.com/160x150/800000/ffffff?text=evil+clown', category: 'horror' },
+            { id: 'horror8', name: 'haunted forest', img: 'https://via.placeholder.com/160x150/660000/ffffff?text=haunted+forest', category: 'horror' },
+            { id: 'running1', name: 'endless run', img: 'https://via.placeholder.com/160x150/00ff00/000000?text=endless+run', category: 'running' },
+            { id: 'running2', name: 'temple dash', img: 'https://via.placeholder.com/160x150/00cc00/000000?text=temple+dash', category: 'running' },
+            { id: 'running3', name: 'subway surf', img: 'https://via.placeholder.com/160x150/009900/000000?text=subway+surf', category: 'running' },
+            { id: 'running4', name: 'parkour run', img: 'https://via.placeholder.com/160x150/006600/000000?text=parkour+run', category: 'running' },
+            { id: 'running5', name: 'city runner', img: 'https://via.placeholder.com/160x150/003300/000000?text=city+runner', category: 'running' },
+            { id: 'running6', name: 'sprint king', img: 'https://via.placeholder.com/160x150/001a00/000000?text=sprint+king', category: 'running' },
+            { id: 'running7', name: 'road dash', img: 'https://via.placeholder.com/160x150/00cc00/000000?text=road+dash', category: 'running' },
+            { id: 'running8', name: 'track stars', img: 'https://via.placeholder.com/160x150/009900/000000?text=track+stars', category: 'running' },
+            { id: 'beauty1', name: 'makeup studio', img: 'https://via.placeholder.com/160x150/ff69b4/ffffff?text=makeup+studio', category: 'beauty' },
+            { id: 'beauty2', name: 'dress up', img: 'https://via.placeholder.com/160x150/ff1493/ffffff?text=dress+up', category: 'beauty' },
+            { id: 'beauty3', name: 'hair salon', img: 'https://via.placeholder.com/160x150/ff00ff/ffffff?text=hair+salon', category: 'beauty' },
+            { id: 'beauty4', name: 'fashion queen', img: 'https://via.placeholder.com/160x150/da70d6/ffffff?text=fashion+queen', category: 'beauty' },
+            { id: 'beauty5', name: 'nail art', img: 'https://via.placeholder.com/160x150/ba55d3/ffffff?text=nail+art', category: 'beauty' },
+            { id: 'beauty6', name: 'spa day', img: 'https://via.placeholder.com/160x150/9932cc/ffffff?text=spa+day', category: 'beauty' },
+            { id: 'beauty7', name: 'princess dress', img: 'https://via.placeholder.com/160x150/da70d6/ffffff?text=princess+dress', category: 'beauty' },
+            { id: 'beauty8', name: 'jewelry maker', img: 'https://via.placeholder.com/160x150/ba55d3/ffffff?text=jewelry+maker', category: 'beauty' }
+        ];
+
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localstorage.getitem('veintetheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        function applytheme(theme) {
+            const root = document.documentelement;
+            
+            const themes = {
+                default: {
+                    primaryBg: '#000000',
+                    secondaryBg: '#1a1a1a',
+                    cardBg: 'rgba(255, 255, 255, 0.1)'
+                },
+                blue: {
+                    primaryBg: '#1a1a2e',
+                    secondaryBg: '#16213e',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                },
+                pink: {
+                    primaryBg: '#2d1a2e',
+                    secondaryBg: '#3e1621',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                },
+                green: {
+                    primaryBg: '#1a2e1a',
+                    secondaryBg: '#163e1c',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                },
+                brown: {
+                    primaryBg: '#2e2a1a',
+                    secondaryBg: '#3e3616',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                }
+            };
+
+            const selectedtheme = themes[theme];
+            root.style.setproperty('--primary-bg', selectedtheme.primaryBg);
+            root.style.setproperty('--secondary-bg', selectedtheme.secondaryBg);
+            root.style.setproperty('--card-bg', selectedtheme.cardBg);
+        }
+
+        // populate games grid
+        function populategames() {
+            const grid = document.getelementbyid('gamesgrid');
+            grid.innerhtml = games.map(game => `
+                <a href="play.html?game=${game.id}" class="game-card">
+                    <img src="${game.img}" alt="${game.name}">
+                    <div class="game-card-title">${game.name}</div>
+                </a>
+            `).join('');
+        }
+
+        // search games
+        function searchgames() {
+            const searchterm = document.getelementbyid('searchinput').value.tolowercase();
+            const grid = document.getelementbyid('gamesgrid');
+            const noresults = document.getelementbyid('noresults');
+
+            const filteredgames = games.filter(game => 
+                game.name.tolowercase().includes(searchterm)
+            );
+
+            if (filteredgames.length === 0) {
+                grid.innerhtml = '';
+                noresults.classlist.remove('hidden');
+            } else {
+                noresults.classlist.add('hidden');
+                grid.innerhtml = filteredgames.map(game => `
+                    <a href="play.html?game=${game.id}" class="game-card">
+                        <img src="${game.img}" alt="${game.name}">
+                        <div class="game-card-title">${game.name}</div>
+                    </a>
+                `).join('');
+            }
+        }
+
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getelementbyid('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createelement('div');
+                particle.classname = 'particle';
+                particle.style.top = math.random() * 100 + '%';
+                particle.style.left = math.random() * 100 + '%';
+                particle.style.animationdelay = math.random() * 20 + 's';
+                particle.style.animationduration = (15 + math.random() * 10) + 's';
+                particlescontainer.appendchild(particle);
+            }
+        }
+
+        // mouse shadow follower
+        document.addeventlistener('mousemove', (e) => {
+            const shadow = document.getelementbyid('mouseshadow');
+            shadow.style.left = e.clientx + 'px';
+            shadow.style.top = e.clienty + 'px';
+        });
+
+        // initialize on load
+        window.addeventlistener('load', () => {
+            applysavedtheme();
+            createparticles();
+            populategames();
+        });
+    </script>
+</body>
+</html>
