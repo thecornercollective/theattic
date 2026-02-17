@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>veinte</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+            --shadow-color: rgba(255, 255, 255, 0.15);
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            z-index: -2;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        /* intro page */
+        .intro-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .intro-text {
+            font-size: 3rem;
+            font-weight: 300;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .intro-text.show {
+            opacity: 1;
+        }
+
+        .intro-text.hide {
+            opacity: 0;
+        }
+
+        .nickname-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .nickname-input {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: white;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nickname-input:focus {
+            background: rgba(200, 200, 200, 0.25);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .nickname-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* main container */
+        .main-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* page content */
+        .page {
+            padding-left: 110px;
+            padding-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            animation: pageFadeIn 0.5s ease-out;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* trending section */
+        .trending-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .trending-title {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .trending-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .slideshow {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            cursor: pointer;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            border-radius: 0 0 15px 15px;
+        }
+
+        .slide-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+
+        /* game catalog */
+        .catalog-section {
+            margin-bottom: 30px;
+        }
+
+        .catalog-title {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .games-row {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px 0;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+        }
+
+        .games-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .game-card {
+            min-width: 160px;
+            height: 220px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .game-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .game-card-title {
+            padding: 15px;
+            font-weight: 300;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .scroll-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .scroll-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+            }
+
+            .page {
+                padding-left: 20px;
+                padding-bottom: 100px;
+            }
+
+            .intro-text {
+                font-size: 2rem;
+            }
+
+            .slideshow {
+                height: 250px;
+            }
+
+            .games-row {
+                gap: 10px;
+            }
+
+            .game-card {
+                min-width: 130px;
+                height: 190px;
+            }
+        }
+
+        /* utility classes */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- intro page -->
+    <div class="intro-page" id="introPage">
+        <h1 class="intro-text" id="welcomeText">welcome</h1>
+        <div class="nickname-container" id="nicknameContainer" style="display: none;">
+            <input type="text" class="nickname-input" id="nicknameInput" placeholder="enter your nickname">
+        </div>
+    </div>
+
+    <!-- main container -->
+    <div class="main-container" id="mainContainer">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="index.html" class="sidebar-icon active" title="home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="g.html" class="sidebar-icon" title="games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="p.html" class="sidebar-icon" title="proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="t.html" class="sidebar-icon" title="tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="s.html" class="sidebar-icon" title="settings">
+                <i class="fas fa-cog"></i>
+            </a>
+        </nav>
+
+        <!-- home page -->
+        <div class="page" id="homePage">
+            <div class="trending-section">
+                <h1 class="trending-title">trending</h1>
+                <p class="trending-subtitle">these games are on fire right now!</p>
+                <div class="slideshow" id="slideshow">
+                    <div class="slide active" data-game="game1">
+                        <img src="https://via.placeholder.com/1200x400/1a1a1a/ffffff?text=game+1" alt="trending game">
+                        <div class="slide-overlay">
+                            <h3 class="slide-title">super game</h3>
+                        </div>
+                    </div>
+                    <div class="slide" data-game="game2">
+                        <img src="https://via.placeholder.com/1200x400/2a2a2a/ffffff?text=game+2" alt="trending game">
+                        <div class="slide-overlay">
+                            <h3 class="slide-title">mega runner</h3>
+                        </div>
+                    </div>
+                    <div class="slide" data-game="game3">
+                        <img src="https://via.placeholder.com/1200x400/3a3a3a/ffffff?text=game+3" alt="trending game">
+                        <div class="slide-overlay">
+                            <h3 class="slide-title">action blast</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <h2 class="catalog-title">popular</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('popular', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="populargames">
+                        <div class="game-card" data-game="game1">
+                            <img src="https://via.placeholder.com/160x150/1a1a1a/ffffff?text=game+1" alt="game">
+                            <div class="game-card-title">super game</div>
+                        </div>
+                        <div class="game-card" data-game="game2">
+                            <img src="https://via.placeholder.com/160x150/2a2a2a/ffffff?text=game+2" alt="game">
+                            <div class="game-card-title">mega runner</div>
+                        </div>
+                        <div class="game-card" data-game="game3">
+                            <img src="https://via.placeholder.com/160x150/3a3a3a/ffffff?text=game+3" alt="game">
+                            <div class="game-card-title">action blast</div>
+                        </div>
+                        <div class="game-card" data-game="game4">
+                            <img src="https://via.placeholder.com/160x150/4a4a4a/ffffff?text=game+4" alt="game">
+                            <div class="game-card-title">speed racer</div>
+                        </div>
+                        <div class="game-card" data-game="game5">
+                            <img src="https://via.placeholder.com/160x150/5a5a5a/ffffff?text=game+5" alt="game">
+                            <div class="game-card-title">puzzle master</div>
+                        </div>
+                        <div class="game-card" data-game="game6">
+                            <img src="https://via.placeholder.com/160x150/6a6a6a/ffffff?text=game+6" alt="game">
+                            <div class="game-card-title">space quest</div>
+                        </div>
+                        <div class="game-card" data-game="game7">
+                            <img src="https://via.placeholder.com/160x150/7a7a7a/ffffff?text=game+7" alt="game">
+                            <div class="game-card-title">sky fighter</div>
+                        </div>
+                        <div class="game-card" data-game="game8">
+                            <img src="https://via.placeholder.com/160x150/8a8a8a/ffffff?text=game+8" alt="game">
+                            <div class="game-card-title">candy crush</div>
+                        </div>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('popular', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <h2 class="catalog-title">action</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('action', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="actiongames">
+                        <div class="game-card" data-game="action1">
+                            <img src="https://via.placeholder.com/160x150/ff0000/ffffff?text=action+1" alt="game">
+                            <div class="game-card-title">battle royale</div>
+                        </div>
+                        <div class="game-card" data-game="action2">
+                            <img src="https://via.placeholder.com/160x150/ff3300/ffffff?text=action+2" alt="game">
+                            <div class="game-card-title">fighter z</div>
+                        </div>
+                        <div class="game-card" data-game="action3">
+                            <img src="https://via.placeholder.com/160x150/ff6600/ffffff?text=action+3" alt="game">
+                            <div class="game-card-title">war zone</div>
+                        </div>
+                        <div class="game-card" data-game="action4">
+                            <img src="https://via.placeholder.com/160x150/ff9900/ffffff?text=action+4" alt="game">
+                            <div class="game-card-title">combat elite</div>
+                        </div>
+                        <div class="game-card" data-game="action5">
+                            <img src="https://via.placeholder.com/160x150/ffcc00/ffffff?text=action+5" alt="game">
+                            <div class="game-card-title">strike force</div>
+                        </div>
+                        <div class="game-card" data-game="action6">
+                            <img src="https://via.placeholder.com/160x150/ffff00/ffffff?text=action+6" alt="game">
+                            <div class="game-card-title">ninja attack</div>
+                        </div>
+                        <div class="game-card" data-game="action7">
+                            <img src="https://via.placeholder.com/160x150/ff6600/ffffff?text=action+7" alt="game">
+                            <div class="game-card-title">sniper elite</div>
+                        </div>
+                        <div class="game-card" data-game="action8">
+                            <img src="https://via.placeholder.com/160x150/ff3300/ffffff?text=action+8" alt="game">
+                            <div class="game-card-title">tank battle</div>
+                        </div>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('action', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <h2 class="catalog-title">horror</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('horror', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="horrorgames">
+                        <div class="game-card" data-game="horror1">
+                            <img src="https://via.placeholder.com/160x150/4a0000/ffffff?text=horror+1" alt="game">
+                            <div class="game-card-title">dark mansion</div>
+                        </div>
+                        <div class="game-card" data-game="horror2">
+                            <img src="https://via.placeholder.com/160x150/660000/ffffff?text=horror+2" alt="game">
+                            <div class="game-card-title">creepy house</div>
+                        </div>
+                        <div class="game-card" data-game="horror3">
+                            <img src="https://via.placeholder.com/160x150/800000/ffffff?text=horror+3" alt="game">
+                            <div class="game-card-title">zombie apocalypse</div>
+                        </div>
+                        <div class="game-card" data-game="horror4">
+                            <img src="https://via.placeholder.com/160x150/990000/ffffff?text=horror+4" alt="game">
+                            <div class="game-card-title">ghost town</div>
+                        </div>
+                        <div class="game-card" data-game="horror5">
+                            <img src="https://via.placeholder.com/160x150/b30000/ffffff?text=horror+5" alt="game">
+                            <div class="game-card-title">nightmare</div>
+                        </div>
+                        <div class="game-card" data-game="horror6">
+                            <img src="https://via.placeholder.com/160x150/cc0000/ffffff?text=horror+6" alt="game">
+                            <div class="game-card-title">scary maze</div>
+                        </div>
+                        <div class="game-card" data-game="horror7">
+                            <img src="https://via.placeholder.com/160x150/800000/ffffff?text=horror+7" alt="game">
+                            <div class="game-card-title">evil clown</div>
+                        </div>
+                        <div class="game-card" data-game="horror8">
+                            <img src="https://via.placeholder.com/160x150/660000/ffffff?text=horror+8" alt="game">
+                            <div class="game-card-title">haunted forest</div>
+                        </div>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('horror', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <h2 class="catalog-title">running</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('running', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="runninggames">
+                        <div class="game-card" data-game="running1">
+                            <img src="https://via.placeholder.com/160x150/00ff00/000000?text=run+1" alt="game">
+                            <div class="game-card-title">endless run</div>
+                        </div>
+                        <div class="game-card" data-game="running2">
+                            <img src="https://via.placeholder.com/160x150/00cc00/000000?text=run+2" alt="game">
+                            <div class="game-card-title">temple dash</div>
+                        </div>
+                        <div class="game-card" data-game="running3">
+                            <img src="https://via.placeholder.com/160x150/009900/000000?text=run+3" alt="game">
+                            <div class="game-card-title">subway surf</div>
+                        </div>
+                        <div class="game-card" data-game="running4">
+                            <img src="https://via.placeholder.com/160x150/006600/000000?text=run+4" alt="game">
+                            <div class="game-card-title">parkour run</div>
+                        </div>
+                        <div class="game-card" data-game="running5">
+                            <img src="https://via.placeholder.com/160x150/003300/000000?text=run+5" alt="game">
+                            <div class="game-card-title">city runner</div>
+                        </div>
+                        <div class="game-card" data-game="running6">
+                            <img src="https://via.placeholder.com/160x150/001a00/000000?text=run+6" alt="game">
+                            <div class="game-card-title">sprint king</div>
+                        </div>
+                        <div class="game-card" data-game="running7">
+                            <img src="https://via.placeholder.com/160x150/00cc00/000000?text=run+7" alt="game">
+                            <div class="game-card-title">road dash</div>
+                        </div>
+                        <div class="game-card" data-game="running8">
+                            <img src="https://via.placeholder.com/160x150/009900/000000?text=run+8" alt="game">
+                            <div class="game-card-title">track stars</div>
+                        </div>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('running', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <h2 class="catalog-title">beauty</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('beauty', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="beautygames">
+                        <div class="game-card" data-game="beauty1">
+                            <img src="https://via.placeholder.com/160x150/ff69b4/ffffff?text=beauty+1" alt="game">
+                            <div class="game-card-title">makeup studio</div>
+                        </div>
+                        <div class="game-card" data-game="beauty2">
+                            <img src="https://via.placeholder.com/160x150/ff1493/ffffff?text=beauty+2" alt="game">
+                            <div class="game-card-title">dress up</div>
+                        </div>
+                        <div class="game-card" data-game="beauty3">
+                            <img src="https://via.placeholder.com/160x150/ff00ff/ffffff?text=beauty+3" alt="game">
+                            <div class="game-card-title">hair salon</div>
+                        </div>
+                        <div class="game-card" data-game="beauty4">
+                            <img src="https://via.placeholder.com/160x150/da70d6/ffffff?text=beauty+4" alt="game">
+                            <div class="game-card-title">fashion queen</div>
+                        </div>
+                        <div class="game-card" data-game="beauty5">
+                            <img src="https://via.placeholder.com/160x150/ba55d3/ffffff?text=beauty+5" alt="game">
+                            <div class="game-card-title">nail art</div>
+                        </div>
+                        <div class="game-card" data-game="beauty6">
+                            <img src="https://via.placeholder.com/160x150/9932cc/ffffff?text=beauty+6" alt="game">
+                            <div class="game-card-title">spa day</div>
+                        </div>
+                        <div class="game-card" data-game="beauty7">
+                            <img src="https://via.placeholder.com/160x150/da70d6/ffffff?text=beauty+7" alt="game">
+                            <div class="game-card-title">princess dress</div>
+                        </div>
+                        <div class="game-card" data-game="beauty8">
+                            <img src="https://via.placeholder.com/160x150/ba55d3/ffffff?text=beauty+8" alt="game">
+                            <div class="game-card-title">jewelry maker</div>
+                        </div>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('beauty', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localstorage.getitem('veintetheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getelementbyid('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createelement('div');
+                particle.classname = 'particle';
+                particle.style.top = math.random() * 100 + '%';
+                particle.style.left = math.random() * 100 + '%';
+                particle.style.animationdelay = math.random() * 20 + 's';
+                particle.style.animationduration = (15 + math.random() * 10) + 's';
+                particlescontainer.appendchild(particle);
+            }
+        }
+
+        // mouse shadow follower
+        document.addeventlistener('mousemove', (e) => {
+            const shadow = document.getelementbyid('mouseshadow');
+            shadow.style.left = e.clientx + 'px';
+            shadow.style.top = e.clienty + 'px';
+        });
+
+        // intro animation
+        function startintro() {
+            const welcometext = document.getelementbyid('welcometext');
+            const nicknamecontainer = document.getelementbyid('nicknamecontainer');
+            
+            // show welcome text
+            welcometext.classlist.add('show');
+            
+            // after 2 seconds, fade out welcome and show nickname input
+            settimeout(() => {
+                welcometext.classlist.remove('show');
+                welcometext.classlist.add('hide');
+                
+                settimeout(() => {
+                    welcometext.style.display = 'none';
+                    nicknamecontainer.style.display = 'flex';
+                    document.getelementbyid('nicknameinput').focus();
+                }, 1000);
+            }, 2000);
+        }
+
+        // handle nickname input
+        document.getelementbyid('nicknameinput').addeventlistener('keypress', (e) => {
+            if (e.key === 'enter') {
+                const nickname = e.target.value;
+                localstorage.setitem('veintenickname', nickname);
+                entermainsite();
+            }
+        });
+
+        function entermainsite() {
+            const introPage = document.getelementbyid('intropage');
+            const maincontainer = document.getelementbyid('maincontainer');
+            
+            introPage.style.transition = 'opacity 1s ease-out';
+            introPage.style.opacity = '0';
+            
+            settimeout(() => {
+                introPage.style.display = 'none';
+                maincontainer.style.display = 'block';
+                startslideshow();
+            }, 1000);
+        }
+
+        // slideshow functionality
+        let currentslide = 0;
+        let slideshowinterval;
+
+        function startslideshow() {
+            const slides = document.queryselectorall('.slide');
+            
+            slideshowinterval = setinterval(() => {
+                slides[currentslide].classlist.remove('active');
+                currentslide = (currentslide + 1) % slides.length;
+                slides[currentslide].classlist.add('active');
+            }, 4000);
+
+            // add click listeners to slides
+            slides.foreach(slide => {
+                slide.addeventlistener('click', () => {
+                    const gameid = slide.dataset.game;
+                    window.location.href = 'play.html?game=' + gameid;
+                });
+            });
+        }
+
+        // game card click handlers
+        document.queryselectorall('.game-card').foreach(card => {
+            card.addeventlistener('click', () => {
+                const gameid = card.dataset.game;
+                window.location.href = 'play.html?game=' + gameid;
+            });
+        });
+
+        // scroll games in catalog
+        function scrollgames(category, direction) {
+            const row = document.getelementbyid(category + 'games');
+            const scrollamount = 750;
+            row.scrollby({ left: direction * scrollamount, behavior: 'smooth' });
+        }
+
+        // initialize on load
+        window.addeventlistener('load', () => {
+            applysavedtheme();
+            createparticles();
+            startintro();
+        });
+    </script>
+</body>
+</html>
