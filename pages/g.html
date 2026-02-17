@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link id="favicon" rel="icon" href="" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -24,6 +25,9 @@
             --sidebar-bg: rgba(255, 255, 255, 0.1);
             --card-bg: rgba(255, 255, 255, 0.1);
             --input-bg: rgba(200, 200, 200, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
         }
 
         body {
@@ -40,8 +44,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
             z-index: -2;
+            transition: background 0.5s ease;
         }
 
         .grainy-bg::before {
@@ -190,6 +195,7 @@
             transition: all 0.3s ease;
             text-decoration: none;
             color: white;
+            transition: background 0.5s ease;
         }
 
         .game-card:hover {
@@ -245,8 +251,8 @@
 </head>
 <body>
     <div class="grainy-bg"></div>
-    <div class="mouse-shadow" id="mouseShadow"></div>
     <div class="particles" id="particles"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
 
     <!-- main container -->
     <div class="main-container">
@@ -326,55 +332,86 @@
             { id: 'beauty8', name: 'jewelry maker', img: 'https://via.placeholder.com/160x150/ba55d3/ffffff?text=jewelry+maker', category: 'beauty' }
         ];
 
+        // theme definitions with full color schemes
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            blue: {
+                primaryBg: '#0f1624',
+                secondaryBg: '#1a2332',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0f1624',
+                gradientMiddle: '#1a2332',
+                gradientEnd: '#162a4a'
+            },
+            pink: {
+                primaryBg: '#1a0f14',
+                secondaryBg: '#2d1a2e',
+                cardBg: 'rgba(219, 112, 147, 0.15)',
+                inputBg: 'rgba(219, 112, 147, 0.2)',
+                gradientStart: '#1a0f14',
+                gradientMiddle: '#2d1a2e',
+                gradientEnd: '#3e1621'
+            },
+            green: {
+                primaryBg: '#0f1a0f',
+                secondaryBg: '#1a2e1a',
+                cardBg: 'rgba(60, 179, 113, 0.15)',
+                inputBg: 'rgba(60, 179, 113, 0.2)',
+                gradientStart: '#0f1a0f',
+                gradientMiddle: '#1a2e1a',
+                gradientEnd: '#163e1c'
+            },
+            purple: {
+                primaryBg: '#1a0f24',
+                secondaryBg: '#2a1a2e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f24',
+                gradientMiddle: '#2a1a2e',
+                gradientEnd: '#3e1636'
+            }
+        };
+
         // apply saved theme
         function applysavedtheme() {
-            const savedtheme = localstorage.getitem('veintetheme');
+            const savedtheme = localStorage.getItem('veintetheme');
             if (savedtheme) {
                 applytheme(savedtheme);
             }
         }
 
-        function applytheme(theme) {
-            const root = document.documentelement;
-            
-            const themes = {
-                default: {
-                    primaryBg: '#000000',
-                    secondaryBg: '#1a1a1a',
-                    cardBg: 'rgba(255, 255, 255, 0.1)'
-                },
-                blue: {
-                    primaryBg: '#1a1a2e',
-                    secondaryBg: '#16213e',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                pink: {
-                    primaryBg: '#2d1a2e',
-                    secondaryBg: '#3e1621',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                green: {
-                    primaryBg: '#1a2e1a',
-                    secondaryBg: '#163e1c',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                brown: {
-                    primaryBg: '#2e2a1a',
-                    secondaryBg: '#3e3616',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                }
-            };
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
 
-            const selectedtheme = themes[theme];
-            root.style.setproperty('--primary-bg', selectedtheme.primaryBg);
-            root.style.setproperty('--secondary-bg', selectedtheme.secondaryBg);
-            root.style.setproperty('--card-bg', selectedtheme.cardBg);
+            const root = document.documentElement;
+            
+            // Update all CSS variables
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            // save theme to localStorage
+            localStorage.setItem('veintetheme', themeName);
         }
 
         // populate games grid
         function populategames() {
-            const grid = document.getelementbyid('gamesgrid');
-            grid.innerhtml = games.map(game => `
+            const grid = document.getElementById('gamesGrid');
+            grid.innerHTML = games.map(game => `
                 <a href="play.html?game=${game.id}" class="game-card">
                     <img src="${game.img}" alt="${game.name}">
                     <div class="game-card-title">${game.name}</div>
@@ -384,20 +421,20 @@
 
         // search games
         function searchgames() {
-            const searchterm = document.getelementbyid('searchinput').value.tolowercase();
-            const grid = document.getelementbyid('gamesgrid');
-            const noresults = document.getelementbyid('noresults');
+            const searchterm = document.getElementById('searchInput').value.toLowerCase();
+            const grid = document.getElementById('gamesGrid');
+            const noresults = document.getElementById('noResults');
 
             const filteredgames = games.filter(game => 
-                game.name.tolowercase().includes(searchterm)
+                game.name.toLowerCase().includes(searchterm)
             );
 
             if (filteredgames.length === 0) {
-                grid.innerhtml = '';
-                noresults.classlist.remove('hidden');
+                grid.innerHTML = '';
+                noresults.classList.remove('hidden');
             } else {
-                noresults.classlist.add('hidden');
-                grid.innerhtml = filteredgames.map(game => `
+                noresults.classList.add('hidden');
+                grid.innerHTML = filteredgames.map(game => `
                     <a href="play.html?game=${game.id}" class="game-card">
                         <img src="${game.img}" alt="${game.name}">
                         <div class="game-card-title">${game.name}</div>
@@ -408,27 +445,31 @@
 
         // initialize particles
         function createparticles() {
-            const particlescontainer = document.getelementbyid('particles');
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
             for (let i = 0; i < 50; i++) {
-                const particle = document.createelement('div');
-                particle.classname = 'particle';
-                particle.style.top = math.random() * 100 + '%';
-                particle.style.left = math.random() * 100 + '%';
-                particle.style.animationdelay = math.random() * 20 + 's';
-                particle.style.animationduration = (15 + math.random() * 10) + 's';
-                particlescontainer.appendchild(particle);
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
             }
         }
 
         // mouse shadow follower
-        document.addeventlistener('mousemove', (e) => {
-            const shadow = document.getelementbyid('mouseshadow');
-            shadow.style.left = e.clientx + 'px';
-            shadow.style.top = e.clienty + 'px';
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
         });
 
         // initialize on load
-        window.addeventlistener('load', () => {
+        window.addEventListener('load', () => {
             applysavedtheme();
             createparticles();
             populategames();
