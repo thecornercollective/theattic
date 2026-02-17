@@ -254,32 +254,32 @@
             }
         }
 
-        /* trending section */
+        /* trending section - smaller and compact */
         .trending-section {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px;
             margin-bottom: 30px;
             backdrop-filter: blur(10px);
             transition: background 0.5s ease;
         }
 
         .trending-title {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 300;
             margin-bottom: 5px;
         }
 
         .trending-subtitle {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .slideshow {
             position: relative;
             width: 100%;
-            height: 400px;
+            height: 250px;
             border-radius: 15px;
             overflow: hidden;
         }
@@ -293,6 +293,8 @@
             opacity: 0;
             transition: opacity 0.5s ease;
             cursor: pointer;
+            text-decoration: none;
+            color: white;
         }
 
         .slide.active {
@@ -311,13 +313,13 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 20px;
+            padding: 15px;
             background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
             border-radius: 0 0 15px 15px;
         }
 
         .slide-title {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 300;
         }
 
@@ -346,33 +348,82 @@
         }
 
         .game-card {
-            min-width: 160px;
-            height: 220px;
+            min-width: 180px;
+            height: 180px;
             background: var(--card-bg);
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             flex-shrink: 0;
             transition: background 0.5s ease;
+            position: relative;
+            text-decoration: none;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .game-card:hover {
-            transform: scale(1.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: scale(1.08);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            z-index: 10;
         }
 
         .game-card img {
             width: 100%;
-            height: 150px;
+            height: 100%;
             object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .game-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .game-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .game-card:hover .game-card-overlay {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .game-card-title {
-            padding: 15px;
-            font-weight: 300;
+            font-weight: 400;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* glow effect on hover */
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+            border-radius: 22px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
         }
 
         .scroll-btn {
@@ -387,11 +438,13 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
         .scroll-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
         /* responsive */
@@ -417,22 +470,44 @@
             }
 
             .slideshow {
-                height: 250px;
+                height: 200px;
             }
 
             .games-row {
-                gap: 10px;
+                gap: 15px;
             }
 
             .game-card {
-                min-width: 130px;
-                height: 190px;
+                min-width: 140px;
+                height: 140px;
+            }
+
+            .trending-title {
+                font-size: 1.3rem;
+            }
+
+            .catalog-title {
+                font-size: 1.5rem;
             }
         }
 
         /* utility classes */
         .hidden {
             display: none !important;
+        }
+
+        /* pulse animation for trending */
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .trending-section {
+            animation: pulse 3s ease-in-out infinite;
         }
     </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
@@ -454,7 +529,7 @@
     <div class="main-container" id="mainContainer">
         <!-- sidebar -->
         <nav class="sidebar">
-            <a href="index.html" class="sidebar-icon active" title="home">
+            <a href="home.html" class="sidebar-icon active" title="home">
                 <i class="fas fa-home"></i>
             </a>
             <a href="/veinte/pages/g" class="sidebar-icon" title="games">
@@ -477,66 +552,84 @@
                 <h1 class="trending-title">trending</h1>
                 <p class="trending-subtitle">these games are on fire right now!</p>
                 <div class="slideshow" id="slideshow">
-                    <div class="slide active" data-game="game1">
+                    <a href="play.html?game=game1" class="slide active" data-game="game1">
                         <img src="https://via.placeholder.com/1200x400/1a1a1a/ffffff?text=game+1" alt="trending game">
                         <div class="slide-overlay">
                             <h3 class="slide-title">super game</h3>
                         </div>
-                    </div>
-                    <div class="slide" data-game="game2">
+                    </a>
+                    <a href="play.html?game=game2" class="slide" data-game="game2">
                         <img src="https://via.placeholder.com/1200x400/2a2a2a/ffffff?text=game+2" alt="trending game">
                         <div class="slide-overlay">
                             <h3 class="slide-title">mega runner</h3>
                         </div>
-                    </div>
-                    <div class="slide" data-game="game3">
+                    </a>
+                    <a href="play.html?game=game3" class="slide" data-game="game3">
                         <img src="https://via.placeholder.com/1200x400/3a3a3a/ffffff?text=game+3" alt="trending game">
                         <div class="slide-overlay">
                             <h3 class="slide-title">action blast</h3>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 
             <div class="catalog-section">
-                <h2 class="catalog-title">popular</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">popular</h2>
+                </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button class="scroll-btn" onclick="scrollgames('popular', -1)">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <div class="games-row" id="populargames">
-                        <div class="game-card" data-game="game1">
-                            <img src="https://via.placeholder.com/160x150/1a1a1a/ffffff?text=game+1" alt="game">
-                            <div class="game-card-title">super game</div>
-                        </div>
-                        <div class="game-card" data-game="game2">
-                            <img src="https://via.placeholder.com/160x150/2a2a2a/ffffff?text=game+2" alt="game">
-                            <div class="game-card-title">mega runner</div>
-                        </div>
-                        <div class="game-card" data-game="game3">
-                            <img src="https://via.placeholder.com/160x150/3a3a3a/ffffff?text=game+3" alt="game">
-                            <div class="game-card-title">action blast</div>
-                        </div>
-                        <div class="game-card" data-game="game4">
-                            <img src="https://via.placeholder.com/160x150/4a4a4a/ffffff?text=game+4" alt="game">
-                            <div class="game-card-title">speed racer</div>
-                        </div>
-                        <div class="game-card" data-game="game5">
-                            <img src="https://via.placeholder.com/160x150/5a5a5a/ffffff?text=game+5" alt="game">
-                            <div class="game-card-title">puzzle master</div>
-                        </div>
-                        <div class="game-card" data-game="game6">
-                            <img src="https://via.placeholder.com/160x150/6a6a6a/ffffff?text=game+6" alt="game">
-                            <div class="game-card-title">space quest</div>
-                        </div>
-                        <div class="game-card" data-game="game7">
-                            <img src="https://via.placeholder.com/160x150/7a7a7a/ffffff?text=game+7" alt="game">
-                            <div class="game-card-title">sky fighter</div>
-                        </div>
-                        <div class="game-card" data-game="game8">
-                            <img src="https://via.placeholder.com/160x150/8a8a8a/ffffff?text=game+8" alt="game">
-                            <div class="game-card-title">candy crush</div>
-                        </div>
+                        <a href="play.html?game=game1" class="game-card" data-game="game1">
+                            <img src="https://via.placeholder.com/180x180/1a1a1a/ffffff?text=game+1" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">super game</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game2" class="game-card" data-game="game2">
+                            <img src="https://via.placeholder.com/180x180/2a2a2a/ffffff?text=game+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">mega runner</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game3" class="game-card" data-game="game3">
+                            <img src="https://via.placeholder.com/180x180/3a3a3a/ffffff?text=game+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">action blast</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game4" class="game-card" data-game="game4">
+                            <img src="https://via.placeholder.com/180x180/4a4a4a/ffffff?text=game+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">speed racer</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game5" class="game-card" data-game="game5">
+                            <img src="https://via.placeholder.com/180x180/5a5a5a/ffffff?text=game+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">puzzle master</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game6" class="game-card" data-game="game6">
+                            <img src="https://via.placeholder.com/180x180/6a6a6a/ffffff?text=game+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">space quest</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game7" class="game-card" data-game="game7">
+                            <img src="https://via.placeholder.com/180x180/7a7a7a/ffffff?text=game+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">sky fighter</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game8" class="game-card" data-game="game8">
+                            <img src="https://via.placeholder.com/180x180/8a8a8a/ffffff?text=game+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">candy crush</div>
+                            </div>
+                        </a>
                     </div>
                     <button class="scroll-btn" onclick="scrollgames('popular', 1)">
                         <i class="fas fa-chevron-right"></i>
@@ -545,44 +638,62 @@
             </div>
 
             <div class="catalog-section">
-                <h2 class="catalog-title">action</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">action</h2>
+                </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button class="scroll-btn" onclick="scrollgames('action', -1)">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <div class="games-row" id="actiongames">
-                        <div class="game-card" data-game="action1">
-                            <img src="https://via.placeholder.com/160x150/ff0000/ffffff?text=action+1" alt="game">
-                            <div class="game-card-title">battle royale</div>
-                        </div>
-                        <div class="game-card" data-game="action2">
-                            <img src="https://via.placeholder.com/160x150/ff3300/ffffff?text=action+2" alt="game">
-                            <div class="game-card-title">fighter z</div>
-                        </div>
-                        <div class="game-card" data-game="action3">
-                            <img src="https://via.placeholder.com/160x150/ff6600/ffffff?text=action+3" alt="game">
-                            <div class="game-card-title">war zone</div>
-                        </div>
-                        <div class="game-card" data-game="action4">
-                            <img src="https://via.placeholder.com/160x150/ff9900/ffffff?text=action+4" alt="game">
-                            <div class="game-card-title">combat elite</div>
-                        </div>
-                        <div class="game-card" data-game="action5">
-                            <img src="https://via.placeholder.com/160x150/ffcc00/ffffff?text=action+5" alt="game">
-                            <div class="game-card-title">strike force</div>
-                        </div>
-                        <div class="game-card" data-game="action6">
-                            <img src="https://via.placeholder.com/160x150/ffff00/ffffff?text=action+6" alt="game">
-                            <div class="game-card-title">ninja attack</div>
-                        </div>
-                        <div class="game-card" data-game="action7">
-                            <img src="https://via.placeholder.com/160x150/ff6600/ffffff?text=action+7" alt="game">
-                            <div class="game-card-title">sniper elite</div>
-                        </div>
-                        <div class="game-card" data-game="action8">
-                            <img src="https://via.placeholder.com/160x150/ff3300/ffffff?text=action+8" alt="game">
-                            <div class="game-card-title">tank battle</div>
-                        </div>
+                        <a href="play.html?game=action1" class="game-card" data-game="action1">
+                            <img src="https://via.placeholder.com/180x180/ff0000/ffffff?text=action+1" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">battle royale</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action2" class="game-card" data-game="action2">
+                            <img src="https://via.placeholder.com/180x180/ff3300/ffffff?text=action+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">fighter z</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action3" class="game-card" data-game="action3">
+                            <img src="https://via.placeholder.com/180x180/ff6600/ffffff?text=action+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">war zone</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action4" class="game-card" data-game="action4">
+                            <img src="https://via.placeholder.com/180x180/ff9900/ffffff?text=action+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">combat elite</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action5" class="game-card" data-game="action5">
+                            <img src="https://via.placeholder.com/180x180/ffcc00/ffffff?text=action+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">strike force</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action6" class="game-card" data-game="action6">
+                            <img src="https://via.placeholder.com/180x180/ffff00/ffffff?text=action+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">ninja attack</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action7" class="game-card" data-game="action7">
+                            <img src="https://via.placeholder.com/180x180/ff6600/ffffff?text=action+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">sniper elite</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action8" class="game-card" data-game="action8">
+                            <img src="https://via.placeholder.com/180x180/ff3300/ffffff?text=action+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">tank battle</div>
+                            </div>
+                        </a>
                     </div>
                     <button class="scroll-btn" onclick="scrollgames('action', 1)">
                         <i class="fas fa-chevron-right"></i>
@@ -591,44 +702,62 @@
             </div>
 
             <div class="catalog-section">
-                <h2 class="catalog-title">horror</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">horror</h2>
+                </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button class="scroll-btn" onclick="scrollgames('horror', -1)">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <div class="games-row" id="horrorgames">
-                        <div class="game-card" data-game="horror1">
-                            <img src="https://via.placeholder.com/160x150/4a0000/ffffff?text=horror+1" alt="game">
-                            <div class="game-card-title">dark mansion</div>
-                        </div>
-                        <div class="game-card" data-game="horror2">
-                            <img src="https://via.placeholder.com/160x150/660000/ffffff?text=horror+2" alt="game">
-                            <div class="game-card-title">creepy house</div>
-                        </div>
-                        <div class="game-card" data-game="horror3">
-                            <img src="https://via.placeholder.com/160x150/800000/ffffff?text=horror+3" alt="game">
-                            <div class="game-card-title">zombie apocalypse</div>
-                        </div>
-                        <div class="game-card" data-game="horror4">
-                            <img src="https://via.placeholder.com/160x150/990000/ffffff?text=horror+4" alt="game">
-                            <div class="game-card-title">ghost town</div>
-                        </div>
-                        <div class="game-card" data-game="horror5">
-                            <img src="https://via.placeholder.com/160x150/b30000/ffffff?text=horror+5" alt="game">
-                            <div class="game-card-title">nightmare</div>
-                        </div>
-                        <div class="game-card" data-game="horror6">
-                            <img src="https://via.placeholder.com/160x150/cc0000/ffffff?text=horror+6" alt="game">
-                            <div class="game-card-title">scary maze</div>
-                        </div>
-                        <div class="game-card" data-game="horror7">
-                            <img src="https://via.placeholder.com/160x150/800000/ffffff?text=horror+7" alt="game">
-                            <div class="game-card-title">evil clown</div>
-                        </div>
-                        <div class="game-card" data-game="horror8">
-                            <img src="https://via.placeholder.com/160x150/660000/ffffff?text=horror+8" alt="game">
-                            <div class="game-card-title">haunted forest</div>
-                        </div>
+                        <a href="play.html?game=horror1" class="game-card" data-game="horror1">
+                            <img src="https://via.placeholder.com/180x180/4a0000/ffffff?text=horror+1" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">dark mansion</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror2" class="game-card" data-game="horror2">
+                            <img src="https://via.placeholder.com/180x180/660000/ffffff?text=horror+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">creepy house</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror3" class="game-card" data-game="horror3">
+                            <img src="https://via.placeholder.com/180x180/800000/ffffff?text=horror+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">zombie apocalypse</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror4" class="game-card" data-game="horror4">
+                            <img src="https://via.placeholder.com/180x180/990000/ffffff?text=horror+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">ghost town</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror5" class="game-card" data-game="horror5">
+                            <img src="https://via.placeholder.com/180x180/b30000/ffffff?text=horror+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">nightmare</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror6" class="game-card" data-game="horror6">
+                            <img src="https://via.placeholder.com/180x180/cc0000/ffffff?text=horror+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">scary maze</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror7" class="game-card" data-game="horror7">
+                            <img src="https://via.placeholder.com/180x180/800000/ffffff?text=horror+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">evil clown</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror8" class="game-card" data-game="horror8">
+                            <img src="https://via.placeholder.com/180x180/660000/ffffff?text=horror+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">haunted forest</div>
+                            </div>
+                        </a>
                     </div>
                     <button class="scroll-btn" onclick="scrollgames('horror', 1)">
                         <i class="fas fa-chevron-right"></i>
@@ -637,44 +766,62 @@
             </div>
 
             <div class="catalog-section">
-                <h2 class="catalog-title">running</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">running</h2>
+                </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button class="scroll-btn" onclick="scrollgames('running', -1)">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <div class="games-row" id="runninggames">
-                        <div class="game-card" data-game="running1">
-                            <img src="https://via.placeholder.com/160x150/00ff00/000000?text=run+1" alt="game">
-                            <div class="game-card-title">endless run</div>
-                        </div>
-                        <div class="game-card" data-game="running2">
-                            <img src="https://via.placeholder.com/160x150/00cc00/000000?text=run+2" alt="game">
-                            <div class="game-card-title">temple dash</div>
-                        </div>
-                        <div class="game-card" data-game="running3">
-                            <img src="https://via.placeholder.com/160x150/009900/000000?text=run+3" alt="game">
-                            <div class="game-card-title">subway surf</div>
-                        </div>
-                        <div class="game-card" data-game="running4">
-                            <img src="https://via.placeholder.com/160x150/006600/000000?text=run+4" alt="game">
-                            <div class="game-card-title">parkour run</div>
-                        </div>
-                        <div class="game-card" data-game="running5">
-                            <img src="https://via.placeholder.com/160x150/003300/000000?text=run+5" alt="game">
-                            <div class="game-card-title">city runner</div>
-                        </div>
-                        <div class="game-card" data-game="running6">
-                            <img src="https://via.placeholder.com/160x150/001a00/000000?text=run+6" alt="game">
-                            <div class="game-card-title">sprint king</div>
-                        </div>
-                        <div class="game-card" data-game="running7">
-                            <img src="https://via.placeholder.com/160x150/00cc00/000000?text=run+7" alt="game">
-                            <div class="game-card-title">road dash</div>
-                        </div>
-                        <div class="game-card" data-game="running8">
-                            <img src="https://via.placeholder.com/160x150/009900/000000?text=run+8" alt="game">
-                            <div class="game-card-title">track stars</div>
-                        </div>
+                        <a href="play.html?game=running1" class="game-card" data-game="running1">
+                            <img src="https://via.placeholder.com/180x180/00ff00/000000?text=run+1" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">endless run</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running2" class="game-card" data-game="running2">
+                            <img src="https://via.placeholder.com/180x180/00cc00/000000?text=run+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">temple dash</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running3" class="game-card" data-game="running3">
+                            <img src="https://via.placeholder.com/180x180/009900/000000?text=run+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">subway surf</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running4" class="game-card" data-game="running4">
+                            <img src="https://via.placeholder.com/180x180/006600/000000?text=run+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">parkour run</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running5" class="game-card" data-game="running5">
+                            <img src="https://via.placeholder.com/180x180/003300/000000?text=run+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">city runner</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running6" class="game-card" data-game="running6">
+                            <img src="https://via.placeholder.com/180x180/001a00/000000?text=run+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">sprint king</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running7" class="game-card" data-game="running7">
+                            <img src="https://via.placeholder.com/180x180/00cc00/000000?text=run+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">road dash</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running8" class="game-card" data-game="running8">
+                            <img src="https://via.placeholder.com/180x180/009900/000000?text=run+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">track stars</div>
+                            </div>
+                        </a>
                     </div>
                     <button class="scroll-btn" onclick="scrollgames('running', 1)">
                         <i class="fas fa-chevron-right"></i>
@@ -683,44 +830,62 @@
             </div>
 
             <div class="catalog-section">
-                <h2 class="catalog-title">beauty</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">beauty</h2>
+                </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button class="scroll-btn" onclick="scrollgames('beauty', -1)">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <div class="games-row" id="beautygames">
-                        <div class="game-card" data-game="beauty1">
-                            <img src="https://via.placeholder.com/160x150/ff69b4/ffffff?text=beauty+1" alt="game">
-                            <div class="game-card-title">makeup studio</div>
-                        </div>
-                        <div class="game-card" data-game="beauty2">
-                            <img src="https://via.placeholder.com/160x150/ff1493/ffffff?text=beauty+2" alt="game">
-                            <div class="game-card-title">dress up</div>
-                        </div>
-                        <div class="game-card" data-game="beauty3">
-                            <img src="https://via.placeholder.com/160x150/ff00ff/ffffff?text=beauty+3" alt="game">
-                            <div class="game-card-title">hair salon</div>
-                        </div>
-                        <div class="game-card" data-game="beauty4">
-                            <img src="https://via.placeholder.com/160x150/da70d6/ffffff?text=beauty+4" alt="game">
-                            <div class="game-card-title">fashion queen</div>
-                        </div>
-                        <div class="game-card" data-game="beauty5">
-                            <img src="https://via.placeholder.com/160x150/ba55d3/ffffff?text=beauty+5" alt="game">
-                            <div class="game-card-title">nail art</div>
-                        </div>
-                        <div class="game-card" data-game="beauty6">
-                            <img src="https://via.placeholder.com/160x150/9932cc/ffffff?text=beauty+6" alt="game">
-                            <div class="game-card-title">spa day</div>
-                        </div>
-                        <div class="game-card" data-game="beauty7">
-                            <img src="https://via.placeholder.com/160x150/da70d6/ffffff?text=beauty+7" alt="game">
-                            <div class="game-card-title">princess dress</div>
-                        </div>
-                        <div class="game-card" data-game="beauty8">
-                            <img src="https://via.placeholder.com/160x150/ba55d3/ffffff?text=beauty+8" alt="game">
-                            <div class="game-card-title">jewelry maker</div>
-                        </div>
+                        <a href="play.html?game=beauty1" class="game-card" data-game="beauty1">
+                            <img src="https://via.placeholder.com/180x180/ff69b4/ffffff?text=beauty+1" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">makeup studio</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty2" class="game-card" data-game="beauty2">
+                            <img src="https://via.placeholder.com/180x180/ff1493/ffffff?text=beauty+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">dress up</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty3" class="game-card" data-game="beauty3">
+                            <img src="https://via.placeholder.com/180x180/ff00ff/ffffff?text=beauty+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">hair salon</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty4" class="game-card" data-game="beauty4">
+                            <img src="https://via.placeholder.com/180x180/da70d6/ffffff?text=beauty+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">fashion queen</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty5" class="game-card" data-game="beauty5">
+                            <img src="https://via.placeholder.com/180x180/ba55d3/ffffff?text=beauty+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">nail art</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty6" class="game-card" data-game="beauty6">
+                            <img src="https://via.placeholder.com/180x180/9932cc/ffffff?text=beauty+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">spa day</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty7" class="game-card" data-game="beauty7">
+                            <img src="https://via.placeholder.com/180x180/da70d6/ffffff?text=beauty+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">princess dress</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty8" class="game-card" data-game="beauty8">
+                            <img src="https://via.placeholder.com/180x180/ba55d3/ffffff?text=beauty+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">jewelry maker</div>
+                            </div>
+                        </a>
                     </div>
                     <button class="scroll-btn" onclick="scrollgames('beauty', 1)">
                         <i class="fas fa-chevron-right"></i>
@@ -894,23 +1059,7 @@
                 currentslide = (currentslide + 1) % slides.length;
                 slides[currentslide].classList.add('active');
             }, 4000);
-
-            // add click listeners to slides
-            slides.forEach(slide => {
-                slide.addEventListener('click', () => {
-                    const gameid = slide.dataset.game;
-                    window.location.href = 'play.html?game=' + gameid;
-                });
-            });
         }
-
-        // game card click handlers
-        document.querySelectorAll('.game-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const gameid = card.dataset.game;
-                window.location.href = 'play.html?game=' + gameid;
-            });
-        });
 
         // scroll games in catalog
         function scrollgames(category, direction) {
