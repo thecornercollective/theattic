@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>veinte - tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            z-index: -2;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        /* main container */
+        .main-container {
+            min-height: 100vh;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* page content */
+        .page {
+            padding-left: 110px;
+            padding-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* tools grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .tool-card:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .tool-name {
+            font-weight: 300;
+            text-align: center;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+            }
+
+            .page {
+                padding-left: 20px;
+                padding-bottom: 100px;
+            }
+
+            .tools-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- main container -->
+    <div class="main-container">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="index.html" class="sidebar-icon" title="home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="g.html" class="sidebar-icon" title="games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="p.html" class="sidebar-icon" title="proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="t.html" class="sidebar-icon active" title="tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="s.html" class="sidebar-icon" title="settings">
+                <i class="fas fa-cog"></i>
+            </a>
+        </nav>
+
+        <!-- tools page -->
+        <div class="page">
+            <div class="tools-grid">
+                <a href="play.html?tool=calculator" class="tool-card">
+                    <i class="fas fa-calculator tool-icon"></i>
+                    <span class="tool-name">calculator</span>
+                </a>
+                <a href="play.html?tool=notes" class="tool-card">
+                    <i class="fas fa-sticky-note tool-icon"></i>
+                    <span class="tool-name">notes</span>
+                </a>
+                <a href="play.html?tool=timer" class="tool-card">
+                    <i class="fas fa-clock tool-icon"></i>
+                    <span class="tool-name">timer</span>
+                </a>
+                <a href="play.html?tool=weather" class="tool-card">
+                    <i class="fas fa-cloud-sun tool-icon"></i>
+                    <span class="tool-name">weather</span>
+                </a>
+                <a href="play.html?tool=calendar" class="tool-card">
+                    <i class="fas fa-calendar tool-icon"></i>
+                    <span class="tool-name">calendar</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localstorage.getitem('veintetheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        function applytheme(theme) {
+            const root = document.documentelement;
+            
+            const themes = {
+                default: {
+                    primaryBg: '#000000',
+                    secondaryBg: '#1a1a1a',
+                    cardBg: 'rgba(255, 255, 255, 0.1)'
+                },
+                blue: {
+                    primaryBg: '#1a1a2e',
+                    secondaryBg: '#16213e',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                },
+                pink: {
+                    primaryBg: '#2d1a2e',
+                    secondaryBg: '#3e1621',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                },
+                green: {
+                    primaryBg: '#1a2e1a',
+                    secondaryBg: '#163e1c',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                },
+                brown: {
+                    primaryBg: '#2e2a1a',
+                    secondaryBg: '#3e3616',
+                    cardBg: 'rgba(255, 255, 255, 0.08)'
+                }
+            };
+
+            const selectedtheme = themes[theme];
+            root.style.setproperty('--primary-bg', selectedtheme.primaryBg);
+            root.style.setproperty('--secondary-bg', selectedtheme.secondaryBg);
+            root.style.setproperty('--card-bg', selectedtheme.cardBg);
+        }
+
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getelementbyid('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createelement('div');
+                particle.classname = 'particle';
+                particle.style.top = math.random() * 100 + '%';
+                particle.style.left = math.random() * 100 + '%';
+                particle.style.animationdelay = math.random() * 20 + 's';
+                particle.style.animationduration = (15 + math.random() * 10) + 's';
+                particlescontainer.appendchild(particle);
+            }
+        }
+
+        // mouse shadow follower
+        document.addeventlistener('mousemove', (e) => {
+            const shadow = document.getelementbyid('mouseshadow');
+            shadow.style.left = e.clientx + 'px';
+            shadow.style.top = e.clienty + 'px';
+        });
+
+        // initialize on load
+        window.addeventlistener('load', () => {
+            applysavedtheme();
+            createparticles();
+        });
+    </script>
+</body>
+</html>
