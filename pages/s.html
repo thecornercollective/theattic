@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link id="favicon" rel="icon" href="" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -24,6 +25,9 @@
             --sidebar-bg: rgba(255, 255, 255, 0.1);
             --card-bg: rgba(255, 255, 255, 0.1);
             --input-bg: rgba(200, 200, 200, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
         }
 
         body {
@@ -40,8 +44,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
             z-index: -2;
+            transition: background 0.5s ease;
         }
 
         .grainy-bg::before {
@@ -54,6 +59,35 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             opacity: 0.05;
             pointer-events: none;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
         }
 
         /* mouse shadow follower */
@@ -133,6 +167,7 @@
             padding: 25px;
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
+            transition: background 0.5s ease;
         }
 
         .settings-title {
@@ -184,8 +219,8 @@
             background: linear-gradient(135deg, #1a2e1a, #163e1c);
         }
 
-        .theme-brown {
-            background: linear-gradient(135deg, #2e2a1a, #3e3616);
+        .theme-purple {
+            background: linear-gradient(135deg, #2a1a2e, #3e1636);
         }
 
         /* tab cloaker form */
@@ -250,10 +285,10 @@
             }
         }
     </style>
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
     <div class="grainy-bg"></div>
+    <div class="particles" id="particles"></div>
     <div class="mouse-shadow" id="mouseShadow"></div>
 
     <!-- main container -->
@@ -288,7 +323,7 @@
                         <div class="theme-btn theme-blue" data-theme="blue" title="blue"></div>
                         <div class="theme-btn theme-pink" data-theme="pink" title="pink"></div>
                         <div class="theme-btn theme-green" data-theme="green" title="green"></div>
-                        <div class="theme-btn theme-brown" data-theme="brown" title="brown"></div>
+                        <div class="theme-btn theme-purple" data-theme="purple" title="purple"></div>
                     </div>
                 </div>
 
@@ -318,124 +353,181 @@
 
                 <div class="settings-category">
                     <h2 class="settings-title">credits</h2>
-                    <p class="settings-description">created with ❤️ by the veinte team</p>
+                    <p class="settings-description">created with \u2764\ufe0f by the veinte team</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // theme definitions with full color schemes
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            blue: {
+                primaryBg: '#0f1624',
+                secondaryBg: '#1a2332',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0f1624',
+                gradientMiddle: '#1a2332',
+                gradientEnd: '#162a4a'
+            },
+            pink: {
+                primaryBg: '#1a0f14',
+                secondaryBg: '#2d1a2e',
+                cardBg: 'rgba(219, 112, 147, 0.15)',
+                inputBg: 'rgba(219, 112, 147, 0.2)',
+                gradientStart: '#1a0f14',
+                gradientMiddle: '#2d1a2e',
+                gradientEnd: '#3e1621'
+            },
+            green: {
+                primaryBg: '#0f1a0f',
+                secondaryBg: '#1a2e1a',
+                cardBg: 'rgba(60, 179, 113, 0.15)',
+                inputBg: 'rgba(60, 179, 113, 0.2)',
+                gradientStart: '#0f1a0f',
+                gradientMiddle: '#1a2e1a',
+                gradientEnd: '#163e1c'
+            },
+            purple: {
+                primaryBg: '#1a0f24',
+                secondaryBg: '#2a1a2e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f24',
+                gradientMiddle: '#2a1a2e',
+                gradientEnd: '#3e1636'
+            }
+        };
+
         // apply saved theme
         function applysavedtheme() {
-            const savedtheme = localstorage.getitem('veintetheme');
+            const savedtheme = localStorage.getItem('veintetheme');
             if (savedtheme) {
                 applytheme(savedtheme);
                 // update active theme button
-                document.queryselectorall('.theme-btn').foreach(btn => {
-                    btn.classlist.remove('active');
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    btn.classList.remove('active');
                 });
-                document.queryselector(`[data-theme="${savedtheme}"]`).classlist.add('active');
+                const activeBtn = document.querySelector(`[data-theme="${savedtheme}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                }
             }
         }
 
-        function applytheme(theme) {
-            const root = document.documentelement;
-            
-            const themes = {
-                default: {
-                    primaryBg: '#000000',
-                    secondaryBg: '#1a1a1a',
-                    cardBg: 'rgba(255, 255, 255, 0.1)'
-                },
-                blue: {
-                    primaryBg: '#1a1a2e',
-                    secondaryBg: '#16213e',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                pink: {
-                    primaryBg: '#2d1a2e',
-                    secondaryBg: '#3e1621',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                green: {
-                    primaryBg: '#1a2e1a',
-                    secondaryBg: '#163e1c',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                brown: {
-                    primaryBg: '#2e2a2a',
-                    secondaryBg: '#3e3616',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                }
-            };
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
 
-            const selectedtheme = themes[theme];
-            root.style.setproperty('--primary-bg', selectedtheme.primaryBg);
-            root.style.setproperty('--secondary-bg', selectedtheme.secondaryBg);
-            root.style.setproperty('--card-bg', selectedtheme.cardBg);
+            const root = document.documentElement;
+            
+            // Update all CSS variables
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
 
             // save theme to localStorage
-            localstorage.setitem('veintetheme', theme);
+            localStorage.setItem('veintetheme', themeName);
         }
 
         // theme button click handlers
-        document.queryselectorall('.theme-btn').foreach(btn => {
-            btn.addeventlistener('click', () => {
-                document.queryselectorall('.theme-btn').foreach(b => b.classlist.remove('active'));
-                btn.classlist.add('active');
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
                 
                 const theme = btn.dataset.theme;
                 applytheme(theme);
             });
         });
 
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
+            }
+        }
+
         // tab cloaker presets
-        document.getelementbyid('presetCloaks').addeventlistener('change', (e) => {
+        document.getElementById('presetCloaks').addEventListener('change', (e) => {
             const presets = {
-                google: { title: 'google classroom', icon: 'https://ssl.gstatic.com/classroom/favicon.png' },
-                ixl: { title: 'ixl | math, language arts, science, social studies, and spanish', icon: 'https://www.ixl.com/favicon.ico' },
-                deltamath: { title: 'deltamath', icon: 'https://www.deltamath.com/favicon.ico' },
-                canvas: { title: 'canvas', icon: 'https://du11hjcvx0uq9.cloudfront.net/dist/images/favicon-e10d657c73.ico' },
-                schoology: { title: 'home | schoology', icon: 'https://asset.schoology.com/sites/all/themes/schoology_theme/images/favicon.ico' }
+                google: { title: 'Google Classroom', icon: 'https://ssl.gstatic.com/classroom/favicon.png' },
+                ixl: { title: 'IXL | Math, Language Arts, Science, Social Studies, and Spanish', icon: 'https://www.ixl.com/favicon.ico' },
+                deltamath: { title: 'DeltaMath', icon: 'https://www.deltamath.com/favicon.ico' },
+                canvas: { title: 'Canvas', icon: 'https://du11hjcvx0uq9.cloudfront.net/dist/images/favicon-e10d657c73.ico' },
+                schoology: { title: 'Home | Schoology', icon: 'https://asset.schoology.com/sites/all/themes/schoology_theme/images/favicon.ico' }
             };
 
             const preset = presets[e.target.value];
             if (preset) {
-                document.getelementbyid('tabTitle').value = preset.title;
-                document.getelementbyid('tabIcon').value = preset.icon;
+                document.getElementById('tabTitle').value = preset.title;
+                document.getElementById('tabIcon').value = preset.icon;
             }
         });
 
         function applytabcloak() {
-            const title = document.getelementbyid('tabTitle').value;
-            const icon = document.getelementbyid('tabIcon').value;
+            const title = document.getElementById('tabTitle').value;
+            const icon = document.getElementById('tabIcon').value;
             
-            if (title) document.title = title;
+            if (title) {
+                document.title = title;
+            }
+            
             if (icon) {
-                const link = document.queryselector("link[rel~='icon']");
-                if (link) link.href = icon;
+                const favicon = document.getElementById('favicon');
+                if (favicon) {
+                    favicon.href = icon;
+                }
             }
         }
 
         function resettabcloak() {
-            document.title = 'veinte';
-            const link = document.queryselector("link[rel~='icon']");
-            if (link) link.href = '';
-            document.getelementbyid('tabTitle').value = '';
-            document.getelementbyid('tabIcon').value = '';
-            document.getelementbyid('presetCloaks').value = '';
+            document.title = 'veinte - settings';
+            const favicon = document.getElementById('favicon');
+            if (favicon) {
+                favicon.href = '';
+            }
+            document.getElementById('tabTitle').value = '';
+            document.getElementById('tabIcon').value = '';
+            document.getElementById('presetCloaks').value = '';
         }
 
         // mouse shadow follower
-        document.addeventlistener('mousemove', (e) => {
-            const shadow = document.getelementbyid('mouseshadow');
-            shadow.style.left = e.clientx + 'px';
-            shadow.style.top = e.clienty + 'px';
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
         });
 
         // initialize on load
-        window.addeventlistener('load', () => {
+        window.addEventListener('load', () => {
             applysavedtheme();
+            createparticles();
         });
     </script>
 </body>
