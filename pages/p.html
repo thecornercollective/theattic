@@ -367,6 +367,7 @@
             height: 100%;
             border: none;
             background: white;
+            border-radius: 0 0 15px 15px;
         }
 
         /* new tab page - simplified design */
@@ -458,6 +459,92 @@
             }
         }
 
+        /* proxy status indicator */
+        .proxy-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .proxy-status.online {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .proxy-status.offline {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .proxy-status.loading {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        /* context menu */
+        .context-menu {
+            position: fixed;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 5px 0;
+            min-width: 180px;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .context-menu.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .context-menu-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .context-menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .context-menu-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 5px 0;
+        }
+
+        .context-menu-icon {
+            width: 16px;
+            text-align: center;
+            opacity: 0.7;
+        }
+
         /* responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -492,11 +579,62 @@
         }
     </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+<!-- Scramjet and proxy dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@mercuryworkshop/bare-mux@0.1.2/dist/index.mjs" type="module"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@1.2.2/scramjet.all.js"></script>
 </head>
 <body>
     <div class="grainy-bg"></div>
     <div class="particles" id="particles"></div>
     <div class="mouse-shadow" id="mouseShadow"></div>
+
+    <!-- proxy status indicator -->
+    <div class="proxy-status loading" id="proxyStatus">
+        <i class="fas fa-spinner fa-spin"></i> Initializing proxy...
+    </div>
+
+    <!-- context menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="navigateBack()">
+            <span class="context-menu-icon"><i class="fas fa-arrow-left"></i></span>
+            Back
+        </div>
+        <div class="context-menu-item" onclick="navigateForward()">
+            <span class="context-menu-icon"><i class="fas fa-arrow-right"></i></span>
+            Forward
+        </div>
+        <div class="context-menu-item" onclick="refreshPage()">
+            <span class="context-menu-icon"><i class="fas fa-redo"></i></span>
+            Refresh
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="copyUrl()">
+            <span class="context-menu-icon"><i class="fas fa-copy"></i></span>
+            Copy URL
+        </div>
+        <div class="context-menu-item" onclick="pasteUrl()">
+            <span class="context-menu-icon"><i class="fas fa-paste"></i></span>
+            Paste URL
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="openInNewTab()">
+            <span class="context-menu-icon"><i class="fas fa-plus"></i></span>
+            Open in New Tab
+        </div>
+        <div class="context-menu-item" onclick="duplicateTab()">
+            <span class="context-menu-icon"><i class="fas fa-clone"></i></span>
+            Duplicate Tab
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="bookmarkPage()">
+            <span class="context-menu-icon"><i class="fas fa-bookmark"></i></span>
+            Bookmark
+        </div>
+        <div class="context-menu-item" onclick="toggleFullScreen()">
+            <span class="context-menu-icon"><i class="fas fa-expand"></i></span>
+            Full Screen
+        </div>
+    </div>
 
     <!-- main container -->
     <div class="main-container">
@@ -633,19 +771,165 @@
             localStorage.setItem('veintetheme', themeName);
         }
 
-        // ==================== BROWSER FUNCTIONALITY ====================
+        // ==================== BROWSER FUNCTIONALITY WITH SCRAMJET ====================
         
         let tabs = [];
         let activeTabId = null;
         let tabCounter = 0;
+        let scramjetInstance = null;
+        let scramjetController = null;
 
-        // Get current origin for proxy
-        const currentOrigin = window.location.origin;
-        const PROXY_BASE = `${currentOrigin}/proxy/`;
+        // Update proxy status indicator
+        function updateProxyStatus(status, message) {
+            const statusEl = document.getElementById('proxyStatus');
+            if (!statusEl) return;
+            
+            statusEl.className = `proxy-status ${status}`;
+            
+            const icon = status === 'online' ? 'fa-check-circle' : 
+                        status === 'offline' ? 'fa-times-circle' : 
+                        'fa-spinner fa-spin';
+            
+            statusEl.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+        }
+
+        // Initialize Scramjet
+        async function initScramjet() {
+            updateProxyStatus('loading', 'Initializing proxy...');
+            
+            try {
+                // Load Scramjet Controller
+                const { ScramjetController } = $scramjetLoadController();
+                scramjetController = new ScramjetController({
+                    files: {
+                        wasm: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@1.2.2/scramjet.wasm.wasm",
+                        all: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@1.2.2/scramjet.all.js",
+                        sync: "https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@1.2.2/scramjet.sync.js",
+                    },
+                    flags: {
+                        rewriterLogs: false,
+                        scramitize: false,
+                        cleanErrors: true,
+                        sourcemaps: true,
+                    },
+                });
+
+                // Initialize Scramjet
+                await scramjetController.init();
+                updateProxyStatus('loading', 'Registering service worker...');
+                
+                // Register service worker
+                if ('serviceWorker' in navigator) {
+                    try {
+                        await navigator.serviceWorker.register('./sw.js');
+                        console.log('Service Worker registered successfully');
+                    } catch (swError) {
+                        console.warn('Service Worker registration failed:', swError);
+                        updateProxyStatus('offline', 'Service worker failed');
+                    }
+                }
+
+                // Setup transport
+                try {
+                    updateProxyStatus('loading', 'Configuring transport...');
+                    const connection = new BareMux.BareMuxConnection("https://cdn.jsdelivr.net/npm/@mercuryworkshop/bare-mux@0.1.2/dist/worker.js");
+                    await connection.setTransport(
+                        "https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport@0.0.15/dist/index.mjs",
+                        [{ wisp: "wss://wisp.mercurywork.shop/" }]
+                    );
+                    console.log('Transport configured successfully');
+                } catch (transportError) {
+                    console.warn('Transport setup failed:', transportError);
+                    updateProxyStatus('offline', 'Transport failed');
+                }
+
+                console.log('Scramjet initialized successfully');
+                updateProxyStatus('online', 'Proxy connected');
+                
+                // Auto-hide status after 3 seconds if successful
+                setTimeout(() => {
+                    const statusEl = document.getElementById('proxyStatus');
+                    if (statusEl && statusEl.classList.contains('online')) {
+                        statusEl.style.opacity = '0';
+                        setTimeout(() => {
+                            if (statusEl) {
+                                statusEl.style.display = 'none';
+                            }
+                        }, 300);
+                    }
+                }, 3000);
+                
+                return scramjetController;
+            } catch (error) {
+                console.error('Scramjet initialization failed:', error);
+                updateProxyStatus('offline', 'Proxy failed');
+                return null;
+            }
+        }
+
+        // Create a new Scramjet frame for a tab
+        function createScramjetFrame() {
+            if (!scramjetController) {
+                console.error('Scramjet controller not initialized');
+                return null;
+            }
+            
+            const frame = scramjetController.createFrame();
+            frame.frame.style.width = '100%';
+            frame.frame.style.height = '100%';
+            frame.frame.style.border = 'none';
+            frame.frame.style.background = 'white';
+            frame.frame.style.borderRadius = '0 0 15px 15px';
+            
+            // Listen for URL changes from within the iframe
+            frame.addEventListener('urlchange', (e) => {
+                const tab = tabs.find(t => t.id === activeTabId);
+                if (tab && e.url) {
+                    tab.url = e.url;
+                    tab.title = getDomainName(e.url);
+                    renderTabs();
+                    updateAddressBar();
+                }
+            });
+            
+            // Listen for frame events
+            frame.frame.addEventListener('load', () => {
+                hideLoading();
+                updateNavButtons();
+            });
+            
+            return frame;
+        }
 
         // Initialize browser
-        function initBrowser() {
-            createNewTab();
+        async function initBrowser() {
+            scramjetController = await initScramjet();
+            
+            // Setup network monitoring
+            setupNetworkMonitoring();
+            
+            // Try to restore saved tabs
+            restoreTabs();
+            
+            // Create new tab if no tabs were restored
+            if (tabs.length === 0) {
+                createNewTab();
+            }
+            
+            // Setup auto-save
+            setupAutoSave();
+            
+            // Load saved search engine preference
+            const savedEngine = localStorage.getItem('veinte_search_engine');
+            if (savedEngine && searchEngines[savedEngine]) {
+                currentSearchEngine = savedEngine;
+            }
+            
+            // Load saved zoom level
+            const savedZoom = localStorage.getItem('veinte_zoom_level');
+            if (savedZoom) {
+                zoomLevel = parseInt(savedZoom, 10);
+            }
         }
 
         // Create new tab - Fixed to properly create new tabs
@@ -656,7 +940,8 @@
                 title: 'New Tab',
                 url: url || null,
                 history: [],
-                historyIndex: -1
+                historyIndex: -1,
+                frame: null
             };
             
             tabs.push(tab);
@@ -701,6 +986,12 @@
         function closeTab(tabId) {
             const tabIndex = tabs.findIndex(t => t.id === tabId);
             if (tabIndex === -1) return;
+            
+            // Clean up frame if exists
+            const tab = tabs[tabIndex];
+            if (tab.frame && tab.frame.frame) {
+                tab.frame.frame.remove();
+            }
             
             tabs.splice(tabIndex, 1);
             
@@ -753,32 +1044,21 @@
                 `;
                 addressBar.value = '';
             } else {
-                // Show iframe with proxy - set background to transparent
-                const proxyUrl = getProxyUrl(tab.url);
-                container.innerHTML = `<iframe src="${proxyUrl}" id="browserFrame" style="background: transparent;"></iframe>`;
+                // Show iframe with Scramjet
+                if (!tab.frame) {
+                    tab.frame = createScramjetFrame();
+                }
+                
+                if (tab.frame) {
+                    container.innerHTML = '';
+                    container.appendChild(tab.frame.frame);
+                    tab.frame.go(tab.url);
+                }
+                
                 addressBar.value = tab.url;
             }
             
             updateNavButtons();
-        }
-
-        // Get proxy URL - Using local proxy
-        function getProxyUrl(url) {
-            // Ensure url is a string and not null/undefined
-            if (!url || typeof url !== 'string') {
-                return '';
-            }
-            
-            // Remove protocol for proxy
-            let cleanUrl = url;
-            if (url.startsWith('http://')) {
-                cleanUrl = url.substring(7);
-            } else if (url.startsWith('https://')) {
-                cleanUrl = url.substring(8);
-            }
-            
-            // Use local proxy
-            return `${PROXY_BASE}${cleanUrl}`;
         }
 
         // Navigate to URL
@@ -791,16 +1071,16 @@
                 url = String(url);
             }
             
-            // Check if it's a search query
-            if (!url.includes('.') && !url.startsWith('http')) {
-                url = `https://www.google.com/search?q=${encodeURIComponent(url)}`;
+            // Get safe URL
+            url = getSafeUrl(url);
+            
+            // Validate URL
+            if (!isValidUrl(url)) {
+                showError('Invalid URL. Please enter a valid web address.');
+                return;
             }
             
-            // Make sure URL has protocol
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-            }
-            
+            // Update tab data
             tab.url = url;
             tab.title = getDomainName(url);
             
@@ -843,8 +1123,601 @@
             
             if (url) {
                 navigateTo(url);
+                // Blur the address bar after navigation
+                addressBar.blur();
             }
         }
+
+        // Copy current URL to clipboard
+        async function copyUrl() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (tab && tab.url) {
+                try {
+                    await navigator.clipboard.writeText(tab.url);
+                    console.log('URL copied to clipboard');
+                } catch (err) {
+                    console.error('Failed to copy URL:', err);
+                }
+            }
+        }
+
+        // Paste URL from clipboard
+        async function pasteUrl() {
+            try {
+                const url = await navigator.clipboard.readText();
+                const addressBar = document.getElementById('addressBar');
+                addressBar.value = url;
+                addressBar.focus();
+            } catch (err) {
+                console.error('Failed to paste URL:', err);
+            }
+        }
+
+        // Save current page to bookmarks (localStorage)
+        function saveBookmark() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (!tab || !tab.url) return;
+            
+            let bookmarks = JSON.parse(localStorage.getItem('veinte_bookmarks') || '[]');
+            
+            const bookmark = {
+                id: Date.now(),
+                url: tab.url,
+                title: tab.title,
+                date: new Date().toISOString()
+            };
+            
+            // Check if already bookmarked
+            const exists = bookmarks.find(b => b.url === tab.url);
+            if (!exists) {
+                bookmarks.push(bookmark);
+                localStorage.setItem('veinte_bookmarks', JSON.stringify(bookmarks));
+                console.log('Bookmark saved');
+            }
+        }
+
+        // Load bookmarks from localStorage
+        function loadBookmarks() {
+            return JSON.parse(localStorage.getItem('veinte_bookmarks') || '[]');
+        }
+
+        // Get browsing history
+        function getBrowsingHistory() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            return tab ? tab.history : [];
+        }
+
+        // Clear browsing history for current tab
+        function clearTabHistory() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (!tab) return;
+            
+            tab.history = [tab.url].filter(Boolean);
+            tab.historyIndex = tab.history.length - 1;
+            updateNavButtons();
+        }
+
+        // Get tab statistics
+        function getTabStats() {
+            return {
+                totalTabs: tabs.length,
+                activeTabId: activeTabId,
+                currentUrl: tabs.find(t => t.id === activeTabId)?.url,
+                historyLength: tabs.find(t => t.id === activeTabId)?.history.length || 0
+            };
+        }
+
+        // Search engines configuration
+        const searchEngines = {
+            google: 'https://www.google.com/search?q=',
+            duckduckgo: 'https://duckduckgo.com/?q=',
+            bing: 'https://www.bing.com/search?q=',
+            yahoo: 'https://search.yahoo.com/search?p='
+        };
+
+        let currentSearchEngine = 'google';
+
+        // Set search engine
+        function setSearchEngine(engine) {
+            if (searchEngines[engine]) {
+                currentSearchEngine = engine;
+                localStorage.setItem('veinte_search_engine', engine);
+            }
+        }
+
+        // Get current search engine
+        function getSearchEngine() {
+            return localStorage.getItem('veinte_search_engine') || currentSearchEngine;
+        }
+
+        // Perform search
+        function performSearch(query) {
+            const engine = getSearchEngine();
+            const searchUrl = searchEngines[engine] + encodeURIComponent(query);
+            navigateTo(searchUrl);
+        }
+
+        // Update safe URL function to use custom search engine
+        function getSafeUrl(input) {
+            let url = input.trim();
+            
+            // Check if it's a search query
+            if (!url.includes('.') && !url.startsWith('http')) {
+                return searchEngines[getSearchEngine()] + encodeURIComponent(url);
+            }
+            
+            // Add protocol if missing
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            
+            return url;
+        }
+
+        // Handle URL encoding
+        function encodeUrl(url) {
+            try {
+                return encodeURIComponent(url);
+            } catch (e) {
+                return url;
+            }
+        }
+
+        // Handle URL decoding
+        function decodeUrl(encodedUrl) {
+            try {
+                return decodeURIComponent(encodedUrl);
+            } catch (e) {
+                return encodedUrl;
+            }
+        }
+
+        // Get URL parameters
+        function getUrlParameters(url) {
+            try {
+                const urlObj = new URL(url);
+                const params = {};
+                urlObj.searchParams.forEach((value, key) => {
+                    params[key] = value;
+                });
+                return params;
+            } catch (e) {
+                return {};
+            }
+        }
+
+        // Check if URL is using HTTPS
+        function isSecureUrl(url) {
+            try {
+                return new URL(url).protocol === 'https:';
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Get domain from URL
+        function getDomain(url) {
+            try {
+                const urlObj = new URL(url);
+                return urlObj.hostname;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        // Check if URL is same as current tab
+        function isCurrentUrl(url) {
+            const tab = tabs.find(t => t.id === activeTabId);
+            return tab && tab.url === url;
+        }
+
+        // Reload all tabs
+        function reloadAllTabs() {
+            tabs.forEach(tab => {
+                if (tab.frame && tab.url) {
+                    tab.frame.reload();
+                }
+            });
+        }
+
+        // Close all tabs except current
+        function closeOtherTabs() {
+            const currentTab = tabs.find(t => t.id === activeTabId);
+            if (!currentTab) return;
+            
+            tabs.forEach(tab => {
+                if (tab.id !== activeTabId && tab.frame && tab.frame.frame) {
+                    tab.frame.frame.remove();
+                }
+            });
+            
+            tabs = [currentTab];
+            renderTabs();
+        }
+
+        // Close tabs to the right
+        function closeTabsToRight() {
+            const currentIndex = tabs.findIndex(t => t.id === activeTabId);
+            if (currentIndex === -1) return;
+            
+            const tabsToClose = tabs.slice(currentIndex + 1);
+            tabsToClose.forEach(tab => {
+                if (tab.frame && tab.frame.frame) {
+                    tab.frame.frame.remove();
+                }
+            });
+            
+            tabs = tabs.slice(0, currentIndex + 1);
+            renderTabs();
+        }
+
+        // Close tabs to the left
+        function closeTabsToLeft() {
+            const currentIndex = tabs.findIndex(t => t.id === activeTabId);
+            if (currentIndex <= 0) return;
+            
+            const tabsToClose = tabs.slice(0, currentIndex);
+            tabsToClose.forEach(tab => {
+                if (tab.frame && tab.frame.frame) {
+                    tab.frame.frame.remove();
+                }
+            });
+            
+            tabs = tabs.slice(currentIndex);
+            renderTabs();
+        }
+
+        // Export tabs data
+        function exportTabs() {
+            const tabsData = tabs.map(tab => ({
+                id: tab.id,
+                title: tab.title,
+                url: tab.url,
+                history: tab.history
+            }));
+            
+            const dataStr = JSON.stringify(tabsData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'veinte-tabs.json';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        // Import tabs data
+        function importTabs(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const tabsData = JSON.parse(e.target.result);
+                    tabsData.forEach(tabData => {
+                        const tab = {
+                            id: ++tabCounter,
+                            title: tabData.title || 'Imported Tab',
+                            url: tabData.url || null,
+                            history: tabData.history || [],
+                            historyIndex: tabData.history ? tabData.history.length - 1 : -1,
+                            frame: null
+                        };
+                        tabs.push(tab);
+                    });
+                    renderTabs();
+                    console.log('Tabs imported successfully');
+                } catch (err) {
+                    console.error('Failed to import tabs:', err);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Auto-save tabs to localStorage
+        function autoSaveTabs() {
+            const tabsData = tabs.map(tab => ({
+                title: tab.title,
+                url: tab.url,
+                history: tab.history,
+                historyIndex: tab.historyIndex
+            }));
+            localStorage.setItem('veinte_saved_tabs', JSON.stringify(tabsData));
+        }
+
+        // Restore tabs from localStorage
+        function restoreTabs() {
+            try {
+                const savedTabs = JSON.parse(localStorage.getItem('veinte_saved_tabs') || '[]');
+                if (savedTabs.length > 0) {
+                    tabs = [];
+                    savedTabs.forEach((tabData, index) => {
+                        const tab = {
+                            id: ++tabCounter,
+                            title: tabData.title || 'Restored Tab',
+                            url: tabData.url || null,
+                            history: tabData.history || [],
+                            historyIndex: tabData.historyIndex || -1,
+                            frame: null
+                        };
+                        tabs.push(tab);
+                    });
+                    
+                    // Set first tab as active
+                    if (tabs.length > 0) {
+                        activeTabId = tabs[0].id;
+                    }
+                    
+                    renderTabs();
+                    console.log('Tabs restored successfully');
+                }
+            } catch (err) {
+                console.error('Failed to restore tabs:', err);
+            }
+        }
+
+        // Monitor tab changes for auto-save
+        function setupAutoSave() {
+            // Save tabs every 30 seconds
+            setInterval(autoSaveTabs, 30000);
+            
+            // Save tabs before page unload
+            window.addEventListener('beforeunload', autoSaveTabs);
+        }
+
+        // Get favicon URL for a domain
+        function getFaviconUrl(url) {
+            try {
+                const domain = getDomain(url);
+                return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        // Open in external browser
+        function openInExternalBrowser(url) {
+            const tab = tabs.find(t => t.id === activeTabId);
+            const targetUrl = url || tab?.url;
+            if (targetUrl) {
+                window.open(targetUrl, '_blank');
+            }
+        }
+
+        // Print current page
+        function printPage() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (tab?.frame?.frame) {
+                try {
+                    tab.frame.frame.contentWindow.print();
+                } catch (e) {
+                    console.error('Failed to print:', e);
+                }
+            }
+        }
+
+        // Zoom functions
+        let zoomLevel = 100;
+
+        function zoomIn() {
+            if (zoomLevel < 200) {
+                zoomLevel += 10;
+                applyZoom();
+                saveZoomLevel();
+            }
+        }
+
+        function zoomOut() {
+            if (zoomLevel > 50) {
+                zoomLevel -= 10;
+                applyZoom();
+                saveZoomLevel();
+            }
+        }
+
+        function resetZoom() {
+            zoomLevel = 100;
+            applyZoom();
+            saveZoomLevel();
+        }
+
+        function saveZoomLevel() {
+            localStorage.setItem('veinte_zoom_level', zoomLevel.toString());
+        }
+
+        function applyZoom() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (tab?.frame?.frame) {
+                tab.frame.frame.style.transform = `scale(${zoomLevel / 100})`;
+                tab.frame.frame.style.transformOrigin = 'top left';
+            }
+        }
+
+        // Context menu functions
+        function showContextMenu(x, y) {
+            const contextMenu = document.getElementById('contextMenu');
+            contextMenu.style.left = x + 'px';
+            contextMenu.style.top = y + 'px';
+            contextMenu.classList.add('active');
+        }
+
+        function hideContextMenu() {
+            const contextMenu = document.getElementById('contextMenu');
+            contextMenu.classList.remove('active');
+        }
+
+        function navigateBack() {
+            goBack();
+            hideContextMenu();
+        }
+
+        function navigateForward() {
+            goForward();
+            hideContextMenu();
+        }
+
+        function openInNewTab() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (tab?.url) {
+                createNewTab(tab.url);
+            }
+            hideContextMenu();
+        }
+
+        function bookmarkPage() {
+            saveBookmark();
+            hideContextMenu();
+        }
+
+        // Handle context menu on right-click
+        document.addEventListener('contextmenu', (e) => {
+            // Don't show context menu on input fields or iframes
+            const target = e.target;
+            const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+            const isIframe = target.tagName === 'IFRAME';
+            
+            // Show custom context menu unless right-clicking on iframe content
+            if (!isInput && !isIframe) {
+                e.preventDefault();
+                showContextMenu(e.clientX, e.clientY);
+            }
+        });
+
+        // Hide context menu when clicking elsewhere
+        document.addEventListener('click', (e) => {
+            const contextMenu = document.getElementById('contextMenu');
+            if (!contextMenu.contains(e.target)) {
+                hideContextMenu();
+            }
+        });
+
+        // Handle escape key to close context menu
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hideContextMenu();
+            }
+        });
+
+        // Error recovery for proxy failures
+        function handleProxyError(error) {
+            console.error('Proxy error:', error);
+            showError('Connection failed. Please check your internet connection and try again.');
+        }
+
+        // Network status monitoring
+        function setupNetworkMonitoring() {
+            window.addEventListener('online', () => {
+                updateProxyStatus('online', 'Back online');
+                setTimeout(() => {
+                    const statusEl = document.getElementById('proxyStatus');
+                    if (statusEl) {
+                        statusEl.style.opacity = '0';
+                    }
+                }, 2000);
+            });
+
+            window.addEventListener('offline', () => {
+                updateProxyStatus('offline', 'Offline');
+                const statusEl = document.getElementById('proxyStatus');
+                if (statusEl) {
+                    statusEl.style.opacity = '1';
+                }
+            });
+        }
+
+        // Get user agent
+        function getUserAgent() {
+            return navigator.userAgent;
+        }
+
+        // Check mobile device
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(getUserAgent());
+        }
+
+        // Get device info
+        function getDeviceInfo() {
+            return {
+                userAgent: getUserAgent(),
+                isMobile: isMobileDevice(),
+                platform: navigator.platform,
+                language: navigator.language,
+                screenWidth: window.screen.width,
+                screenHeight: window.screen.height,
+                viewportWidth: window.innerWidth,
+                viewportHeight: window.innerHeight
+            };
+        }
+
+        // Format date
+        function formatDate(date) {
+            return new Date(date).toLocaleString();
+        }
+
+        // Time since last visit
+        function getTimeSince(date) {
+            const now = new Date();
+            const past = new Date(date);
+            const diff = now - past;
+            
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            
+            if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+            if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            return 'Just now';
+        }
+
+        // Get page info
+        function getPageInfo() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (!tab) return null;
+            
+            return {
+                url: tab.url,
+                title: tab.title,
+                domain: getDomain(tab.url),
+                favicon: getFaviconUrl(tab.url),
+                secure: isSecureUrl(tab.url),
+                historyLength: tab.history.length,
+                historyIndex: tab.historyIndex
+            };
+        }
+
+        // Console helper for debugging
+        const veinteConsole = {
+            log: (...args) => console.log('[Veinte]', ...args),
+            error: (...args) => console.error('[Veinte]', ...args),
+            warn: (...args) => console.warn('[Veinte]', ...args),
+            info: (...args) => console.info('[Veinte]', ...args),
+            
+            tabs: () => console.table(tabs),
+            activeTab: () => console.log(getPageInfo()),
+            stats: () => console.log(getTabStats()),
+            device: () => console.log(getDeviceInfo())
+        };
+
+        // Expose Veinte API for external use
+        window.Veinte = {
+            navigate: navigateTo,
+            createTab: createNewTab,
+            closeTab: closeTab,
+            getTabs: () => tabs,
+            getActiveTab: () => tabs.find(t => t.id === activeTabId),
+            getHistory: getBrowsingHistory,
+            getBookmarks: loadBookmarks,
+            getSettings: () => ({
+                theme: localStorage.getItem('veintetheme'),
+                searchEngine: getSearchEngine(),
+                zoom: zoomLevel
+            }),
+            console: veinteConsole
+        };
+
+        console.log('Veinte API loaded. Access via window.Veinte');
 
         // Go back
         function goBack() {
@@ -858,6 +1731,11 @@
             renderTabs();
             updateBrowserContent();
             showLoading();
+            
+            // Use Scramjet's back method if available
+            if (tab.frame && tab.frame.back) {
+                setTimeout(() => tab.frame.back(), 100);
+            }
         }
 
         // Go forward
@@ -872,6 +1750,11 @@
             renderTabs();
             updateBrowserContent();
             showLoading();
+            
+            // Use Scramjet's forward method if available
+            if (tab.frame && tab.frame.forward) {
+                setTimeout(() => tab.frame.forward(), 100);
+            }
         }
 
         // Refresh page
@@ -879,8 +1762,53 @@
             const tab = tabs.find(t => t.id === activeTabId);
             if (!tab || !tab.url) return;
             
-            updateBrowserContent();
+            if (tab.frame) {
+                tab.frame.reload();
+            }
             showLoading();
+        }
+
+        // Toggle full-screen mode
+        function toggleFullScreen() {
+            const container = document.getElementById('iframeContainer');
+            const browserContent = document.querySelector('.browser-content');
+            
+            if (!document.fullscreenElement) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // Focus address bar
+        function focusAddressBar() {
+            document.getElementById('addressBar').focus();
+            document.getElementById('addressBar').select();
+        }
+
+        // Get page title from iframe
+        function getPageTitle() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (tab && tab.frame && tab.frame.frame) {
+                try {
+                    return tab.frame.frame.contentDocument?.title || tab.title;
+                } catch (e) {
+                    return tab.title;
+                }
+            }
+            return tab?.title || 'New Tab';
         }
 
         // Update navigation buttons
@@ -897,10 +1825,102 @@
         function showLoading() {
             const loadingBar = document.getElementById('loadingBar');
             loadingBar.classList.add('active');
+        }
+
+        // Hide loading animation
+        function hideLoading() {
+            const loadingBar = document.getElementById('loadingBar');
+            loadingBar.classList.remove('active');
+        }
+
+        // Update address bar value
+        function updateAddressBar() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            const addressBar = document.getElementById('addressBar');
             
-            setTimeout(() => {
-                loadingBar.classList.remove('active');
-            }, 1500);
+            if (tab && tab.url) {
+                addressBar.value = tab.url;
+            } else {
+                addressBar.value = '';
+            }
+        }
+
+        // Clear browser cache and cookies for a tab
+        async function clearTabData(tabId) {
+            const tab = tabs.find(t => t.id === tabId);
+            if (!tab) return;
+            
+            // Remove the frame to clear data
+            if (tab.frame && tab.frame.frame) {
+                tab.frame.frame.remove();
+                tab.frame = null;
+            }
+            
+            // Recreate frame if URL exists
+            if (tab.url) {
+                tab.frame = createScramjetFrame();
+                const container = document.getElementById('iframeContainer');
+                container.innerHTML = '';
+                container.appendChild(tab.frame.frame);
+                tab.frame.go(tab.url);
+            }
+        }
+
+        // Open URL in new tab
+        function openInNewTab(url) {
+            createNewTab(url);
+        }
+
+        // Duplicate current tab
+        function duplicateTab() {
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (tab && tab.url) {
+                createNewTab(tab.url);
+            }
+        }
+
+        // Validate URL format
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // Get safe URL (adds protocol if missing)
+        function getSafeUrl(input) {
+            let url = input.trim();
+            
+            // Check if it's a search query
+            if (!url.includes('.') && !url.startsWith('http')) {
+                return `https://www.google.com/search?q=${encodeURIComponent(url)}`;
+            }
+            
+            // Add protocol if missing
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            
+            return url;
+        }
+
+        // Show error message
+        function showError(message) {
+            const container = document.getElementById('iframeContainer');
+            container.innerHTML = `
+                <div class="new-tab-page">
+                    <h1 class="new-tab-title" style="color: #ff6b6b;">Error</h1>
+                    <p style="opacity: 0.8; margin-bottom: 30px;">${message}</p>
+                    <button onclick="navigateTo('https://www.google.com')" 
+                            style="padding: 15px 30px; background: rgba(255,255,255,0.1); 
+                                   border: 1px solid rgba(255,255,255,0.3); border-radius: 10px; 
+                                   color: white; cursor: pointer; font-family: 'Poppins', sans-serif;">
+                        Go to Google
+                    </button>
+                </div>
+            `;
         }
 
         // Initialize particles
@@ -925,6 +1945,90 @@
             if (shadow) {
                 shadow.style.left = e.clientX + 'px';
                 shadow.style.top = e.clientY + 'px';
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Check if user is typing in input fields
+            const activeElement = document.activeElement;
+            const isInputFocused = activeElement.tagName === 'INPUT' || 
+                                  activeElement.tagName === 'TEXTAREA' ||
+                                  activeElement.isContentEditable;
+            
+            // Skip shortcuts if input is focused (except for escape)
+            if (isInputFocused && e.key !== 'Escape') {
+                return;
+            }
+            
+            // Ctrl/Cmd + T: New tab
+            if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+                e.preventDefault();
+                createNewTab();
+            }
+            
+            // Ctrl/Cmd + W: Close tab
+            if ((e.ctrlKey || e.metaKey) && e.key === 'w') {
+                e.preventDefault();
+                const tab = tabs.find(t => t.id === activeTabId);
+                if (tab) {
+                    closeTab(tab.id);
+                }
+            }
+            
+            // Ctrl/Cmd + L: Focus address bar
+            if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                e.preventDefault();
+                focusAddressBar();
+            }
+            
+            // Ctrl/Cmd + R: Refresh
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                refreshPage();
+            }
+            
+            // Alt + Left Arrow: Back
+            if (e.altKey && e.key === 'ArrowLeft') {
+                e.preventDefault();
+                goBack();
+            }
+            
+            // Alt + Right Arrow: Forward
+            if (e.altKey && e.key === 'ArrowRight') {
+                e.preventDefault();
+                goForward();
+            }
+            
+            // F11: Full screen
+            if (e.key === 'F11') {
+                e.preventDefault();
+                toggleFullScreen();
+            }
+            
+            // Escape: Focus address bar when not in input
+            if (e.key === 'Escape' && !isInputFocused) {
+                focusAddressBar();
+            }
+        });
+
+        // Handle fullscreen change
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                const tab = tabs.find(t => t.id === activeTabId);
+                if (tab && tab.url) {
+                    updateBrowserContent();
+                }
+            }
+        });
+
+        // Handle visibility change (pause animations when tab not visible)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Page is hidden - could pause heavy operations
+            } else {
+                // Page is visible again
+                updateAddressBar();
             }
         });
 
