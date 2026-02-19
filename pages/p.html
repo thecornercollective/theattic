@@ -556,6 +556,83 @@
     </div>
 
     <script>
+        // ==================== THEME CHANGER ====================
+        // theme definitions with full color schemes
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            blue: {
+                primaryBg: '#0f1624',
+                secondaryBg: '#1a2332',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0f1624',
+                gradientMiddle: '#1a2332',
+                gradientEnd: '#162a4a'
+            },
+            pink: {
+                primaryBg: '#1a0f14',
+                secondaryBg: '#2d1a2e',
+                cardBg: 'rgba(219, 112, 147, 0.15)',
+                inputBg: 'rgba(219, 112, 147, 0.2)',
+                gradientStart: '#1a0f14',
+                gradientMiddle: '#2d1a2e',
+                gradientEnd: '#3e1621'
+            },
+            green: {
+                primaryBg: '#0f1a0f',
+                secondaryBg: '#1a2e1a',
+                cardBg: 'rgba(60, 179, 113, 0.15)',
+                inputBg: 'rgba(60, 179, 113, 0.2)',
+                gradientStart: '#0f1a0f',
+                gradientMiddle: '#1a2e1a',
+                gradientEnd: '#163e1c'
+            },
+            purple: {
+                primaryBg: '#1a0f24',
+                secondaryBg: '#2a1a2e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f24',
+                gradientMiddle: '#2a1a2e',
+                gradientEnd: '#3e1636'
+            }
+        };
+
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localStorage.getItem('veintetheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            
+            // Update all CSS variables
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            // save theme to localStorage
+            localStorage.setItem('veintetheme', themeName);
+        }
+
         // ==================== BROWSER FUNCTIONALITY ====================
         
         let tabs = [];
@@ -853,6 +930,7 @@
 
         // Initialize on load
         window.addEventListener('load', () => {
+            applysavedtheme();
             createparticles();
             initBrowser();
         });
