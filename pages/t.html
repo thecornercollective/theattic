@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -158,39 +159,93 @@
         /* tools grid */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 20px;
-            padding: 20px;
+            padding: 10px 0;
         }
 
         .tool-card {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-decoration: none;
             color: white;
-            transition: background 0.5s ease;
+            position: relative;
+            aspect-ratio: 1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .tool-card:hover {
-            transform: scale(1.05);
-            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.08);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            z-index: 10;
         }
 
-        .tool-icon {
-            font-size: 2.5rem;
-            color: white;
+        .tool-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
-        .tool-name {
-            font-weight: 300;
+        .tool-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .tool-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            z-index: 2;
+        }
+
+        .tool-card:hover .tool-card-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tool-card-title {
+            font-weight: 400;
             text-align: center;
+            font-size: 1rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* glow effect on hover */
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+            border-radius: 22px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
         }
 
         /* responsive */
@@ -212,7 +267,7 @@
             }
 
             .tools-grid {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 15px;
             }
         }
@@ -231,13 +286,13 @@
             <a href="https://twentyfolds.github.io/veinte/home" class="sidebar-icon" title="home">
                 <i class="fas fa-home"></i>
             </a>
-            <a href="/veinte/pages/g" class="sidebar-icon active" title="games">
+            <a href="/veinte/pages/g" class="sidebar-icon" title="games">
                 <i class="fas fa-gamepad"></i>
             </a>
             <a href="/veinte/pages/p" class="sidebar-icon" title="proxy">
                 <i class="fas fa-search"></i>
             </a>
-            <a href="/veinte/pages/t" class="sidebar-icon" title="tools">
+            <a href="/veinte/pages/t" class="sidebar-icon active" title="tools">
                 <i class="fas fa-tools"></i>
             </a>
             <a href="/veinte/pages/s" class="sidebar-icon" title="settings">
@@ -247,32 +302,25 @@
 
         <!-- tools page -->
         <div class="page">
-            <div class="tools-grid">
-                <a href="play.html?tool=calculator" class="tool-card">
-                    <i class="fas fa-calculator tool-icon"></i>
-                    <span class="tool-name">calculator</span>
-                </a>
-                <a href="play.html?tool=notes" class="tool-card">
-                    <i class="fas fa-sticky-note tool-icon"></i>
-                    <span class="tool-name">notes</span>
-                </a>
-                <a href="play.html?tool=timer" class="tool-card">
-                    <i class="fas fa-clock tool-icon"></i>
-                    <span class="tool-name">timer</span>
-                </a>
-                <a href="play.html?tool=weather" class="tool-card">
-                    <i class="fas fa-cloud-sun tool-icon"></i>
-                    <span class="tool-name">weather</span>
-                </a>
-                <a href="play.html?tool=calendar" class="tool-card">
-                    <i class="fas fa-calendar tool-icon"></i>
-                    <span class="tool-name">calendar</span>
-                </a>
+            <div class="tools-grid" id="toolsGrid">
+                <!-- tools populated by js -->
             </div>
         </div>
     </div>
 
     <script>
+        // all tools data with images
+        const tools = [
+            { id: 'calculator', name: 'calculator', img: 'https://via.placeholder.com/180x180/ff6b6b/ffffff?text=Calculator', category: 'utility' },
+            { id: 'notes', name: 'notes', img: 'https://via.placeholder.com/180x180/4ecdc4/ffffff?text=Notes', category: 'utility' },
+            { id: 'timer', name: 'timer', img: 'https://via.placeholder.com/180x180/45b7d1/ffffff?text=Timer', category: 'utility' },
+            { id: 'weather', name: 'weather', img: 'https://via.placeholder.com/180x180/96ceb4/ffffff?text=Weather', category: 'utility' },
+            { id: 'calendar', name: 'calendar', img: 'https://via.placeholder.com/180x180/ffeaa7/ffffff?text=Calendar', category: 'utility' },
+            { id: 'converter', name: 'converter', img: 'https://via.placeholder.com/180x180/dfe6e9/333333?text=Converter', category: 'utility' },
+            { id: 'stopwatch', name: 'stopwatch', img: 'https://via.placeholder.com/180x180/74b9ff/ffffff?text=Stopwatch', category: 'utility' },
+            { id: 'todo', name: 'todo list', img: 'https://via.placeholder.com/180x180/a29bfe/ffffff?text=To+Do', category: 'productivity' }
+        ];
+
         // theme definitions with full color schemes
         const themes = {
             default: {
@@ -343,6 +391,19 @@
             localStorage.setItem('veintetheme', themeName);
         }
 
+        // populate tools grid
+        function populatetools() {
+            const grid = document.getElementById('toolsGrid');
+            grid.innerHTML = tools.map(tool => `
+                <a href="play.html?tool=${tool.id}" class="tool-card">
+                    <img src="${tool.img}" alt="${tool.name}">
+                    <div class="tool-card-overlay">
+                        <div class="tool-card-title">${tool.name}</div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
         // initialize particles
         function createparticles() {
             const particlescontainer = document.getElementById('particles');
@@ -372,6 +433,7 @@
         window.addEventListener('load', () => {
             applysavedtheme();
             createparticles();
+            populatetools();
         });
     </script>
 </body>
