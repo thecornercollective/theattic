@@ -1,16 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>veinte - games</title>
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twentyfolds/veinte@main/img/VeinteLogo.png">
+    <title>The Attic | Games</title>
+    <link rel="icon" type="image/png" href="/img/TheAtticIcon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link id="favicon" rel="icon" href="" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -157,41 +155,140 @@
             padding-bottom: 20px;
         }
 
-        /* search bar */
+        /* search section */
+        .search-section {
+            margin-bottom: 40px;
+        }
+
         .search-container {
-            margin-bottom: 30px;
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .search-input {
             width: 100%;
-            max-width: 500px;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 25px;
+            padding: 15px 50px 15px 25px;
             background: var(--input-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
             color: white;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 300;
             font-size: 1rem;
-            backdrop-filter: blur(10px);
+            outline: none;
             transition: all 0.3s ease;
         }
 
         .search-input:focus {
-            background: rgba(200, 200, 200, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
-        .search-input::placeholder {
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+        }
+
+        /* search results popup */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .search-result-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .search-result-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .search-result-category {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* category filters */
+        .category-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            background: var(--card-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        /* section title */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-left: 10px;
+            border-left: 4px solid rgba(255, 255, 255, 0.5);
         }
 
         /* games grid */
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
             padding: 10px 0;
         }
 
@@ -204,7 +301,7 @@
             text-decoration: none;
             color: white;
             position: relative;
-            aspect-ratio: 16/9;
+            aspect-ratio: 4/3;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
@@ -225,42 +322,6 @@
             transform: scale(1.1);
         }
 
-        /* game tags */
-        .game-tag {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            z-index: 5;
-            backdrop-filter: blur(5px);
-        }
-
-        .game-tag.fire {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.5);
-        }
-
-        .game-tag.fun {
-            background: linear-gradient(135deg, #4ecdc4, #44bd32);
-            box-shadow: 0 2px 10px rgba(78, 205, 196, 0.5);
-        }
-
-        .game-tag.new {
-            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
-            box-shadow: 0 2px 10px rgba(162, 155, 254, 0.5);
-        }
-
-        .game-tag.popular {
-            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
-            box-shadow: 0 2px 10px rgba(255, 234, 167, 0.5);
-            color: #333;
-        }
-
         .game-card-overlay {
             position: absolute;
             bottom: 0;
@@ -268,9 +329,9 @@
             right: 0;
             padding: 20px 15px;
             background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-            opacity: 0;
             transform: translateY(20px);
             transition: all 0.4s ease;
+            opacity: 0;
         }
 
         .game-card:hover .game-card-overlay {
@@ -279,16 +340,29 @@
         }
 
         .game-card-title {
-            font-weight: 400;
-            text-align: center;
             font-size: 1rem;
+            font-weight: 600;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* glow effect on hover */
+        .game-tags {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .game-tag {
+            padding: 3px 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* glow effect */
         .game-card::before {
             content: '';
             position: absolute;
@@ -307,86 +381,6 @@
             opacity: 1;
         }
 
-        /* search results popup */
-        .search-results {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 600px;
-            max-height: 400px;
-            overflow-y: auto;
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 15px;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            display: none;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .search-results.active {
-            display: block;
-            animation: slideDown 0.3s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-
-        .search-result-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            text-decoration: none;
-            color: white;
-        }
-
-        .search-result-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .search-result-item img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .search-result-item .info {
-            flex: 1;
-        }
-
-        .search-result-item .name {
-            font-weight: 400;
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .search-result-item .category {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 20px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 1rem;
-        }
-
         /* responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -398,21 +392,89 @@
                 height: 70px;
                 transform: none;
                 flex-direction: row;
+                z-index: 200;
             }
 
             .page {
                 padding-left: 20px;
+                padding-right: 20px;
                 padding-bottom: 100px;
             }
 
             .games-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 15px;
             }
 
-            .search-results {
-                width: 95%;
-                top: 70px;
+            .category-filters {
+                gap: 10px;
+            }
+
+            .filter-btn {
+                padding: 8px 20px;
+                font-size: 0.8rem;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 12px;
+            }
+
+            .game-card-title {
+                font-size: 0.85rem;
+            }
+
+            .game-tag {
+                font-size: 0.6rem;
+                padding: 2px 6px;
+            }
+
+            .category-filters {
+                gap: 8px;
+            }
+
+            .filter-btn {
+                padding: 6px 15px;
+                font-size: 0.75rem;
+            }
+
+            .search-input {
+                padding: 12px 45px 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .search-icon {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .sidebar {
+                gap: 15px;
+                padding: 15px 0;
+            }
+
+            .sidebar-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -427,32 +489,52 @@
     <div class="main-container">
         <!-- sidebar -->
         <nav class="sidebar">
-            <a href="https://twentyfolds.github.io/veinte/home" class="sidebar-icon" title="home">
+            <a href="/theattic/home.html" class="sidebar-icon" title="Home">
                 <i class="fas fa-home"></i>
             </a>
-            <a href="/veinte/pages/g" class="sidebar-icon active" title="games">
+            <a href="/theattic/pages/g.html" class="sidebar-icon active" title="Games">
                 <i class="fas fa-gamepad"></i>
             </a>
-            <a href="/veinte/pages/p" class="sidebar-icon" title="proxy">
+            <a href="/theattic/pages/p.html" class="sidebar-icon" title="Proxy">
                 <i class="fas fa-search"></i>
             </a>
-            <a href="/veinte/pages/t" class="sidebar-icon" title="tools">
+            <a href="/theattic/pages/t.html" class="sidebar-icon" title="Tools">
                 <i class="fas fa-tools"></i>
             </a>
-            <a href="/veinte/pages/s" class="sidebar-icon" title="settings">
+            <a href="/theattic/pages/s.html" class="sidebar-icon" title="Settings">
                 <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
             </a>
         </nav>
 
         <!-- games page -->
         <div class="page">
-            <div class="search-container">
-                <input type="text" class="search-input" id="searchInput" placeholder="search games..." onkeyup="searchgames()">
+            <!-- search section -->
+            <div class="search-section">
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search games...">
+                    <i class="fas fa-search search-icon"></i>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
             </div>
-            
-            <!-- Search results popup -->
-            <div class="search-results" id="searchResults"></div>
-            
+
+            <!-- category filters -->
+            <div class="category-filters">
+                <button class="filter-btn active" data-category="all">All Games</button>
+                <button class="filter-btn" data-category="popular">Popular</button>
+                <button class="filter-btn" data-category="action">Action</button>
+                <button class="filter-btn" data-category="horror">Horror</button>
+                <button class="filter-btn" data-category="running">Running</button>
+                <button class="filter-btn" data-category="beauty">Beauty</button>
+            </div>
+
+            <!-- games grid -->
+            <h2 class="section-title">All Games</h2>
             <div class="games-grid" id="gamesGrid">
                 <!-- games populated by js -->
             </div>
@@ -460,51 +542,46 @@
     </div>
 
     <script>
-        // all games data with tags
+        // all games data with full categories
         const games = [
-            { id: 'game1', name: 'super game', img: 'https://via.placeholder.com/220x124/1a1a1a/ffffff?text=super+game', category: 'popular', tag: 'fire' },
-            { id: 'game2', name: 'mega runner', img: 'https://via.placeholder.com/220x124/2a2a2a/ffffff?text=mega+runner', category: 'popular', tag: 'fun' },
-            { id: 'game3', name: 'action blast', img: 'https://via.placeholder.com/220x124/3a3a3a/ffffff?text=action+blast', category: 'popular', tag: 'fire' },
-            { id: 'game4', name: 'speed racer', img: 'https://via.placeholder.com/220x124/4a4a4a/ffffff?text=speed+racer', category: 'popular', tag: 'new' },
-            { id: 'game5', name: 'puzzle master', img: 'https://via.placeholder.com/220x124/5a5a5a/ffffff?text=puzzle+master', category: 'popular', tag: 'fun' },
-            { id: 'game6', name: 'space quest', img: 'https://via.placeholder.com/220x124/6a6a6a/ffffff?text=space+quest', category: 'popular', tag: 'popular' },
-            { id: 'game7', name: 'sky fighter', img: 'https://via.placeholder.com/220x124/7a7a7a/ffffff?text=sky+fighter', category: 'popular', tag: 'fire' },
-            { id: 'game8', name: 'candy crush', img: 'https://via.placeholder.com/220x124/8a8a8a/ffffff?text=candy+crush', category: 'popular', tag: 'fun' },
-            { id: 'action1', name: 'battle royale', img: 'https://via.placeholder.com/220x124/ff0000/ffffff?text=battle+royale', category: 'action', tag: 'fire' },
-            { id: 'action2', name: 'fighter z', img: 'https://via.placeholder.com/220x124/ff3300/ffffff?text=fighter+z', category: 'action', tag: 'fire' },
-            { id: 'action3', name: 'war zone', img: 'https://via.placeholder.com/220x124/ff6600/ffffff?text=war+zone', category: 'action', tag: 'new' },
-            { id: 'action4', name: 'combat elite', img: 'https://via.placeholder.com/220x124/ff9900/ffffff?text=combat+elite', category: 'action', tag: 'fire' },
-            { id: 'action5', name: 'strike force', img: 'https://via.placeholder.com/220x124/ffcc00/ffffff?text=strike+force', category: 'action', tag: 'fire' },
-            { id: 'action6', name: 'ninja attack', img: 'https://via.placeholder.com/220x124/ffff00/ffffff?text=ninja+attack', category: 'action', tag: 'fun' },
-            { id: 'action7', name: 'sniper elite', img: 'https://via.placeholder.com/220x124/ff6600/ffffff?text=sniper+elite', category: 'action', tag: 'fire' },
-            { id: 'action8', name: 'tank battle', img: 'https://via.placeholder.com/220x124/ff3300/ffffff?text=tank+battle', category: 'action', tag: 'fire' },
-            { id: 'horror1', name: 'dark mansion', img: 'https://via.placeholder.com/220x124/4a0000/ffffff?text=dark+mansion', category: 'horror', tag: 'fire' },
-            { id: 'horror2', name: 'creepy house', img: 'https://via.placeholder.com/220x124/660000/ffffff?text=creepy+house', category: 'horror', tag: 'new' },
-            { id: 'horror3', name: 'zombie apocalypse', img: 'https://via.placeholder.com/220x124/800000/ffffff?text=zombie+apocalypse', category: 'horror', tag: 'fire' },
-            { id: 'horror4', name: 'ghost town', img: 'https://via.placeholder.com/220x124/990000/ffffff?text=ghost+town', category: 'horror', tag: 'fire' },
-            { id: 'horror5', name: 'nightmare', img: 'https://via.placeholder.com/220x124/b30000/ffffff?text=nightmare', category: 'horror', tag: 'fire' },
-            { id: 'horror6', name: 'scary maze', img: 'https://via.placeholder.com/220x124/cc0000/ffffff?text=scary+maze', category: 'horror', tag: 'fun' },
-            { id: 'horror7', name: 'evil clown', img: 'https://via.placeholder.com/220x124/800000/ffffff?text=evil+clown', category: 'horror', tag: 'fire' },
-            { id: 'horror8', name: 'haunted forest', img: 'https://via.placeholder.com/220x124/660000/ffffff?text=haunted+forest', category: 'horror', tag: 'fire' },
-            { id: 'running1', name: 'endless run', img: 'https://via.placeholder.com/220x124/00ff00/000000?text=endless+run', category: 'running', tag: 'fun' },
-            { id: 'running2', name: 'temple dash', img: 'https://via.placeholder.com/220x124/00cc00/000000?text=temple+dash', category: 'running', tag: 'fun' },
-            { id: 'running3', name: 'subway surf', img: 'https://via.placeholder.com/220x124/009900/000000?text=subway+surf', category: 'running', tag: 'popular' },
-            { id: 'running4', name: 'parkour run', img: 'https://via.placeholder.com/220x124/006600/000000?text=parkour+run', category: 'running', tag: 'fun' },
-            { id: 'running5', name: 'city runner', img: 'https://via.placeholder.com/220x124/003300/000000?text=city+runner', category: 'running', tag: 'fun' },
-            { id: 'running6', name: 'sprint king', img: 'https://via.placeholder.com/220x124/001a00/000000?text=sprint+king', category: 'running', tag: 'new' },
-            { id: 'running7', name: 'road dash', img: 'https://via.placeholder.com/220x124/00cc00/000000?text=road+dash', category: 'running', tag: 'fun' },
-            { id: 'running8', name: 'track stars', img: 'https://via.placeholder.com/220x124/009900/000000?text=track+stars', category: 'running', tag: 'fun' },
-            { id: 'beauty1', name: 'makeup studio', img: 'https://via.placeholder.com/220x124/ff69b4/ffffff?text=makeup+studio', category: 'beauty', tag: 'fun' },
-            { id: 'beauty2', name: 'dress up', img: 'https://via.placeholder.com/220x124/ff1493/ffffff?text=dress+up', category: 'beauty', tag: 'fun' },
-            { id: 'beauty3', name: 'hair salon', img: 'https://via.placeholder.com/220x124/ff00ff/ffffff?text=hair+salon', category: 'beauty', tag: 'new' },
-            { id: 'beauty4', name: 'fashion queen', img: 'https://via.placeholder.com/220x124/da70d6/ffffff?text=fashion+queen', category: 'beauty', tag: 'fun' },
-            { id: 'beauty5', name: 'nail art', img: 'https://via.placeholder.com/220x124/ba55d3/ffffff?text=nail+art', category: 'beauty', tag: 'fun' },
-            { id: 'beauty6', name: 'spa day', img: 'https://via.placeholder.com/220x124/9932cc/ffffff?text=spa+day', category: 'beauty', tag: 'fun' },
-            { id: 'beauty7', name: 'princess dress', img: 'https://via.placeholder.com/220x124/da70d6/ffffff?text=princess+dress', category: 'beauty', tag: 'fun' },
-            { id: 'beauty8', name: 'jewelry maker', img: 'https://via.placeholder.com/220x124/ba55d3/ffffff?text=jewelry+maker', category: 'beauty', tag: 'fun' }
+            { id: 'minecraft', name: 'Minecraft Classic', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Minecraft', category: ['popular', 'action'], tags: ['sandbox', 'multiplayer'] },
+            { id: 'amongus', name: 'Among Us', img: 'https://via.placeholder.com/200x150/2196F3/ffffff?text=Among+Us', category: ['popular', 'action'], tags: ['social', 'multiplayer'] },
+            { id: 'subwaysurfers', name: 'Subway Surfers', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Subway+Surfers', category: ['popular', 'running'], tags: ['runner', 'endless'] },
+            { id: 'temple-run', name: 'Temple Run', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=Temple+Run', category: ['popular', 'running'], tags: ['runner', 'adventure'] },
+            { id: 'crossy-road', name: 'Crossy Road', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Crossy+Road', category: 'popular', tags: ['arcade', 'casual'] },
+            { id: 'geometry-dash', name: 'Geometry Dash', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Geometry+Dash', category: ['popular', 'action'], tags: ['rhythm', 'platformer'] },
+            { id: 'slither-io', name: 'Slither.io', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Slither.io', category: 'popular', tags: ['io', 'multiplayer'] },
+            { id: 'agario', name: 'Agar.io', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Agar.io', category: 'popular', tags: ['io', 'multiplayer'] },
+            { id: 'stickman-hook', name: 'Stickman Hook', img: 'https://via.placeholder.com/200x150/FF5722/ffffff?text=Stickman+Hook', category: ['popular', 'action'], tags: ['physics', 'skill'] },
+            { id: 'vex', name: 'VEX', img: 'https://via.placeholder.com/200x150/607D8B/ffffff?text=VEX', category: ['popular', 'action'], tags: ['platformer', 'skill'] },
+            { id: 'shell-shockers', name: 'Shell Shockers', img: 'https://via.placeholder.com/200x150/F44336/ffffff?text=Shell+Shockers', category: ['popular', 'action'], tags: ['fps', 'multiplayer'] },
+            { id: 'krunker', name: 'Krunker.io', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Krunker', category: ['action', 'popular'], tags: ['fps', 'io'] },
+            { id: '1v1-lol', name: '1v1.LOL', img: 'https://via.placeholder.com/200x150/3F51B5/ffffff?text=1v1.LOL', category: 'action', tags: ['fps', 'building'] },
+            { id: 'fortnite', name: 'Fortnite', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Fortnite', category: 'action', tags: ['battle-royale', 'multiplayer'] },
+            { id: 'pubg', name: 'PUBG', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=PUBG', category: 'action', tags: ['battle-royale', 'shooter'] },
+            { id: 'roblox', name: 'Roblox', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Roblox', category: ['action', 'popular'], tags: ['sandbox', 'multiplayer'] },
+            { id: 'gta', name: 'GTA V', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=GTA+V', category: 'action', tags: ['open-world', 'action'] },
+            { id: 'five-nights', name: 'Five Nights at Freddy\'s', img: 'https://via.placeholder.com/200x150/9E9E9E/ffffff?text=FNAF', category: 'horror', tags: ['survival', 'jumpscare'] },
+            { id: 'slenderman', name: 'Slenderman', img: 'https://via.placeholder.com/200x150/212121/ffffff?text=Slenderman', category: 'horror', tags: ['survival', 'horror'] },
+            { id: 'granny', name: 'Granny', img: 'https://via.placeholder.com/200x150/8D6E63/ffffff?text=Granny', category: 'horror', tags: ['escape', 'horror'] },
+            { id: 'baldi', name: 'Baldi\'s Basics', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Baldi', category: 'horror', tags: ['educational', 'horror'] },
+            { id: 'poppy-playtime', name: 'Poppy Playtime', img: 'https://via.placeholder.com/200x150/2196F3/ffffff?text=Poppy+Playtime', category: 'horror', tags: ['puzzle', 'horror'] },
+            { id: 'sonic-exe', name: 'Sonic.EXE', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Sonic.EXE', category: 'horror', tags: ['horror', 'platformer'] },
+            { id: 'runner-3d', name: 'Runner 3D', img: 'https://via.placeholder.com/200x150/009688/ffffff?text=Runner+3D', category: ['running', 'popular'], tags: ['3d', 'runner'] },
+            { id: 'parkour-rush', name: 'Parkour Rush', img: 'https://via.placeholder.com/200x150/FF5722/ffffff?text=Parkour+Rush', category: 'running', tags: ['parkour', 'skill'] },
+            { id: 'ninja-run', name: 'Ninja Run', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Ninja+Run', category: 'running', tags: ['ninja', 'action'] },
+            { id: 'subway-surf', name: 'Subway Surf', img: 'https://via.placeholder.com/200x150/FFC107/ffffff?text=Subway+Surf', category: ['running', 'popular'], tags: ['surfing', 'endless'] },
+            { id: 'makeover-studio', name: 'Makeover Studio', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Makeover+Studio', category: 'beauty', tags: ['dress-up', 'makeover'] },
+            { id: 'hair-salon', name: 'Hair Salon', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Hair+Salon', category: 'beauty', tags: ['styling', 'casual'] },
+            { id: 'nail-art', name: 'Nail Art', img: 'https://via.placeholder.com/200x150/673AB7/ffffff?text=Nail+Art', category: 'beauty', tags: ['design', 'creative'] },
+            { id: 'fashion-dress', name: 'Fashion Dress', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Fashion+Dress', category: 'beauty', tags: ['fashion', 'dress-up'] },
+            { id: 'makeup-master', name: 'Makeup Master', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=Makeup+Master', category: 'beauty', tags: ['makeup', 'beauty'] },
+            { id: 'princess-spa', name: 'Princess Spa', img: 'https://via.placeholder.com/200x150/607D8B/ffffff?text=Princess+Spa', category: 'beauty', tags: ['spa', 'relax'] },
+            { id: 'wedding-dress', name: 'Wedding Dress', img: 'https://via.placeholder.com/200x150/F44336/ffffff?text=Wedding+Dress', category: 'beauty', tags: ['wedding', 'dress-up'] },
+            { id: 'beauty-contest', name: 'Beauty Contest', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Beauty+Contest', category: 'beauty', tags: ['contest', 'style'] }
         ];
 
-        // theme definitions with full color schemes
+        // theme definitions
         const themes = {
             default: {
                 primaryBg: '#000000',
@@ -515,47 +592,128 @@
                 gradientMiddle: '#1a1a1a',
                 gradientEnd: '#000000'
             },
-            blue: {
-                primaryBg: '#0f1624',
-                secondaryBg: '#1a2332',
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
                 cardBg: 'rgba(100, 149, 237, 0.15)',
                 inputBg: 'rgba(100, 149, 237, 0.2)',
-                gradientStart: '#0f1624',
-                gradientMiddle: '#1a2332',
-                gradientEnd: '#162a4a'
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847'
             },
-            pink: {
-                primaryBg: '#1a0f14',
-                secondaryBg: '#2d1a2e',
-                cardBg: 'rgba(219, 112, 147, 0.15)',
-                inputBg: 'rgba(219, 112, 147, 0.2)',
-                gradientStart: '#1a0f14',
-                gradientMiddle: '#2d1a2e',
-                gradientEnd: '#3e1621'
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636'
             },
-            green: {
-                primaryBg: '#0f1a0f',
-                secondaryBg: '#1a2e1a',
-                cardBg: 'rgba(60, 179, 113, 0.15)',
-                inputBg: 'rgba(60, 179, 113, 0.2)',
-                gradientStart: '#0f1a0f',
-                gradientMiddle: '#1a2e1a',
-                gradientEnd: '#163e1c'
-            },
-            purple: {
-                primaryBg: '#1a0f24',
-                secondaryBg: '#2a1a2e',
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
                 cardBg: 'rgba(147, 112, 219, 0.15)',
                 inputBg: 'rgba(147, 112, 219, 0.2)',
-                gradientStart: '#1a0f24',
-                gradientMiddle: '#2a1a2e',
-                gradientEnd: '#3e1636'
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28'
             }
         };
 
+        let currentCategory = 'all';
+
+        // populate games grid
+        function populateGames(category = 'all') {
+            const grid = document.getElementById('gamesGrid');
+            if (!grid) return;
+
+            let filteredGames = games;
+            if (category !== 'all') {
+                filteredGames = games.filter(game => {
+                    const gameCats = Array.isArray(game.category) ? game.category : [game.category];
+                    return gameCats.includes(category);
+                });
+            }
+
+            grid.innerHTML = filteredGames.map(game => `
+                <a href="/theattic/play/${game.id}.html" class="game-card">
+                    <img src="${game.img}" alt="${game.name}">
+                    <div class="game-card-overlay">
+                        <div class="game-card-title">${game.name}</div>
+                        <div class="game-tags">
+                            ${game.tags.slice(0, 2).map(tag => `<span class="game-tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // search functionality
+        function handleSearch(query) {
+            const resultsContainer = document.getElementById('searchResults');
+            if (!resultsContainer) return;
+
+            if (query.length < 2) {
+                resultsContainer.classList.remove('show');
+                return;
+            }
+
+            const results = games.filter(game => 
+                game.name.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="search-result-item">No games found</div>';
+            } else {
+                resultsContainer.innerHTML = results.map(game => `
+                    <a href="/theattic/play/${game.id}.html" class="search-result-item">
+                        <img src="${game.img}" alt="${game.name}" class="search-result-img">
+                        <div class="search-result-info">
+                            <div class="search-result-title">${game.name}</div>
+                            <div class="search-result-category">${Array.isArray(game.category) ? game.category[0] : game.category}</div>
+                        </div>
+                    </a>
+                `).join('');
+            }
+
+            resultsContainer.classList.add('show');
+        }
+
+        // category filter functionality
+        function setupCategoryFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.dataset.category;
+                    populateGames(currentCategory);
+                });
+            });
+        }
+
         // apply saved theme
         function applysavedtheme() {
-            const savedtheme = localStorage.getItem('veintetheme');
+            const savedtheme = localStorage.getItem('atticTheme');
             if (savedtheme) {
                 applytheme(savedtheme);
             }
@@ -567,7 +725,6 @@
 
             const root = document.documentElement;
             
-            // Update all CSS variables
             root.style.setProperty('--primary-bg', theme.primaryBg);
             root.style.setProperty('--secondary-bg', theme.secondaryBg);
             root.style.setProperty('--card-bg', theme.cardBg);
@@ -576,65 +733,8 @@
             root.style.setProperty('--gradient-middle', theme.gradientMiddle);
             root.style.setProperty('--gradient-end', theme.gradientEnd);
 
-            // save theme to localStorage
-            localStorage.setItem('veintetheme', themeName);
+            localStorage.setItem('atticTheme', themeName);
         }
-
-        // populate games grid
-        function populategames() {
-            const grid = document.getElementById('gamesGrid');
-            grid.innerHTML = games.map(game => `
-                <a href="play.html?game=${game.id}" class="game-card">
-                    ${game.tag ? `<span class="game-tag ${game.tag}">${game.tag}</span>` : ''}
-                    <img src="${game.img}" alt="${game.name}">
-                    <div class="game-card-overlay">
-                        <div class="game-card-title">${game.name}</div>
-                    </div>
-                </a>
-            `).join('');
-        }
-
-        // search games with popup
-        function searchgames() {
-            const searchterm = document.getElementById('searchInput').value.toLowerCase().trim();
-            const searchresults = document.getElementById('searchResults');
-
-            if (searchterm === '') {
-                searchresults.classList.remove('active');
-                searchresults.innerHTML = '';
-                return;
-            }
-
-            const filteredgames = games.filter(game => 
-                game.name.toLowerCase().includes(searchterm)
-            );
-
-            if (filteredgames.length === 0) {
-                searchresults.innerHTML = '<div class="no-results">no games found</div>';
-            } else {
-                searchresults.innerHTML = filteredgames.map(game => `
-                    <a href="play.html?game=${game.id}" class="search-result-item">
-                        <img src="${game.img}" alt="${game.name}">
-                        <div class="info">
-                            <div class="name">${game.name}</div>
-                            <div class="category">${game.category}</div>
-                        </div>
-                    </a>
-                `).join('');
-            }
-
-            searchresults.classList.add('active');
-        }
-
-        // close search results when clicking outside
-        document.addEventListener('click', (e) => {
-            const searchInput = document.getElementById('searchInput');
-            const searchResults = document.getElementById('searchResults');
-            
-            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-                searchResults.classList.remove('active');
-            }
-        });
 
         // initialize particles
         function createparticles() {
@@ -661,11 +761,26 @@
             }
         });
 
+        // search input event listener
+        document.getElementById('searchInput')?.addEventListener('input', (e) => {
+            handleSearch(e.target.value);
+        });
+
+        // close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            const searchContainer = document.querySelector('.search-container');
+            const searchResults = document.getElementById('searchResults');
+            if (searchContainer && searchResults && !searchContainer.contains(e.target)) {
+                searchResults.classList.remove('show');
+            }
+        });
+
         // initialize on load
         window.addEventListener('load', () => {
             applysavedtheme();
             createparticles();
-            populategames();
+            populateGames();
+            setupCategoryFilters();
         });
     </script>
 </body>
