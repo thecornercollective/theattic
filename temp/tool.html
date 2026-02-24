@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>veinte - play</title>
+    <title>The Attic | Tool</title>
+    <link rel="icon" type="image/png" href="/img/TheAtticIcon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,6 +24,10 @@
             --text-color: #ffffff;
             --sidebar-bg: rgba(255, 255, 255, 0.1);
             --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
         }
 
         body {
@@ -32,6 +37,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: background 0.5s ease;
         }
 
         /* grainy gradient background */
@@ -41,8 +47,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, var(--primary-bg) 100%);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
             z-index: -2;
+            transition: background 0.5s ease;
         }
 
         .grainy-bg::before {
@@ -68,6 +75,35 @@
             transform: translate(-50%, -50%);
             z-index: 9999;
             mix-blend-mode: screen;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
         }
 
         /* main container */
@@ -128,6 +164,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.5s ease;
         }
 
         .game-frame iframe {
@@ -135,34 +172,6 @@
             height: 100%;
             border: none;
             border-radius: 20px;
-        }
-
-        /* game controls */
-        .game-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .control-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 300;
-            font-size: 0.9rem;
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
         }
 
         /* responsive */
@@ -180,16 +189,25 @@
             }
 
             .play-container {
-                padding: 20px 20px 90px 20px;
+                padding: 10px 10px 90px 10px;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .play-container {
+                padding: 10px 10px 90px 10px;
             }
 
-            .game-controls {
-                gap: 8px;
+            .sidebar {
+                gap: 15px;
+                padding: 15px 0;
             }
 
-            .control-btn {
-                padding: 8px 14px;
-                font-size: 0.8rem;
+            .sidebar-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -197,169 +215,166 @@
 </head>
 <body>
     <div class="grainy-bg"></div>
+    <div class="particles" id="particles"></div>
     <div class="mouse-shadow" id="mouseShadow"></div>
 
     <!-- main container -->
     <div class="play-container">
         <!-- sidebar -->
         <nav class="sidebar">
-            <a href="index.html" class="sidebar-icon" title="home">
+            <a href="/theattic/home.html" class="sidebar-icon" title="Home">
                 <i class="fas fa-home"></i>
             </a>
-            <a href="g.html" class="sidebar-icon" title="games">
+            <a href="/theattic/pages/g.html" class="sidebar-icon" title="Games">
                 <i class="fas fa-gamepad"></i>
             </a>
-            <a href="p.html" class="sidebar-icon" title="proxy">
+            <a href="/theattic/pages/p.html" class="sidebar-icon" title="Proxy">
                 <i class="fas fa-search"></i>
             </a>
-            <a href="t.html" class="sidebar-icon" title="tools">
+            <a href="/theattic/pages/t.html" class="sidebar-icon" title="Tools">
                 <i class="fas fa-tools"></i>
             </a>
-            <a href="s.html" class="sidebar-icon" title="settings">
+            <a href="/theattic/pages/s.html" class="sidebar-icon" title="Settings">
                 <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/c.html" class="sidebar-icon" title="Chat">
+                <i class="fas fa-comments"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
             </a>
         </nav>
 
         <div class="game-frame">
-            <iframe id="gameFrame" src="about:blank"></iframe>
-        </div>
-        <div class="game-controls">
-            <button class="control-btn" onclick="likegame()">
-                <i class="fas fa-thumbs-up"></i> like
-            </button>
-            <button class="control-btn" onclick="dislikegame()">
-                <i class="fas fa-thumbs-down"></i> dislike
-            </button>
-            <button class="control-btn" onclick="togglefullscreen()">
-                <i class="fas fa-expand"></i> fullscreen
-            </button>
-            <button class="control-btn" onclick="openinnewtab()">
-                <i class="fas fa-external-link-alt"></i> new tab
-            </button>
-            <button class="control-btn" onclick="refreshgame()">
-                <i class="fas fa-sync"></i> refresh
-            </button>
-            <button class="control-btn" id="downloadBtn" onclick="downloadgame()">
-                <i class="fas fa-download"></i> download
-            </button>
+            <iframe id="gameFrame" src="GAME_URL_HERE"></iframe>
         </div>
     </div>
 
     <script>
+        // theme definitions with full color schemes
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847'
+            },
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636'
+            },
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28'
+            }
+        };
+
         // apply saved theme
         function applysavedtheme() {
-            const savedtheme = localstorage.getitem('veintetheme');
+            const savedtheme = localStorage.getItem('atticTheme');
             if (savedtheme) {
                 applytheme(savedtheme);
             }
         }
 
-        function applytheme(theme) {
-            const root = document.documentelement;
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
             
-            const themes = {
-                default: {
-                    primaryBg: '#000000',
-                    secondaryBg: '#1a1a1a',
-                    cardBg: 'rgba(255, 255, 255, 0.1)'
-                },
-                blue: {
-                    primaryBg: '#1a1a2e',
-                    secondaryBg: '#16213e',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                pink: {
-                    primaryBg: '#2d1a2e',
-                    secondaryBg: '#3e1621',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                green: {
-                    primaryBg: '#1a2e1a',
-                    secondaryBg: '#163e1c',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                },
-                brown: {
-                    primaryBg: '#2e2a1a',
-                    secondaryBg: '#3e3616',
-                    cardBg: 'rgba(255, 255, 255, 0.08)'
-                }
-            };
+            // Update all CSS variables
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
 
-            const selectedtheme = themes[theme];
-            root.style.setproperty('--primary-bg', selectedtheme.primaryBg);
-            root.style.setproperty('--secondary-bg', selectedtheme.secondaryBg);
-            root.style.setproperty('--card-bg', selectedtheme.cardBg);
+            // save theme to localStorage
+            localStorage.setItem('atticTheme', themeName);
         }
 
-        // get game/tool from url
-        function getcontentfromurl() {
-            const urlparams = new urlsearchparams(window.location.search);
-            const gameid = urlparams.get('game');
-            const toolid = urlparams.get('tool');
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
             
-            if (gameid) {
-                currentcontent = gameid;
-                isgame = true;
-                document.getelementbyid('gameframe').src = 'about:blank';
-                document.getelementbyid('downloadbtn').style.display = 'flex';
-            } else if (toolid) {
-                currentcontent = toolid;
-                isgame = false;
-                document.getelementbyid('gameframe').src = 'about:blank';
-                document.getelementbyid('downloadbtn').style.display = 'none';
-            } else {
-                window.location.href = 'index.html';
-            }
-        }
-
-        let currentcontent = null;
-        let isgame = false;
-
-        // game controls
-        function likegame() {
-            // silent like - no popup
-        }
-
-        function dislikegame() {
-            // silent dislike - no popup
-        }
-
-        function togglefullscreen() {
-            const iframe = document.getelementbyid('gameframe');
-            if (iframe.requestfullscreen) {
-                iframe.requestfullscreen();
-            } else if (iframe.webkitrequestfullscreen) {
-                iframe.webkitrequestfullscreen();
-            }
-        }
-
-        function openinnewtab() {
-            const url = isgame ? `games/${currentcontent}.html` : `tools/${currentcontent}.html`;
-            window.open(url, '_blank');
-        }
-
-        function refreshgame() {
-            document.getelementbyid('gameframe').src = document.getelementbyid('gameframe').src;
-        }
-
-        function downloadgame() {
-            if (isgame && currentcontent) {
-                // silent download - no popup
-                // in real implementation, this would download the game html
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
             }
         }
 
         // mouse shadow follower
-        document.addeventlistener('mousemove', (e) => {
-            const shadow = document.getelementbyid('mouseshadow');
-            shadow.style.left = e.clientx + 'px';
-            shadow.style.top = e.clienty + 'px';
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
+        });
+
+        // listen for theme changes from settings page
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'atticTheme') {
+                applytheme(e.newValue);
+            }
         });
 
         // initialize on load
-        window.addeventlistener('load', () => {
+        window.addEventListener('load', () => {
             applysavedtheme();
-            getcontentfromurl();
+            createparticles();
         });
     </script>
 </body>
