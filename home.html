@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>veinte</title>
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twentyfolds/veinte@main/img/VeinteLogo.png">
+    <title>The Attic | Home</title>
+    <link rel="icon" type="image/png" href="/img/TheAtticIcon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link id="favicon" rel="icon" href="" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -119,81 +118,34 @@
             align-items: center;
             z-index: 1000;
             background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
-            transition: background 0.5s ease;
-            animation: fadeIn 2s ease-in-out;
+            transition: opacity 0.5s ease;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .intro-text {
-            font-size: 3rem;
-            font-weight: 300;
+        .intro-logo {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 1s ease;
         }
 
-        .intro-text.show {
+        .intro-logo.show {
             opacity: 1;
         }
 
-        .intro-text.hide {
+        .intro-page.hidden {
             opacity: 0;
-        }
-
-        .nickname-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            animation: slideUp 0.5s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .nickname-input {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 10px;
-            background: var(--input-bg);
-            color: white;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 300;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .nickname-input:focus {
-            background: rgba(200, 200, 200, 0.25);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-        }
-
-        .nickname-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            pointer-events: none;
         }
 
         /* main container */
         .main-container {
             display: none;
             min-height: 100vh;
+        }
+
+        .main-container.show {
+            display: block;
         }
 
         /* sidebar */
@@ -216,14 +168,6 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-            flex: 1;
-        }
-
         .sidebar-icon {
             color: white;
             font-size: 1.5rem;
@@ -243,235 +187,169 @@
             transform: scale(1.1);
         }
 
-        .sidebar-bottom {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* profile and notification buttons */
-        .sidebar-btn {
-            color: white;
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            position: relative;
-        }
-
-        .sidebar-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ff6b6b;
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-            display: none;
-        }
-
-        .notification-badge.show {
-            display: block;
-        }
-
-        .profile-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            font-weight: 500;
-            overflow: hidden;
-        }
-
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
         /* page content */
         .page {
             padding-left: 110px;
             padding-right: 20px;
             padding-top: 20px;
             padding-bottom: 20px;
-            animation: pageFadeIn 0.5s ease-out;
         }
 
-        @keyframes pageFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* trending section - smaller and compact */
-        .trending-section {
-            background: var(--card-bg);
+        /* welcome section */
+        .welcome-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
             border-radius: 20px;
-            padding: 15px 20px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             backdrop-filter: blur(10px);
-            transition: background 0.5s ease;
         }
 
-        .trending-title {
-            font-size: 1.3rem;
-            font-weight: 300;
-            margin-bottom: 5px;
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .trending-subtitle {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 12px;
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
         }
 
-        .slideshow {
-            position: relative;
-            width: 100%;
-            height: 180px;
-            border-radius: 15px;
-            overflow: hidden;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            cursor: pointer;
-            text-decoration: none;
+        .nickname-input {
+            width: 300px;
+            padding: 15px 25px;
+            background: var(--input-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
             color: white;
-            border-radius: 15px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .nickname-input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* trending section */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-left: 10px;
+            border-left: 4px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .trending-section {
+            margin-bottom: 60px;
+        }
+
+        .trending-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .trending-slides {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .trending-slide {
+            min-width: 100%;
+            height: 400px;
+            position: relative;
             overflow: hidden;
         }
 
-        .slide.active {
-            opacity: 1;
-        }
-
-        .slide img {
+        .trending-slide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .slide-overlay {
+        .trending-overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 12px 15px;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 40px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
         }
 
-        .slide-content {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .trending-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
 
-        .slide-title {
-            font-size: 1.1rem;
-            font-weight: 300;
+        .trending-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
         }
 
-        .slide-tag {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
-        .tag-fire {
-            background: #ff6b35;
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
             color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
         }
 
-        .tag-fun {
-            background: #4dabf7;
-            color: white;
+        .carousel-nav:hover {
+            background: rgba(255, 255, 255, 0.4);
         }
 
-        .tag-new {
-            background: #51cf66;
-            color: white;
+        .carousel-nav.prev {
+            left: 20px;
         }
 
-        .tag-hot {
-            background: #ff922b;
-            color: white;
+        .carousel-nav.next {
+            right: 20px;
         }
 
-        /* game catalog */
-        .catalog-section {
-            margin-bottom: 30px;
+        /* game sections */
+        .game-section {
+            margin-bottom: 60px;
         }
 
-        .catalog-title {
-            font-size: 1.6rem;
-            font-weight: 300;
-            margin-bottom: 18px;
-            margin-left: 55px;
-        }
-
-        .games-row {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
             padding: 10px 0;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-        }
-
-        .games-row::-webkit-scrollbar {
-            display: none;
         }
 
         .game-card {
-            min-width: 200px;
-            height: 280px;
             background: var(--card-bg);
             border-radius: 20px;
             overflow: hidden;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            flex-shrink: 0;
-            transition: background 0.5s ease;
-            position: relative;
             text-decoration: none;
             color: white;
+            position: relative;
+            aspect-ratio: 4/3;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .game-card:hover {
-            transform: scale(1.05);
+            transform: scale(1.08);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
             z-index: 10;
         }
@@ -493,10 +371,10 @@
             left: 0;
             right: 0;
             padding: 20px 15px;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.95));
-            opacity: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
             transform: translateY(20px);
             transition: all 0.4s ease;
+            opacity: 0;
         }
 
         .game-card:hover .game-card-overlay {
@@ -505,51 +383,29 @@
         }
 
         .game-card-title {
-            font-weight: 400;
-            text-align: center;
             font-size: 1rem;
+            font-weight: 600;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: 12px;
         }
 
-        .game-card-actions {
+        .game-tags {
             display: flex;
-            justify-content: center;
-            gap: 20px;
+            gap: 5px;
+            margin-top: 8px;
         }
 
-        .action-btn {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .action-btn:hover {
-            color: white;
-            transform: scale(1.2);
-        }
-
-        .action-btn.active {
-            color: white;
-        }
-
-        .game-card-tag {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            padding: 4px 10px;
+        .game-tag {
+            padding: 3px 8px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            z-index: 5;
+            font-size: 0.7rem;
+            font-weight: 500;
         }
 
-        /* glow effect on hover */
+        /* glow effect */
         .game-card::before {
             content: '';
             position: absolute;
@@ -568,333 +424,6 @@
             opacity: 1;
         }
 
-        .scroll-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .scroll-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-        }
-
-        /* popup modals */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .popup-overlay.active {
-            display: block;
-        }
-
-        .popup-content {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(20, 20, 20, 0.95);
-            border-radius: 20px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 80vh;
-            overflow: hidden;
-            opacity: 0;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-
-        .popup-overlay.active .popup-content {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .popup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 25px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .popup-title {
-            font-size: 1.5rem;
-            font-weight: 400;
-        }
-
-        .popup-close {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .popup-close:hover {
-            color: white;
-            transform: rotate(90deg);
-        }
-
-        /* notifications panel */
-        .notifications-container {
-            display: flex;
-            max-height: calc(80vh - 80px);
-            overflow: hidden;
-        }
-
-        .notifications-sidebar {
-            width: 120px;
-            background: rgba(255, 255, 255, 0.05);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px;
-        }
-
-        .notification-filter {
-            padding: 12px;
-            margin-bottom: 5px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .notification-filter:hover, .notification-filter.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .notification-updates {
-            padding: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .updates-title {
-            font-size: 0.9rem;
-            font-weight: 400;
-            margin-bottom: 8px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .notification-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-        }
-
-        .notification-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .notification-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .notification-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .notification-poster {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .notification-poster-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .notification-poster-name {
-            font-size: 0.9rem;
-            font-weight: 400;
-        }
-
-        .notification-date {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .notification-title {
-            font-size: 1rem;
-            font-weight: 400;
-            margin-bottom: 6px;
-        }
-
-        .notification-text {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.4;
-        }
-
-        /* profile panel */
-        .profile-content {
-            padding: 25px;
-            max-height: calc(80vh - 80px);
-            overflow-y: auto;
-        }
-
-        .profile-section {
-            margin-bottom: 25px;
-        }
-
-        .profile-section-title {
-            font-size: 1.1rem;
-            font-weight: 400;
-            margin-bottom: 15px;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .profile-avatar-upload {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .avatar-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 500;
-            overflow: hidden;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .avatar-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .upload-btn {
-            padding: 8px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-
-        .upload-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: white;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-input:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .save-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .save-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-        }
-
-        .sign-in-form {
-            text-align: center;
-        }
-
-        .sign-out-btn {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 107, 107, 0.2);
-            border: 1px solid rgba(255, 107, 107, 0.3);
-            border-radius: 10px;
-            color: #ff6b6b;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .sign-out-btn:hover {
-            background: rgba(255, 107, 107, 0.3);
-        }
-
         /* responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -908,826 +437,171 @@
                 flex-direction: row;
             }
 
-            .sidebar-nav {
-                flex-direction: row;
-            }
-
-            .sidebar-bottom {
-                flex-direction: row;
-                border-top: none;
-                border-left: 1px solid rgba(255, 255, 255, 0.1);
-                padding-top: 0;
-                padding-left: 15px;
-            }
-
             .page {
                 padding-left: 20px;
                 padding-bottom: 100px;
             }
 
-            .intro-text {
+            .welcome-title {
                 font-size: 2rem;
             }
 
-            .slideshow {
-                height: 140px;
-            }
-
-            .games-row {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
                 gap: 15px;
             }
 
-            .game-card {
-                min-width: 160px;
-                height: 240px;
+            .trending-slide {
+                height: 250px;
             }
-
-            .trending-title {
-                font-size: 1.1rem;
-            }
-
-            .catalog-title {
-                font-size: 1.3rem;
-            }
-
-            .popup-content {
-                width: 95%;
-                max-height: 85vh;
-            }
-
-            .notifications-container {
-                flex-direction: column;
-            }
-
-            .notifications-sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                display: flex;
-                overflow-x: auto;
-            }
-
-            .notification-filter {
-                flex-shrink: 0;
-            }
-        }
-
-        /* utility classes */
-        .hidden {
-            display: none !important;
         }
     </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
     <div class="grainy-bg"></div>
-    <div class="mouse-shadow" id="mouseShadow"></div>
     <div class="particles" id="particles"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
 
     <!-- intro page -->
     <div class="intro-page" id="introPage">
-        <h1 class="intro-text" id="welcomeText">welcome</h1>
-        <div class="nickname-container" id="nicknameContainer" style="display: none;">
-            <input type="text" class="nickname-input" id="nicknameInput" placeholder="enter your nickname">
-        </div>
+        <img src="/img/TheAtticLogo.png" alt="The Attic Logo" class="intro-logo" id="introLogo">
     </div>
 
     <!-- main container -->
     <div class="main-container" id="mainContainer">
         <!-- sidebar -->
         <nav class="sidebar">
-            <div class="sidebar-nav">
-                <a href="home.html" class="sidebar-icon active" title="home">
-                    <i class="fas fa-home"></i>
-                </a>
-                <a href="/veinte/pages/g" class="sidebar-icon" title="games">
-                    <i class="fas fa-gamepad"></i>
-                </a>
-                <a href="/veinte/pages/p" class="sidebar-icon" title="proxy">
-                    <i class="fas fa-search"></i>
-                </a>
-                <a href="/veinte/pages/t" class="sidebar-icon" title="tools">
-                    <i class="fas fa-tools"></i>
-                </a>
-                <a href="/veinte/pages/s" class="sidebar-icon" title="settings">
-                    <i class="fas fa-cog"></i>
-                </a>
-            </div>
-            <div class="sidebar-bottom">
-                <div class="sidebar-btn" id="notificationBtn" title="notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge" id="notificationBadge">3</span>
-                </div>
-                <div class="sidebar-btn" id="profileBtn" title="profile">
-                    <div class="profile-avatar" id="profileAvatar">?</div>
-                </div>
-            </div>
+            <a href="/theattic/home.html" class="sidebar-icon active" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="/theattic/pages/g.html" class="sidebar-icon" title="Games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="/theattic/pages/p.html" class="sidebar-icon" title="Proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="/theattic/pages/t.html" class="sidebar-icon" title="Tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="/theattic/pages/s.html" class="sidebar-icon" title="Settings">
+                <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
+            </a>
         </nav>
 
-        <!-- notifications popup -->
-        <div class="popup-overlay" id="notificationPopup">
-            <div class="popup-content">
-                <div class="popup-header">
-                    <h2 class="popup-title">notifications</h2>
-                    <button class="popup-close" onclick="closePopup('notification')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="notifications-container">
-                    <div class="notifications-sidebar">
-                        <div class="notification-updates">
-                            <div class="updates-title">updates</div>
-                        </div>
-                        <div class="notification-filter active" data-filter="all">all</div>
-                        <div class="notification-filter" data-filter="new">new</div>
-                        <div class="notification-filter" data-filter="today">today</div>
-                        <div class="notification-filter" data-filter="week">week</div>
-                    </div>
-                    <div class="notification-list" id="notificationList">
-                        <div class="notification-item">
-                            <div class="notification-header">
-                                <div class="notification-poster">
-                                    <div class="notification-poster-avatar">A</div>
-                                    <div class="notification-poster-name">Admin</div>
-                                </div>
-                                <div class="notification-date">2h ago</div>
-                            </div>
-                            <div class="notification-title">new games added!</div>
-                            <div class="notification-text">We've added 5 new action games to the collection. Check them out now!</div>
-                        </div>
-                        <div class="notification-item">
-                            <div class="notification-header">
-                                <div class="notification-poster">
-                                    <div class="notification-poster-avatar" style="background: linear-gradient(135deg, #51cf66, #37b24d);">S</div>
-                                    <div class="notification-poster-name">System</div>
-                                </div>
-                                <div class="notification-date">5h ago</div>
-                            </div>
-                            <div class="notification-title">server maintenance</div>
-                            <div class="notification-text">Scheduled maintenance will occur tonight at 2 AM EST.</div>
-                        </div>
-                        <div class="notification-item">
-                            <div class="notification-header">
-                                <div class="notification-poster">
-                                    <div class="notification-poster-avatar" style="background: linear-gradient(135deg, #ff922b, #fd7e14);">F</div>
-                                    <div class="notification-poster-name">Featured</div>
-                                </div>
-                                <div class="notification-date">1d ago</div>
-                            </div>
-                            <div class="notification-title">game of the week</div>
-                            <div class="notification-text">99 Nights in a Forest is this week's featured game!</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- profile popup -->
-        <div class="popup-overlay" id="profilePopup">
-            <div class="popup-content">
-                <div class="popup-header">
-                    <h2 class="popup-title">profile</h2>
-                    <button class="popup-close" onclick="closePopup('profile')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="profile-content" id="profileContent">
-                    <!-- Profile content will be loaded dynamically -->
-                </div>
-            </div>
-        </div>
-
         <!-- home page -->
-        <div class="page" id="homePage">
+        <div class="page">
+            <!-- welcome section -->
+            <div class="welcome-section">
+                <h1 class="welcome-title">Welcome to The Attic</h1>
+                <p class="welcome-subtitle">Your cozy hangout for games, apps, and good vibes</p>
+                <input type="text" class="nickname-input" id="nicknameInput" placeholder="Enter your nickname...">
+            </div>
+
+            <!-- trending section -->
             <div class="trending-section">
-                <h1 class="trending-title">trending</h1>
-                <p class="trending-subtitle">these games are on fire right now!</p>
-                <div class="slideshow" id="slideshow">
-                    <a href="/veinte/play/99" class="slide active" data-game="game1">
-                        <img src="https://via.placeholder.com/1200x400/1a1a1a/ffffff?text=game+1" alt="trending game">
-                        <div class="slide-overlay">
-                            <div class="slide-content">
-                                <span class="slide-tag tag-fire">fire</span>
-                                <h3 class="slide-title">super game</h3>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/veinte/play/99" class="slide" data-game="game2">
-                        <img src="https://via.placeholder.com/1200x400/2a2a2a/ffffff?text=game+2" alt="trending game">
-                        <div class="slide-overlay">
-                            <div class="slide-content">
-                                <span class="slide-tag tag-fun">fun</span>
-                                <h3 class="slide-title">mega runner</h3>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="play.html?game=game3" class="slide" data-game="game3">
-                        <img src="https://via.placeholder.com/1200x400/3a3a3a/ffffff?text=game+3" alt="trending game">
-                        <div class="slide-overlay">
-                            <div class="slide-content">
-                                <span class="slide-tag tag-new">new</span>
-                                <h3 class="slide-title">action blast</h3>
-                            </div>
-                        </div>
-                    </a>
+                <h2 class="section-title">Trending Now</h2>
+                <div class="trending-carousel">
+                    <button class="carousel-nav prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+                    <div class="trending-slides" id="trendingSlides">
+                        <!-- slides populated by js -->
+                    </div>
+                    <button class="carousel-nav next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
 
-            <div class="catalog-section">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <h2 class="catalog-title">popular</h2>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button class="scroll-btn" onclick="scrollgames('popular', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="games-row" id="populargames">
-                        <a href="https://twentyfolds.github.io/veinte/play/99.html" class="game-card" data-game="game1" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://cdn.jsdelivr.net/gh/twentyfolds/veinte@main/img/g/99NightsInAForest.jpg" alt="99 nights in a forest">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">99 nights in a forest</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'game1')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'game1')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=game2" class="game-card" data-game="game2" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/2a2a2a/ffffff?text=game+2" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">mega runner</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'game2')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'game2')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=game3" class="game-card" data-game="game3" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/3a3a3a/ffffff?text=game+3" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">action blast</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'game3')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'game3')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=game4" class="game-card" data-game="game4" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/4a4a4a/ffffff?text=game+4" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">speed racer</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'game4')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'game4')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=game5" class="game-card" data-game="game5" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://via.placeholder.com/200x280/5a5a5a/ffffff?text=game+5" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">puzzle master</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'game5')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'game5')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=game6" class="game-card" data-game="game6" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/6a6a6a/ffffff?text=game+6" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">space quest</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'game6')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'game6')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=game7" class="game-card" data-game="game7" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/7a7a7a/ffffff?text=game+7" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">sky fighter</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'game7')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'game7')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=game8" class="game-card" data-game="game8" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/8a8a8a/ffffff?text=game+8" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">candy crush</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'game8')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'game8')"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <button class="scroll-btn" onclick="scrollgames('popular', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+            <!-- game categories -->
+            <div class="game-section">
+                <h2 class="section-title">Popular Games</h2>
+                <div class="games-grid" id="popularGames">
+                    <!-- games populated by js -->
                 </div>
             </div>
 
-            <div class="catalog-section">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <h2 class="catalog-title">action</h2>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button class="scroll-btn" onclick="scrollgames('action', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="games-row" id="actiongames">
-                        <a href="play.html?game=action1" class="game-card" data-game="action1" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://via.placeholder.com/200x280/ff0000/ffffff?text=action+1" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">battle royale</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'action1')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'action1')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=action2" class="game-card" data-game="action2" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/ff3300/ffffff?text=action+2" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">fighter z</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'action2')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'action2')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=action3" class="game-card" data-game="action3" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/ff6600/ffffff?text=action+3" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">war zone</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'action3')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'action3')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=action4" class="game-card" data-game="action4" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/ff9900/ffffff?text=action+4" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">combat elite</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'action4')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'action4')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=action5" class="game-card" data-game="action5" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://via.placeholder.com/200x280/ffcc00/ffffff?text=action+5" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">strike force</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'action5')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'action5')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=action6" class="game-card" data-game="action6" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/ffff00/ffffff?text=action+6" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">ninja attack</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'action6')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'action6')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=action7" class="game-card" data-game="action7" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/ff6600/ffffff?text=action+7" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">sniper elite</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'action7')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'action7')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=action8" class="game-card" data-game="action8" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/ff3300/ffffff?text=action+8" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">tank battle</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'action8')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'action8')"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <button class="scroll-btn" onclick="scrollgames('action', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+            <div class="game-section">
+                <h2 class="section-title">Action Games</h2>
+                <div class="games-grid" id="actionGames">
+                    <!-- games populated by js -->
                 </div>
             </div>
 
-            <div class="catalog-section">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <h2 class="catalog-title">horror</h2>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button class="scroll-btn" onclick="scrollgames('horror', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="games-row" id="horrorgames">
-                        <a href="play.html?game=horror1" class="game-card" data-game="horror1" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://via.placeholder.com/200x280/4a0000/ffffff?text=horror+1" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">dark mansion</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'horror1')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'horror1')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=horror2" class="game-card" data-game="horror2" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/660000/ffffff?text=horror+2" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">creepy house</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'horror2')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'horror2')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=horror3" class="game-card" data-game="horror3" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/800000/ffffff?text=horror+3" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">zombie apocalypse</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'horror3')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'horror3')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=horror4" class="game-card" data-game="horror4" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/990000/ffffff?text=horror+4" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">ghost town</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'horror4')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'horror4')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=horror5" class="game-card" data-game="horror5" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://via.placeholder.com/200x280/b30000/ffffff?text=horror+5" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">nightmare</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'horror5')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'horror5')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=horror6" class="game-card" data-game="horror6" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/cc0000/ffffff?text=horror+6" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">scary maze</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'horror6')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'horror6')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=horror7" class="game-card" data-game="horror7" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/800000/ffffff?text=horror+7" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">evil clown</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'horror7')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'horror7')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=horror8" class="game-card" data-game="horror8" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/660000/ffffff?text=horror+8" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">haunted forest</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'horror8')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'horror8')"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <button class="scroll-btn" onclick="scrollgames('horror', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+            <div class="game-section">
+                <h2 class="section-title">Horror Games</h2>
+                <div class="games-grid" id="horrorGames">
+                    <!-- games populated by js -->
                 </div>
             </div>
 
-            <div class="catalog-section">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <h2 class="catalog-title">running</h2>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button class="scroll-btn" onclick="scrollgames('running', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="games-row" id="runninggames">
-                        <a href="play.html?game=running1" class="game-card" data-game="running1" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://via.placeholder.com/200x280/00ff00/000000?text=run+1" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">endless run</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'running1')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'running1')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=running2" class="game-card" data-game="running2" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/00cc00/000000?text=run+2" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">temple dash</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'running2')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'running2')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=running3" class="game-card" data-game="running3" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/009900/000000?text=run+3" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">subway surf</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'running3')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'running3')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=running4" class="game-card" data-game="running4" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/006600/000000?text=run+4" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">parkour run</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'running4')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'running4')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=running5" class="game-card" data-game="running5" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://via.placeholder.com/200x280/003300/000000?text=run+5" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">city runner</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'running5')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'running5')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=running6" class="game-card" data-game="running6" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/001a00/000000?text=run+6" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">sprint king</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'running6')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'running6')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=running7" class="game-card" data-game="running7" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/00cc00/000000?text=run+7" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">road dash</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'running7')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'running7')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=running8" class="game-card" data-game="running8" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/009900/000000?text=run+8" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">track stars</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'running8')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'running8')"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <button class="scroll-btn" onclick="scrollgames('running', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+            <div class="game-section">
+                <h2 class="section-title">Running Games</h2>
+                <div class="games-grid" id="runningGames">
+                    <!-- games populated by js -->
                 </div>
             </div>
 
-            <div class="catalog-section">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <h2 class="catalog-title">beauty</h2>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button class="scroll-btn" onclick="scrollgames('beauty', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="games-row" id="beautygames">
-                        <a href="play.html?game=beauty1" class="game-card" data-game="beauty1" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://via.placeholder.com/200x280/ff69b4/ffffff?text=beauty+1" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">makeup studio</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'beauty1')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'beauty1')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=beauty2" class="game-card" data-game="beauty2" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/ff1493/ffffff?text=beauty+2" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">dress up</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'beauty2')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'beauty2')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=beauty3" class="game-card" data-game="beauty3" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/ff00ff/ffffff?text=beauty+3" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">hair salon</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'beauty3')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'beauty3')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=beauty4" class="game-card" data-game="beauty4" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/da70d6/ffffff?text=beauty+4" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">fashion queen</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'beauty4')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'beauty4')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=beauty5" class="game-card" data-game="beauty5" data-tag="fire">
-                            <span class="game-card-tag tag-fire">fire</span>
-                            <img src="https://via.placeholder.com/200x280/ba55d3/ffffff?text=beauty+5" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">nail art</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'beauty5')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'beauty5')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=beauty6" class="game-card" data-game="beauty6" data-tag="hot">
-                            <span class="game-card-tag tag-hot">hot</span>
-                            <img src="https://via.placeholder.com/200x280/9932cc/ffffff?text=beauty+6" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">spa day</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'beauty6')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'beauty6')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=beauty7" class="game-card" data-game="beauty7" data-tag="fun">
-                            <span class="game-card-tag tag-fun">fun</span>
-                            <img src="https://via.placeholder.com/200x280/da70d6/ffffff?text=beauty+7" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">princess dress</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'beauty7')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'beauty7')"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="play.html?game=beauty8" class="game-card" data-game="beauty8" data-tag="new">
-                            <span class="game-card-tag tag-new">new</span>
-                            <img src="https://via.placeholder.com/200x280/ba55d3/ffffff?text=beauty+8" alt="game">
-                            <div class="game-card-overlay">
-                                <div class="game-card-title">jewelry maker</div>
-                                <div class="game-card-actions">
-                                    <i class="fas fa-heart action-btn" onclick="event.preventDefault(); toggleLike(this, 'beauty8')"></i>
-                                    <i class="fas fa-thumbs-down action-btn" onclick="event.preventDefault(); toggleDislike(this, 'beauty8')"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <button class="scroll-btn" onclick="scrollgames('beauty', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+            <div class="game-section">
+                <h2 class="section-title">Beauty Games</h2>
+                <div class="games-grid" id="beautyGames">
+                    <!-- games populated by js -->
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // discord webhook
-        const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1474473233687511040/8SkYW0fsQ2VTZ34a4cw8MQdj-nCJjcHwVdNDTnEVk9vE5t4ctzXcVw0t7lwBlzjoZ0Po';
+        // trending slides data
+        const trendingSlides = [
+            { title: 'Minecraft Classic', desc: 'Build, explore, and survive in the original sandbox game', img: 'https://via.placeholder.com/1200x400/4CAF50/ffffff?text=Minecraft+Classic', link: '/theattic/play/minecraft.html' },
+            { title: 'Among Us', desc: 'Find the imposter among the crew', img: 'https://via.placeholder.com/1200x400/2196F3/ffffff?text=Among+Us', link: '/theattic/play/amongus.html' },
+            { title: 'Subway Surfers', desc: 'Run, jump, and dodge trains in this endless runner', img: 'https://via.placeholder.com/1200x400/FF9800/ffffff?text=Subway+Surfers', link: '/theattic/play/subwaysurfers.html' }
+        ];
 
-        // track games played
-        let gamesPlayed = [];
-        let gamesClicked = [];
+        // games data with full categories
+        const games = [
+            { id: 'minecraft', name: 'Minecraft Classic', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Minecraft', category: 'popular', tags: ['sandbox', 'multiplayer'] },
+            { id: 'amongus', name: 'Among Us', img: 'https://via.placeholder.com/200x150/2196F3/ffffff?text=Among+Us', category: 'popular', tags: ['social', 'multiplayer'] },
+            { id: 'subwaysurfers', name: 'Subway Surfers', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Subway+Surfers', category: ['popular', 'running'], tags: ['runner', 'endless'] },
+            { id: 'temple-run', name: 'Temple Run', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=Temple+Run', category: ['popular', 'running'], tags: ['runner', 'adventure'] },
+            { id: 'crossy-road', name: 'Crossy Road', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Crossy+Road', category: 'popular', tags: ['arcade', 'casual'] },
+            { id: 'geometry-dash', name: 'Geometry Dash', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Geometry+Dash', category: ['popular', 'action'], tags: ['rhythm', 'platformer'] },
+            { id: 'slither-io', name: 'Slither.io', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Slither.io', category: 'popular', tags: ['io', 'multiplayer'] },
+            { id: 'agario', name: 'Agar.io', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Agar.io', category: 'popular', tags: ['io', 'multiplayer'] },
+            { id: 'stickman-hook', name: 'Stickman Hook', img: 'https://via.placeholder.com/200x150/FF5722/ffffff?text=Stickman+Hook', category: ['popular', 'action'], tags: ['physics', 'skill'] },
+            { id: 'vex', name: 'VEX', img: 'https://via.placeholder.com/200x150/607D8B/ffffff?text=VEX', category: ['popular', 'action'], tags: ['platformer', 'skill'] },
+            { id: 'shell-shockers', name: 'Shell Shockers', img: 'https://via.placeholder.com/200x150/F44336/ffffff?text=Shell+Shockers', category: ['popular', 'action'], tags: ['fps', 'multiplayer'] },
+            { id: 'krunker', name: 'Krunker.io', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Krunker', category: ['action', 'popular'], tags: ['fps', 'io'] },
+            { id: '1v1-lol', name: '1v1.LOL', img: 'https://via.placeholder.com/200x150/3F51B5/ffffff?text=1v1.LOL', category: 'action', tags: ['fps', 'building'] },
+            { id: 'fortnite', name: 'Fortnite', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Fortnite', category: 'action', tags: ['battle-royale', 'multiplayer'] },
+            { id: 'pubg', name: 'PUBG', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=PUBG', category: 'action', tags: ['battle-royale', 'shooter'] },
+            { id: 'roblox', name: 'Roblox', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Roblox', category: ['action', 'popular'], tags: ['sandbox', 'multiplayer'] },
+            { id: 'gta', name: 'GTA V', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=GTA+V', category: 'action', tags: ['open-world', 'action'] },
+            { id: 'five-nights', name: 'Five Nights at Freddy\'s', img: 'https://via.placeholder.com/200x150/9E9E9E/ffffff?text=FNAF', category: 'horror', tags: ['survival', 'jumpscare'] },
+            { id: ' slenderman', name: 'Slenderman', img: 'https://via.placeholder.com/200x150/212121/ffffff?text=Slenderman', category: 'horror', tags: ['survival', 'horror'] },
+            { id: 'granny', name: 'Granny', img: 'https://via.placeholder.com/200x150/8D6E63/ffffff?text=Granny', category: 'horror', tags: ['escape', 'horror'] },
+            { id: 'baldi', name: 'Baldi\'s Basics', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Baldi', category: 'horror', tags: ['educational', 'horror'] },
+            { id: 'poppy-playtime', name: 'Poppy Playtime', img: 'https://via.placeholder.com/200x150/2196F3/ffffff?text=Poppy+Playtime', category: 'horror', tags: ['puzzle', 'horror'] },
+            { id: 'sonic-exe', name: 'Sonic.EXE', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Sonic.EXE', category: 'horror', tags: ['horror', 'platformer'] },
+            { id: 'runner-3d', name: 'Runner 3D', img: 'https://via.placeholder.com/200x150/009688/ffffff?text=Runner+3D', category: ['running', 'popular'], tags: ['3d', 'runner'] },
+            { id: 'parkour-rush', name: 'Parkour Rush', img: 'https://via.placeholder.com/200x150/FF5722/ffffff?text=Parkour+Rush', category: 'running', tags: ['parkour', 'skill'] },
+            { id: 'ninja-run', name: 'Ninja Run', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Ninja+Run', category: 'running', tags: ['ninja', 'action'] },
+            { id: 'subway-surf', name: 'Subway Surf', img: 'https://via.placeholder.com/200x150/FFC107/ffffff?text=Subway+Surf', category: ['running', 'popular'], tags: ['surfing', 'endless'] },
+            { id: 'makeover-studio', name: 'Makeover Studio', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Makeover+Studio', category: 'beauty', tags: ['dress-up', 'makeover'] },
+            { id: 'hair-salon', name: 'Hair Salon', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Hair+Salon', category: 'beauty', tags: ['styling', 'casual'] },
+            { id: 'nail-art', name: 'Nail Art', img: 'https://via.placeholder.com/200x150/673AB7/ffffff?text=Nail+Art', category: 'beauty', tags: ['design', 'creative'] },
+            { id: 'fashion-dress', name: 'Fashion Dress', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Fashion+Dress', category: 'beauty', tags: ['fashion', 'dress-up'] },
+            { id: 'makeup-master', name: 'Makeup Master', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=Makeup+Master', category: 'beauty', tags: ['makeup', 'beauty'] },
+            { id: 'princess-spa', name: 'Princess Spa', img: 'https://via.placeholder.com/200x150/607D8B/ffffff?text=Princess+Spa', category: 'beauty', tags: ['spa', 'relax'] },
+            { id: 'wedding-dress', name: 'Wedding Dress', img: 'https://via.placeholder.com/200x150/F44336/ffffff?text=Wedding+Dress', category: 'beauty', tags: ['wedding', 'dress-up'] },
+            { id: 'beauty-contest', name: 'Beauty Contest', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Beauty+Contest', category: 'beauty', tags: ['contest', 'style'] }
+        ];
 
-        // send data to discord
-        async function sendToDiscord(data) {
-            try {
-                const response = await fetch(DISCORD_WEBHOOK, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        embeds: [{
-                            title: 'User Activity',
-                            color: 0x667eea,
-                            fields: [
-                                { name: 'Email', value: data.email || 'Not set', inline: true },
-                                { name: 'Name', value: data.name || 'Not set', inline: true },
-                                { name: 'Game Clicked', value: data.gameClicked || 'None', inline: false },
-                                { name: 'Game Played', value: data.gamePlayed || 'None', inline: false },
-                                { name: 'Games Played Count', value: data.gamesPlayedCount || '0', inline: true },
-                                { name: 'Games Clicked Count', value: data.gamesClickedCount || '0', inline: true },
-                                { name: 'Bio', value: data.bio || 'Not set', inline: false },
-                            ],
-                            timestamp: new Date().toISOString()
-                        }]
-                    })
-                });
-            } catch (error) {
-                console.error('Error sending to Discord:', error);
-            }
-        }
-
-        // track game click
-        function trackGameClick(gameId, gameName) {
-            gamesClicked.push({ id: gameId, name: gameName, timestamp: new Date().toISOString() });
-            
-            const userProfile = JSON.parse(localStorage.getItem('veinteUserProfile') || '{}');
-            sendToDiscord({
-                email: userProfile.email,
-                name: userProfile.nickname,
-                bio: userProfile.bio,
-                gameClicked: gameName,
-                gamesClickedCount: gamesClicked.length,
-                gamesPlayedCount: gamesPlayed.length
-            });
-            
-            localStorage.setItem('veinteGamesClicked', JSON.stringify(gamesClicked));
-        }
-
-        // track game play
-        function trackGamePlay(gameId, gameName) {
-            gamesPlayed.push({ id: gameId, name: gameName, timestamp: new Date().toISOString() });
-            
-            const userProfile = JSON.parse(localStorage.getItem('veinteUserProfile') || '{}');
-            sendToDiscord({
-                email: userProfile.email,
-                name: userProfile.nickname,
-                bio: userProfile.bio,
-                gamePlayed: gameName,
-                gamesPlayedCount: gamesPlayed.length,
-                gamesClickedCount: gamesClicked.length
-            });
-            
-            localStorage.setItem('veinteGamesPlayed', JSON.stringify(gamesPlayed));
-        }
-
-        // theme definitions with full color schemes
+        // theme definitions
         const themes = {
             default: {
                 primaryBg: '#000000',
@@ -1738,47 +612,122 @@
                 gradientMiddle: '#1a1a1a',
                 gradientEnd: '#000000'
             },
-            blue: {
-                primaryBg: '#0f1624',
-                secondaryBg: '#1a2332',
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
                 cardBg: 'rgba(100, 149, 237, 0.15)',
                 inputBg: 'rgba(100, 149, 237, 0.2)',
-                gradientStart: '#0f1624',
-                gradientMiddle: '#1a2332',
-                gradientEnd: '#162a4a'
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847'
             },
-            pink: {
-                primaryBg: '#1a0f14',
-                secondaryBg: '#2d1a2e',
-                cardBg: 'rgba(219, 112, 147, 0.15)',
-                inputBg: 'rgba(219, 112, 147, 0.2)',
-                gradientStart: '#1a0f14',
-                gradientMiddle: '#2d1a2e',
-                gradientEnd: '#3e1621'
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636'
             },
-            green: {
-                primaryBg: '#0f1a0f',
-                secondaryBg: '#1a2e1a',
-                cardBg: 'rgba(60, 179, 113, 0.15)',
-                inputBg: 'rgba(60, 179, 113, 0.2)',
-                gradientStart: '#0f1a0f',
-                gradientMiddle: '#1a2e1a',
-                gradientEnd: '#163e1c'
-            },
-            purple: {
-                primaryBg: '#1a0f24',
-                secondaryBg: '#2a1a2e',
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
                 cardBg: 'rgba(147, 112, 219, 0.15)',
                 inputBg: 'rgba(147, 112, 219, 0.2)',
-                gradientStart: '#1a0f24',
-                gradientMiddle: '#2a1a2e',
-                gradientEnd: '#3e1636'
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28'
             }
         };
 
+        let currentSlide = 0;
+
+        // initialize carousel
+        function initCarousel() {
+            const slidesContainer = document.getElementById('trendingSlides');
+            slidesContainer.innerHTML = trendingSlides.map(slide => `
+                <div class="trending-slide">
+                    <a href="${slide.link}">
+                        <img src="${slide.img}" alt="${slide.title}">
+                        <div class="trending-overlay">
+                            <h3 class="trending-title">${slide.title}</h3>
+                            <p class="trending-description">${slide.desc}</p>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function updateCarousel() {
+            const slidesContainer = document.getElementById('trendingSlides');
+            slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % trendingSlides.length;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + trendingSlides.length) % trendingSlides.length;
+            updateCarousel();
+        }
+
+        // populate game grids
+        function populateGames() {
+            const categories = {
+                popular: 'popularGames',
+                action: 'actionGames',
+                horror: 'horrorGames',
+                running: 'runningGames',
+                beauty: 'beautyGames'
+            };
+
+            Object.keys(categories).forEach(category => {
+                const container = document.getElementById(categories[category]);
+                if (!container) return;
+
+                const categoryGames = games.filter(game => {
+                    const gameCats = Array.isArray(game.category) ? game.category : [game.category];
+                    return gameCats.includes(category);
+                });
+
+                container.innerHTML = categoryGames.map(game => `
+                    <a href="/theattic/play/${game.id}.html" class="game-card">
+                        <img src="${game.img}" alt="${game.name}">
+                        <div class="game-card-overlay">
+                            <div class="game-card-title">${game.name}</div>
+                            <div class="game-tags">
+                                ${game.tags.slice(0, 2).map(tag => `<span class="game-tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </a>
+                `).join('');
+            });
+        }
+
         // apply saved theme
         function applysavedtheme() {
-            const savedtheme = localStorage.getItem('veintetheme');
+            const savedtheme = localStorage.getItem('atticTheme');
             if (savedtheme) {
                 applytheme(savedtheme);
             }
@@ -1790,7 +739,6 @@
 
             const root = document.documentElement;
             
-            // Update all CSS variables
             root.style.setProperty('--primary-bg', theme.primaryBg);
             root.style.setProperty('--secondary-bg', theme.secondaryBg);
             root.style.setProperty('--card-bg', theme.cardBg);
@@ -1799,14 +747,7 @@
             root.style.setProperty('--gradient-middle', theme.gradientMiddle);
             root.style.setProperty('--gradient-end', theme.gradientEnd);
 
-            // Also update intro page background
-            const introPage = document.getElementById('introPage');
-            if (introPage) {
-                introPage.style.background = `linear-gradient(135deg, ${theme.gradientStart} 0%, ${theme.gradientMiddle} 50%, ${theme.gradientEnd} 100%)`;
-            }
-
-            // save theme to localStorage
-            localStorage.setItem('veintetheme', themeName);
+            localStorage.setItem('atticTheme', themeName);
         }
 
         // initialize particles
@@ -1834,362 +775,59 @@
             }
         });
 
-        // popup management
-        function openPopup(type) {
-            const popup = document.getElementById(type + 'Popup');
-            if (popup) {
-                popup.classList.add('active');
-                if (type === 'profile') {
-                    loadProfileContent();
-                }
-            }
-        }
-
-        function closePopup(type) {
-            const popup = document.getElementById(type + 'Popup');
-            if (popup) {
-                popup.classList.remove('active');
-            }
-        }
-
-        // popup event listeners
-        document.getElementById('notificationBtn').addEventListener('click', () => openPopup('notification'));
-        document.getElementById('profileBtn').addEventListener('click', () => openPopup('profile'));
-
-        // close popup when clicking outside
-        document.querySelectorAll('.popup-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    overlay.classList.remove('active');
-                }
-            });
-        });
-
-        // profile management
-        function loadProfileContent() {
-            const profileContent = document.getElementById('profileContent');
-            const userProfile = JSON.parse(localStorage.getItem('veinteUserProfile') || '{}');
-            
-            if (userProfile.email && userProfile.password) {
-                // Show signed in profile
-                profileContent.innerHTML = `
-                    <div class="profile-section">
-                        <div class="profile-avatar-upload">
-                            <div class="avatar-preview">
-                                ${userProfile.avatar ? `<img src="${userProfile.avatar}" alt="avatar">` : userProfile.nickname ? userProfile.nickname.charAt(0).toUpperCase() : '?'}
-                            </div>
-                            <label class="upload-btn">
-                                upload new pfp
-                                <input type="file" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="profile-section">
-                        <h3 class="profile-section-title">account info</h3>
-                        <div class="form-group">
-                            <label class="form-label">email</label>
-                            <input type="email" class="form-input" id="profileEmail" value="${userProfile.email || ''}" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">nickname</label>
-                            <input type="text" class="form-input" id="profileNickname" value="${userProfile.nickname || ''}" placeholder="enter your nickname">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">bio</label>
-                            <textarea class="form-input" id="profileBio" rows="3" placeholder="tell us about yourself">${userProfile.bio || ''}</textarea>
-                        </div>
-                        <button class="save-btn" onclick="saveProfile()">save changes</button>
-                        <button class="sign-out-btn" onclick="signOut()">sign out</button>
-                    </div>
-                    <div class="profile-section">
-                        <h3 class="profile-section-title">statistics</h3>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; text-align: center;">
-                                <div style="font-size: 1.5rem; font-weight: 500;">${gamesClicked.length}</div>
-                                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">games clicked</div>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; text-align: center;">
-                                <div style="font-size: 1.5rem; font-weight: 500;">${gamesPlayed.length}</div>
-                                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">games played</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                // Show sign in form
-                profileContent.innerHTML = `
-                    <div class="profile-section">
-                        <h3 class="profile-section-title" style="text-align: center;">sign in</h3>
-                        <div class="form-group">
-                            <label class="form-label">email</label>
-                            <input type="email" class="form-input" id="signInEmail" placeholder="enter your email">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">password</label>
-                            <input type="password" class="form-input" id="signInPassword" placeholder="enter your password">
-                        </div>
-                        <button class="save-btn" onclick="signIn()">sign in</button>
-                    </div>
-                    <div class="profile-section">
-                        <h3 class="profile-section-title" style="text-align: center;">create account</h3>
-                        <div class="form-group">
-                            <label class="form-label">email</label>
-                            <input type="email" class="form-input" id="signUpEmail" placeholder="enter your email">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">password</label>
-                            <input type="password" class="form-input" id="signUpPassword" placeholder="create a password">
-                        </div>
-                        <button class="save-btn" onclick="signUp()">create account</button>
-                    </div>
-                `;
-            }
-        }
-
-        function signIn() {
-            const email = document.getElementById('signInEmail').value;
-            const password = document.getElementById('signInPassword').value;
-            
-            if (!email || !password) {
-                alert('Please enter both email and password');
-                return;
-            }
-            
-            const storedProfile = JSON.parse(localStorage.getItem('veinteUserProfile') || '{}');
-            
-            if (storedProfile.email === email && storedProfile.password === password) {
-                localStorage.setItem('veinteUserProfile', JSON.stringify(storedProfile));
-                loadProfileContent();
-                updateProfileAvatar();
-            } else {
-                alert('Invalid email or password');
-            }
-        }
-
-        function signUp() {
-            const email = document.getElementById('signUpEmail').value;
-            const password = document.getElementById('signUpPassword').value;
-            
-            if (!email || !password) {
-                alert('Please enter both email and password');
-                return;
-            }
-            
-            const userProfile = {
-                email: email,
-                password: password,
-                nickname: '',
-                bio: '',
-                avatar: ''
-            };
-            
-            localStorage.setItem('veinteUserProfile', JSON.stringify(userProfile));
-            loadProfileContent();
-            updateProfileAvatar();
-        }
-
-        function saveProfile() {
-            const nickname = document.getElementById('profileNickname').value;
-            const bio = document.getElementById('profileBio').value;
-            
-            const userProfile = JSON.parse(localStorage.getItem('veinteUserProfile') || '{}');
-            userProfile.nickname = nickname;
-            userProfile.bio = bio;
-            
-            localStorage.setItem('veinteUserProfile', JSON.stringify(userProfile));
-            
-            sendToDiscord({
-                email: userProfile.email,
-                name: nickname,
-                bio: bio,
-                gamesPlayedCount: gamesPlayed.length,
-                gamesClickedCount: gamesClicked.length
-            });
-            
-            alert('Profile saved successfully!');
-            updateProfileAvatar();
-        }
-
-        function handleAvatarUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const userProfile = JSON.parse(localStorage.getItem('veinteUserProfile') || '{}');
-                    userProfile.avatar = e.target.result;
-                    localStorage.setItem('veinteUserProfile', JSON.stringify(userProfile));
-                    loadProfileContent();
-                    updateProfileAvatar();
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function signOut() {
-            localStorage.removeItem('veinteUserProfile');
-            loadProfileContent();
-            updateProfileAvatar();
-        }
-
-        function updateProfileAvatar() {
-            const profileAvatar = document.getElementById('profileAvatar');
-            const userProfile = JSON.parse(localStorage.getItem('veinteUserProfile') || '{}');
-            
-            if (userProfile.avatar) {
-                profileAvatar.innerHTML = `<img src="${userProfile.avatar}" alt="avatar">`;
-            } else if (userProfile.nickname) {
-                profileAvatar.textContent = userProfile.nickname.charAt(0).toUpperCase();
-            } else {
-                profileAvatar.textContent = '?';
-            }
-        }
-
-        // like/dislike functionality
-        function toggleLike(btn, gameId) {
-            btn.classList.toggle('active');
-            const isLiked = btn.classList.contains('active');
-            
-            // Get the game name
-            const gameCard = btn.closest('.game-card');
-            const gameTitle = gameCard.querySelector('.game-card-title').textContent;
-            
-            // Track this interaction
-            if (isLiked) {
-                trackGameClick(gameId, gameTitle + ' (liked)');
-            }
-        }
-
-        function toggleDislike(btn, gameId) {
-            btn.classList.toggle('active');
-            const isDisliked = btn.classList.contains('active');
-            
-            // Get the game name
-            const gameCard = btn.closest('.game-card');
-            const gameTitle = gameCard.querySelector('.game-card-title').textContent;
-            
-            // Track this interaction
-            if (isDisliked) {
-                trackGameClick(gameId, gameTitle + ' (disliked)');
-            }
-        }
-
         // intro animation
-        function startintro() {
-            const userProfile = JSON.parse(localStorage.getItem('veinteUserProfile') || '{}');
-            
-            if (userProfile.email && userProfile.password) {
-                // User is signed in, skip intro
-                entermainsite();
-                return;
-            }
-            
-            const welcometext = document.getElementById('welcomeText');
-            const nicknamecontainer = document.getElementById('nicknameContainer');
-            
-            // show welcome text
-            welcometext.classList.add('show');
-            
-            // after 2 seconds, fade out welcome and show nickname input
-            setTimeout(() => {
-                welcometext.classList.remove('show');
-                welcometext.classList.add('hide');
-                
-                setTimeout(() => {
-                    welcometext.style.display = 'none';
-                    nicknamecontainer.style.display = 'flex';
-                    document.getElementById('nicknameInput').focus();
-                }, 1000);
-            }, 2000);
-        }
-
-        // handle nickname input
-        document.getElementById('nicknameInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const nickname = e.target.value;
-                localStorage.setItem('veintenickname', nickname);
-                entermainsite();
-            }
-        });
-
-        function entermainsite() {
+        function playIntro() {
             const introPage = document.getElementById('introPage');
-            const maincontainer = document.getElementById('mainContainer');
-            
-            introPage.style.transition = 'opacity 1s ease-out';
-            introPage.style.opacity = '0';
-            
+            const introLogo = document.getElementById('introLogo');
+            const mainContainer = document.getElementById('mainContainer');
+
             setTimeout(() => {
-                introPage.style.display = 'none';
-                maincontainer.style.display = 'block';
-                startslideshow();
-            }, 1000);
+                introLogo.classList.add('show');
+            }, 500);
+
+            setTimeout(() => {
+                introLogo.classList.remove('show');
+            }, 3500);
+
+            setTimeout(() => {
+                introPage.classList.add('hidden');
+                mainContainer.classList.add('show');
+            }, 4500);
         }
 
-        // slideshow functionality
-        let currentslide = 0;
-        let slideshowinterval;
-
-        function startslideshow() {
-            const slides = document.querySelectorAll('.slide');
-            
-            slideshowinterval = setInterval(() => {
-                slides[currentslide].classList.remove('active');
-                currentslide = (currentslide + 1) % slides.length;
-                slides[currentslide].classList.add('active');
-            }, 4000);
-        }
-
-        // scroll games in catalog
-        function scrollgames(category, direction) {
-            const row = document.getElementById(category + 'games');
-            const scrollamount = 750;
-            row.scrollBy({ left: direction * scrollamount, behavior: 'smooth' });
-        }
-
-        // notification filters
-        document.querySelectorAll('.notification-filter').forEach(filter => {
-            filter.addEventListener('click', () => {
-                document.querySelectorAll('.notification-filter').forEach(f => f.classList.remove('active'));
-                filter.classList.add('active');
-            });
-        });
-
-        // load games data on game cards
-        document.querySelectorAll('.game-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (!e.target.classList.contains('action-btn')) {
-                    const gameId = card.getAttribute('data-game');
-                    const gameTitle = card.querySelector('.game-card-title').textContent;
-                    trackGameClick(gameId, gameTitle);
-                    trackGamePlay(gameId, gameTitle);
+        // load nickname
+        function loadNickname() {
+            const savedNickname = localStorage.getItem('atticNickname');
+            if (savedNickname) {
+                const input = document.getElementById('nicknameInput');
+                if (input) {
+                    input.value = savedNickname;
                 }
-            });
-        });
-
-        // load saved data
-        function loadSavedData() {
-            const userProfile = JSON.parse(localStorage.getItem('veinteUserProfile') || '{}');
-            if (userProfile.email && userProfile.password) {
-                updateProfileAvatar();
-            }
-            
-            gamesClicked = JSON.parse(localStorage.getItem('veinteGamesClicked') || '[]');
-            gamesPlayed = JSON.parse(localStorage.getItem('veinteGamesPlayed') || '[]');
-            
-            // Show notification badge if there are new notifications
-            const badge = document.getElementById('notificationBadge');
-            if (gamesClicked.length > 0) {
-                badge.classList.add('show');
             }
         }
+
+        // save nickname
+        function saveNickname() {
+            const input = document.getElementById('nicknameInput');
+            if (input) {
+                localStorage.setItem('atticNickname', input.value);
+            }
+        }
+
+        document.getElementById('nicknameInput')?.addEventListener('change', saveNickname);
 
         // initialize on load
         window.addEventListener('load', () => {
             applysavedtheme();
             createparticles();
-            loadSavedData();
-            startintro();
+            initCarousel();
+            populateGames();
+            loadNickname();
+            playIntro();
         });
+
+        // auto-rotate carousel
+        setInterval(nextSlide, 5000);
     </script>
 </body>
 </html>
