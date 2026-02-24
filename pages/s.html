@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>veinte - settings</title>
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twentyfolds/veinte@main/img/VeinteLogo.png">
+    <title>The Attic | Settings</title>
+    <link rel="icon" type="image/png" href="/img/TheAtticIcon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link id="favicon" rel="icon" href="" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -156,111 +155,166 @@
             padding-bottom: 20px;
         }
 
-        /* settings container */
-        .settings-container {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .settings-category {
+        /* settings sections */
+        .settings-section {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
             backdrop-filter: blur(10px);
-            transition: background 0.5s ease;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
         }
 
-        .settings-title {
+        .section-title {
             font-size: 1.5rem;
-            font-weight: 300;
-            margin-bottom: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
 
-        .settings-description {
-            margin-bottom: 15px;
-            color: rgba(255,255,255,0.6);
-            font-size: 0.9rem;
-        }
-
-        /* theme options */
-        .theme-options {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+        /* theme selector */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
         }
 
         .theme-btn {
-            width: 60px;
-            height: 60px;
+            height: 80px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             cursor: pointer;
-            border: 3px solid transparent;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .theme-btn:hover, .theme-btn.active {
+        .theme-btn:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .theme-btn.active {
             border-color: white;
-            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
-        .theme-default {
-            background: linear-gradient(135deg, #000000, #1a1a1a);
+        .theme-btn::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
         }
 
-        .theme-blue {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-        }
-
-        .theme-pink {
-            background: linear-gradient(135deg, #2d1a2e, #3e1621);
-        }
-
-        .theme-green {
-            background: linear-gradient(135deg, #1a2e1a, #163e1c);
-        }
-
-        .theme-purple {
-            background: linear-gradient(135deg, #2a1a2e, #3e1636);
-        }
-
-        /* tab cloaker form */
-        .tab-cloaker-form {
+        /* tab cloaker */
+        .cloaker-form {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 20px;
         }
 
-        .tab-cloaker-form input, .tab-cloaker-form select {
-            padding: 12px;
-            border-radius: 15px;
-            border: none;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-input {
+            padding: 12px 20px;
             background: var(--input-bg);
-            color: white;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 300;
-        }
-
-        .tab-cloaker-form select option {
-            background: #1a1a1a;
-            color: white;
-        }
-
-        .tab-cloaker-form button {
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             color: white;
-            cursor: pointer;
+            font-size: 1rem;
+            outline: none;
             transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 300;
         }
 
-        .tab-cloaker-form button:hover {
+        .form-input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .form-select {
+            padding: 12px 20px;
+            background: var(--input-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-select option {
+            background: var(--secondary-bg);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
             background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* about section */
+        .about-content {
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .about-content p {
+            margin-bottom: 15px;
+        }
+
+        .about-content strong {
+            color: white;
+            font-weight: 600;
         }
 
         /* responsive */
@@ -274,15 +328,78 @@
                 height: 70px;
                 transform: none;
                 flex-direction: row;
+                z-index: 200;
             }
 
             .page {
                 padding-left: 20px;
+                padding-right: 20px;
                 padding-bottom: 100px;
             }
 
-            .settings-container {
-                max-width: 100%;
+            .theme-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .settings-section {
+                padding: 20px;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .settings-section {
+                padding: 15px;
+            }
+
+            .theme-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 15px;
+            }
+
+            .theme-btn {
+                height: 60px;
+            }
+
+            .theme-btn::after {
+                font-size: 0.7rem;
+            }
+
+            .form-input, .form-select {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .sidebar {
+                gap: 15px;
+                padding: 15px 0;
+            }
+
+            .sidebar-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -297,72 +414,83 @@
     <div class="main-container">
         <!-- sidebar -->
         <nav class="sidebar">
-            <a href="https://twentyfolds.github.io/veinte/home" class="sidebar-icon" title="home">
+            <a href="/theattic/home.html" class="sidebar-icon" title="Home">
                 <i class="fas fa-home"></i>
             </a>
-            <a href="/veinte/pages/g" class="sidebar-icon active" title="games">
+            <a href="/theattic/pages/g.html" class="sidebar-icon" title="Games">
                 <i class="fas fa-gamepad"></i>
             </a>
-            <a href="/veinte/pages/p" class="sidebar-icon" title="proxy">
+            <a href="/theattic/pages/p.html" class="sidebar-icon" title="Proxy">
                 <i class="fas fa-search"></i>
             </a>
-            <a href="/veinte/pages/t" class="sidebar-icon" title="tools">
+            <a href="/theattic/pages/t.html" class="sidebar-icon" title="Tools">
                 <i class="fas fa-tools"></i>
             </a>
-            <a href="/veinte/pages/s" class="sidebar-icon" title="settings">
+            <a href="/theattic/pages/s.html" class="sidebar-icon active" title="Settings">
                 <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
             </a>
         </nav>
 
         <!-- settings page -->
         <div class="page">
-            <div class="settings-container">
-                <div class="settings-category">
-                    <h2 class="settings-title">theme</h2>
-                    <p class="settings-description">choose your preferred theme</p>
-                    <div class="theme-options">
-                        <div class="theme-btn theme-default active" data-theme="default" title="default"></div>
-                        <div class="theme-btn theme-blue" data-theme="blue" title="blue"></div>
-                        <div class="theme-btn theme-pink" data-theme="pink" title="pink"></div>
-                        <div class="theme-btn theme-green" data-theme="green" title="green"></div>
-                        <div class="theme-btn theme-purple" data-theme="purple" title="purple"></div>
-                    </div>
+            <!-- theme section -->
+            <div class="settings-section">
+                <h2 class="section-title">Theme</h2>
+                <div class="theme-grid" id="themeGrid">
+                    <!-- themes populated by js -->
                 </div>
+            </div>
 
-                <div class="settings-category">
-                    <h2 class="settings-title">tab cloaker</h2>
-                    <p class="settings-description">change the tab title and icon to match school sites</p>
-                    <div class="tab-cloaker-form">
-                        <input type="text" id="tabTitle" placeholder="tab title">
-                        <input type="text" id="tabIcon" placeholder="tab icon url">
-                        <select id="presetCloaks">
-                            <option value="">-- select preset --</option>
-                            <option value="google">google classroom</option>
-                            <option value="ixl">ixl</option>
-                            <option value="deltamath">deltamath</option>
-                            <option value="canvas">canvas</option>
-                            <option value="schoology">schoology</option>
+            <!-- tab cloaker section -->
+            <div class="settings-section">
+                <h2 class="section-title">Tab Cloaker</h2>
+                <div class="cloaker-form">
+                    <div class="form-group">
+                        <label class="form-label">Preset</label>
+                        <select class="form-select" id="presetSelect">
+                            <option value="">Select a preset...</option>
+                            <option value="google-classroom">Google Classroom</option>
+                            <option value="ixl">IXL</option>
+                            <option value="deltamath">DeltaMath</option>
+                            <option value="canvas">Canvas</option>
+                            <option value="schoology">Schoology</option>
                         </select>
-                        <button onclick="applytabcloak()">apply cloak</button>
-                        <button onclick="resettabcloak()">reset cloak</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Custom Title</label>
+                        <input type="text" class="form-input" id="customTitle" placeholder="Enter custom title...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Custom Icon URL</label>
+                        <input type="text" class="form-input" id="customIcon" placeholder="Enter custom icon URL...">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="applyCloak">Apply</button>
+                        <button class="btn btn-secondary" id="resetCloak">Reset</button>
                     </div>
                 </div>
+            </div>
 
-                <div class="settings-category">
-                    <h2 class="settings-title">about</h2>
-                    <p class="settings-description">veinte is a clean, modern gaming and utility platform.</p>
-                </div>
-
-                <div class="settings-category">
-                    <h2 class="settings-title">credits</h2>
-                    <p class="settings-description">created with ❤️ by the veinte team</p>
+            <!-- about section -->
+            <div class="settings-section">
+                <h2 class="section-title">About</h2>
+                <div class="about-content">
+                    <p><strong>The Attic</strong> is your cozy hangout for games, apps, and good vibes.</p>
+                    <p>Built with love by <strong>Corner Collective</strong>.</p>
+                    <p>Version 1.0.0</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // theme definitions with full color schemes
+        // theme definitions
         const themes = {
             default: {
                 primaryBg: '#000000',
@@ -371,59 +499,123 @@
                 inputBg: 'rgba(200, 200, 200, 0.15)',
                 gradientStart: '#000000',
                 gradientMiddle: '#1a1a1a',
-                gradientEnd: '#000000'
+                gradientEnd: '#000000',
+                displayGradient: 'linear-gradient(135deg, #000000, #1a1a1a)'
             },
-            blue: {
-                primaryBg: '#0f1624',
-                secondaryBg: '#1a2332',
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
                 cardBg: 'rgba(100, 149, 237, 0.15)',
                 inputBg: 'rgba(100, 149, 237, 0.2)',
-                gradientStart: '#0f1624',
-                gradientMiddle: '#1a2332',
-                gradientEnd: '#162a4a'
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847',
+                displayGradient: 'linear-gradient(135deg, #0a1628, #1a2a4a)'
             },
-            pink: {
-                primaryBg: '#1a0f14',
-                secondaryBg: '#2d1a2e',
-                cardBg: 'rgba(219, 112, 147, 0.15)',
-                inputBg: 'rgba(219, 112, 147, 0.2)',
-                gradientStart: '#1a0f14',
-                gradientMiddle: '#2d1a2e',
-                gradientEnd: '#3e1621'
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636',
+                displayGradient: 'linear-gradient(135deg, #2a0f1a, #3d1a2e)'
             },
-            green: {
-                primaryBg: '#0f1a0f',
-                secondaryBg: '#1a2e1a',
-                cardBg: 'rgba(60, 179, 113, 0.15)',
-                inputBg: 'rgba(60, 179, 113, 0.2)',
-                gradientStart: '#0f1a0f',
-                gradientMiddle: '#1a2e1a',
-                gradientEnd: '#163e1c'
-            },
-            purple: {
-                primaryBg: '#1a0f24',
-                secondaryBg: '#2a1a2e',
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
                 cardBg: 'rgba(147, 112, 219, 0.15)',
                 inputBg: 'rgba(147, 112, 219, 0.2)',
-                gradientStart: '#1a0f24',
-                gradientMiddle: '#2a1a2e',
-                gradientEnd: '#3e1636'
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650',
+                displayGradient: 'linear-gradient(135deg, #1a0f2a, #2a1a3e)'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028',
+                displayGradient: 'linear-gradient(135deg, #1a1510, #2a2520)'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28',
+                displayGradient: 'linear-gradient(135deg, #0f1a10, #1a2a1e)'
             }
         };
 
+        // tab cloaker presets
+        const cloakerPresets = {
+            'google-classroom': {
+                title: 'Home',
+                icon: 'https://ssl.gstatic.com/classroom/favicon.png'
+            },
+            'ixl': {
+                title: 'IXL | Math, Language Arts, Science, Social Studies, and Spanish',
+                icon: 'https://www.ixl.com/favicon.ico'
+            },
+            'deltamath': {
+                title: 'DeltaMath',
+                icon: 'https://www.deltamath.com/favicon.ico'
+            },
+            'canvas': {
+                title: 'Dashboard',
+                icon: 'https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico'
+            },
+            'schoology': {
+                title: 'Home | Schoology',
+                icon: 'https://asset.schoology.com/sites/all/themes/schoology_theme/favicon.ico'
+            }
+        };
+
+        // populate theme grid
+        function populateThemes() {
+            const grid = document.getElementById('themeGrid');
+            if (!grid) return;
+
+            const themeNames = {
+                default: 'Default',
+                midnightBlue: 'Midnight Blue',
+                hotPink: 'Hot Pink',
+                galaxyPurple: 'Galaxy Purple',
+                icedCoffeeBrown: 'Iced Coffee Brown',
+                matchaGreen: 'Matcha Green'
+            };
+
+            grid.innerHTML = Object.keys(themes).map(themeKey => `
+                <div class="theme-btn ${localStorage.getItem('atticTheme') === themeKey ? 'active' : ''}" 
+                     data-theme="${themeKey}" 
+                     data-name="${themeNames[themeKey]}"
+                     style="background: ${themes[themeKey].displayGradient}">
+                </div>
+            `).join('');
+
+            // add click handlers
+            grid.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.dataset.theme;
+                    applytheme(theme);
+                    grid.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+        }
+
         // apply saved theme
         function applysavedtheme() {
-            const savedtheme = localStorage.getItem('veintetheme');
+            const savedtheme = localStorage.getItem('atticTheme');
             if (savedtheme) {
                 applytheme(savedtheme);
-                // update active theme button
-                document.querySelectorAll('.theme-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                const activeBtn = document.querySelector(`[data-theme="${savedtheme}"]`);
-                if (activeBtn) {
-                    activeBtn.classList.add('active');
-                }
             }
         }
 
@@ -433,7 +625,6 @@
 
             const root = document.documentElement;
             
-            // Update all CSS variables
             root.style.setProperty('--primary-bg', theme.primaryBg);
             root.style.setProperty('--secondary-bg', theme.secondaryBg);
             root.style.setProperty('--card-bg', theme.cardBg);
@@ -442,20 +633,53 @@
             root.style.setProperty('--gradient-middle', theme.gradientMiddle);
             root.style.setProperty('--gradient-end', theme.gradientEnd);
 
-            // save theme to localStorage
-            localStorage.setItem('veintetheme', themeName);
+            localStorage.setItem('atticTheme', themeName);
         }
 
-        // theme button click handlers
-        document.querySelectorAll('.theme-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                const theme = btn.dataset.theme;
-                applytheme(theme);
+        // tab cloaker functionality
+        function setupTabCloaker() {
+            const presetSelect = document.getElementById('presetSelect');
+            const customTitle = document.getElementById('customTitle');
+            const customIcon = document.getElementById('customIcon');
+            const applyBtn = document.getElementById('applyCloak');
+            const resetBtn = document.getElementById('resetCloak');
+
+            // preset selection
+            presetSelect?.addEventListener('change', () => {
+                const preset = cloakerPresets[presetSelect.value];
+                if (preset) {
+                    customTitle.value = preset.title;
+                    customIcon.value = preset.icon;
+                }
             });
-        });
+
+            // apply cloaker
+            applyBtn?.addEventListener('click', () => {
+                if (customTitle.value) {
+                    document.title = customTitle.value;
+                }
+                if (customIcon.value) {
+                    const favicon = document.querySelector('link[rel="icon"]');
+                    if (favicon) {
+                        favicon.href = customIcon.value;
+                    }
+                }
+                alert('Tab cloaker applied!');
+            });
+
+            // reset cloaker
+            resetBtn?.addEventListener('click', () => {
+                document.title = 'The Attic | Settings';
+                const favicon = document.querySelector('link[rel="icon"]');
+                if (favicon) {
+                    favicon.href = '/img/TheAtticIcon.png';
+                }
+                presetSelect.value = '';
+                customTitle.value = '';
+                customIcon.value = '';
+                alert('Tab cloaker reset!');
+            });
+        }
 
         // initialize particles
         function createparticles() {
@@ -473,50 +697,6 @@
             }
         }
 
-        // tab cloaker presets
-        document.getElementById('presetCloaks').addEventListener('change', (e) => {
-            const presets = {
-                google: { title: 'Google Classroom', icon: 'https://ssl.gstatic.com/classroom/favicon.png' },
-                ixl: { title: 'IXL | Math, Language Arts, Science, Social Studies, and Spanish', icon: 'https://www.ixl.com/favicon.ico' },
-                deltamath: { title: 'DeltaMath', icon: 'https://www.deltamath.com/favicon.ico' },
-                canvas: { title: 'Canvas', icon: 'https://du11hjcvx0uq9.cloudfront.net/dist/images/favicon-e10d657c73.ico' },
-                schoology: { title: 'Home | Schoology', icon: 'https://asset.schoology.com/sites/all/themes/schoology_theme/images/favicon.ico' }
-            };
-
-            const preset = presets[e.target.value];
-            if (preset) {
-                document.getElementById('tabTitle').value = preset.title;
-                document.getElementById('tabIcon').value = preset.icon;
-            }
-        });
-
-        function applytabcloak() {
-            const title = document.getElementById('tabTitle').value;
-            const icon = document.getElementById('tabIcon').value;
-            
-            if (title) {
-                document.title = title;
-            }
-            
-            if (icon) {
-                const favicon = document.getElementById('favicon');
-                if (favicon) {
-                    favicon.href = icon;
-                }
-            }
-        }
-
-        function resettabcloak() {
-            document.title = 'veinte - settings';
-            const favicon = document.getElementById('favicon');
-            if (favicon) {
-                favicon.href = '';
-            }
-            document.getElementById('tabTitle').value = '';
-            document.getElementById('tabIcon').value = '';
-            document.getElementById('presetCloaks').value = '';
-        }
-
         // mouse shadow follower
         document.addEventListener('mousemove', (e) => {
             const shadow = document.getElementById('mouseShadow');
@@ -530,6 +710,8 @@
         window.addEventListener('load', () => {
             applysavedtheme();
             createparticles();
+            populateThemes();
+            setupTabCloaker();
         });
     </script>
 </body>
