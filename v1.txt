@@ -1,0 +1,1089 @@
+I will send you different html codes and I want you to change the UI for all of them, like make the space more clean, organized and add more stuff to the Homepage, Gamepage, etc.
+Also this is a Game/Apps/Cozy/Hangout Website, I'm currently rebranding the name to The Attic. make the fonts bold but still Poppins, and the Company Name is now Corner Collective.
+Here are the codes:
+
+- home.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>veinte</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twentyfolds/veinte@main/img/VeinteLogo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link id="favicon" rel="icon" href="" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+            --shadow-color: rgba(255, 255, 255, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+            z-index: -2;
+            transition: background 0.5s ease;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        /* intro page */
+        .intro-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+            transition: background 0.5s ease;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .intro-text {
+            font-size: 3rem;
+            font-weight: 300;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .intro-text.show {
+            opacity: 1;
+        }
+
+        .intro-text.hide {
+            opacity: 0;
+        }
+
+        .nickname-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .nickname-input {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: white;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nickname-input:focus {
+            background: rgba(200, 200, 200, 0.25);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .nickname-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* main container */
+        .main-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* page content */
+        .page {
+            padding-left: 110px;
+            padding-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            animation: pageFadeIn 0.5s ease-out;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* trending section - smaller and compact */
+        .trending-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            transition: background 0.5s ease;
+        }
+
+        .trending-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .trending-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+        }
+
+        .slideshow {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            border-radius: 0 0 15px 15px;
+        }
+
+        .slide-title {
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        /* game catalog */
+        .catalog-section {
+            margin-bottom: 30px;
+        }
+
+        .catalog-title {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            margin-left: 55px;
+        }
+
+        .games-row {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px 0;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+        }
+
+        .games-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .game-card {
+            min-width: 180px;
+            height: 180px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            flex-shrink: 0;
+            transition: background 0.5s ease;
+            position: relative;
+            text-decoration: none;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .game-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .game-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .game-card:hover .game-card-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .game-card-title {
+            font-weight: 400;
+            text-align: center;
+            font-size: 1rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* glow effect on hover */
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+            border-radius: 22px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        .scroll-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .scroll-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+            }
+
+            .page {
+                padding-left: 20px;
+                padding-bottom: 100px;
+            }
+
+            .intro-text {
+                font-size: 2rem;
+            }
+
+            .slideshow {
+                height: 200px;
+            }
+
+            .games-row {
+                gap: 15px;
+            }
+
+            .game-card {
+                min-width: 140px;
+                height: 140px;
+            }
+
+            .trending-title {
+                font-size: 1.3rem;
+            }
+
+            .catalog-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* utility classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* pulse animation for trending */
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .trending-section {
+            animation: pulse 3s ease-in-out infinite;
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- intro page -->
+    <div class="intro-page" id="introPage">
+        <h1 class="intro-text" id="welcomeText">welcome</h1>
+        <div class="nickname-container" id="nicknameContainer" style="display: none;">
+            <input type="text" class="nickname-input" id="nicknameInput" placeholder="enter your nickname">
+        </div>
+    </div>
+
+    <!-- main container -->
+    <div class="main-container" id="mainContainer">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="home.html" class="sidebar-icon active" title="home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="/veinte/pages/g" class="sidebar-icon" title="games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="/veinte/pages/p" class="sidebar-icon" title="proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="/veinte/pages/t" class="sidebar-icon" title="tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="/veinte/pages/s" class="sidebar-icon" title="settings">
+                <i class="fas fa-cog"></i>
+            </a>
+        </nav>
+
+        <!-- home page -->
+        <div class="page" id="homePage">
+            <div class="trending-section">
+                <h1 class="trending-title">trending</h1>
+                <p class="trending-subtitle">these games are on fire right now!</p>
+                <div class="slideshow" id="slideshow">
+                    <a href="/veinte/play/99" class="slide active" data-game="game1">
+                        <img src="https://via.placeholder.com/1200x400/1a1a1a/ffffff?text=game+1" alt="trending game">
+                        <div class="slide-overlay">
+                            <h3 class="slide-title">super game</h3>
+                        </div>
+                    </a>
+                    <a href="/veinte/play/99" class="slide" data-game="game2">
+                        <img src="https://via.placeholder.com/1200x400/2a2a2a/ffffff?text=game+2" alt="trending game">
+                        <div class="slide-overlay">
+                            <h3 class="slide-title">mega runner</h3>
+                        </div>
+                    </a>
+                    <a href="play.html?game=game3" class="slide" data-game="game3">
+                        <img src="https://via.placeholder.com/1200x400/3a3a3a/ffffff?text=game+3" alt="trending game">
+                        <div class="slide-overlay">
+                            <h3 class="slide-title">action blast</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">popular</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('popular', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="populargames">
+                        <a href="https://twentyfolds.github.io/veinte/play/99.html" class="game-card" data-game="game1">
+                            <img src="https://cdn.jsdelivr.net/gh/twentyfolds/veinte@main/img/g/99NightsInAForest.jpg" alt="99 nights in a forest">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">99 nights in a forest</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game2" class="game-card" data-game="game2">
+                            <img src="https://via.placeholder.com/180x180/2a2a2a/ffffff?text=game+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">mega runner</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game3" class="game-card" data-game="game3">
+                            <img src="https://via.placeholder.com/180x180/3a3a3a/ffffff?text=game+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">action blast</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game4" class="game-card" data-game="game4">
+                            <img src="https://via.placeholder.com/180x180/4a4a4a/ffffff?text=game+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">speed racer</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game5" class="game-card" data-game="game5">
+                            <img src="https://via.placeholder.com/180x180/5a5a5a/ffffff?text=game+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">puzzle master</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game6" class="game-card" data-game="game6">
+                            <img src="https://via.placeholder.com/180x180/6a6a6a/ffffff?text=game+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">space quest</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game7" class="game-card" data-game="game7">
+                            <img src="https://via.placeholder.com/180x180/7a7a7a/ffffff?text=game+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">sky fighter</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=game8" class="game-card" data-game="game8">
+                            <img src="https://via.placeholder.com/180x180/8a8a8a/ffffff?text=game+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">candy crush</div>
+                            </div>
+                        </a>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('popular', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">action</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('action', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="actiongames">
+                        <a href="play.html?game=action1" class="game-card" data-game="action1">
+                            <img src="https://via.placeholder.com/180x180/ff0000/ffffff?text=action+1" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">battle royale</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action2" class="game-card" data-game="action2">
+                            <img src="https://via.placeholder.com/180x180/ff3300/ffffff?text=action+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">fighter z</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action3" class="game-card" data-game="action3">
+                            <img src="https://via.placeholder.com/180x180/ff6600/ffffff?text=action+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">war zone</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action4" class="game-card" data-game="action4">
+                            <img src="https://via.placeholder.com/180x180/ff9900/ffffff?text=action+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">combat elite</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action5" class="game-card" data-game="action5">
+                            <img src="https://via.placeholder.com/180x180/ffcc00/ffffff?text=action+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">strike force</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action6" class="game-card" data-game="action6">
+                            <img src="https://via.placeholder.com/180x180/ffff00/ffffff?text=action+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">ninja attack</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action7" class="game-card" data-game="action7">
+                            <img src="https://via.placeholder.com/180x180/ff6600/ffffff?text=action+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">sniper elite</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=action8" class="game-card" data-game="action8">
+                            <img src="https://via.placeholder.com/180x180/ff3300/ffffff?text=action+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">tank battle</div>
+                            </div>
+                        </a>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('action', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">horror</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('horror', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="horrorgames">
+                        <a href="play.html?game=horror1" class="game-card" data-game="horror1">
+                            <img src="https://via.placeholder.com/180x180/4a0000/ffffff?text=horror+1" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">dark mansion</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror2" class="game-card" data-game="horror2">
+                            <img src="https://via.placeholder.com/180x180/660000/ffffff?text=horror+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">creepy house</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror3" class="game-card" data-game="horror3">
+                            <img src="https://via.placeholder.com/180x180/800000/ffffff?text=horror+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">zombie apocalypse</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror4" class="game-card" data-game="horror4">
+                            <img src="https://via.placeholder.com/180x180/990000/ffffff?text=horror+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">ghost town</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror5" class="game-card" data-game="horror5">
+                            <img src="https://via.placeholder.com/180x180/b30000/ffffff?text=horror+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">nightmare</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror6" class="game-card" data-game="horror6">
+                            <img src="https://via.placeholder.com/180x180/cc0000/ffffff?text=horror+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">scary maze</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror7" class="game-card" data-game="horror7">
+                            <img src="https://via.placeholder.com/180x180/800000/ffffff?text=horror+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">evil clown</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=horror8" class="game-card" data-game="horror8">
+                            <img src="https://via.placeholder.com/180x180/660000/ffffff?text=horror+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">haunted forest</div>
+                            </div>
+                        </a>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('horror', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">running</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('running', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="runninggames">
+                        <a href="play.html?game=running1" class="game-card" data-game="running1">
+                            <img src="https://via.placeholder.com/180x180/00ff00/000000?text=run+1" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">endless run</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running2" class="game-card" data-game="running2">
+                            <img src="https://via.placeholder.com/180x180/00cc00/000000?text=run+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">temple dash</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running3" class="game-card" data-game="running3">
+                            <img src="https://via.placeholder.com/180x180/009900/000000?text=run+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">subway surf</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running4" class="game-card" data-game="running4">
+                            <img src="https://via.placeholder.com/180x180/006600/000000?text=run+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">parkour run</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running5" class="game-card" data-game="running5">
+                            <img src="https://via.placeholder.com/180x180/003300/000000?text=run+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">city runner</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running6" class="game-card" data-game="running6">
+                            <img src="https://via.placeholder.com/180x180/001a00/000000?text=run+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">sprint king</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running7" class="game-card" data-game="running7">
+                            <img src="https://via.placeholder.com/180x180/00cc00/000000?text=run+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">road dash</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=running8" class="game-card" data-game="running8">
+                            <img src="https://via.placeholder.com/180x180/009900/000000?text=run+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">track stars</div>
+                            </div>
+                        </a>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('running', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="catalog-section">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 class="catalog-title">beauty</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="scroll-btn" onclick="scrollgames('beauty', -1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="games-row" id="beautygames">
+                        <a href="play.html?game=beauty1" class="game-card" data-game="beauty1">
+                            <img src="https://via.placeholder.com/180x180/ff69b4/ffffff?text=beauty+1" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">makeup studio</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty2" class="game-card" data-game="beauty2">
+                            <img src="https://via.placeholder.com/180x180/ff1493/ffffff?text=beauty+2" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">dress up</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty3" class="game-card" data-game="beauty3">
+                            <img src="https://via.placeholder.com/180x180/ff00ff/ffffff?text=beauty+3" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">hair salon</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty4" class="game-card" data-game="beauty4">
+                            <img src="https://via.placeholder.com/180x180/da70d6/ffffff?text=beauty+4" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">fashion queen</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty5" class="game-card" data-game="beauty5">
+                            <img src="https://via.placeholder.com/180x180/ba55d3/ffffff?text=beauty+5" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">nail art</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty6" class="game-card" data-game="beauty6">
+                            <img src="https://via.placeholder.com/180x180/9932cc/ffffff?text=beauty+6" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">spa day</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty7" class="game-card" data-game="beauty7">
+                            <img src="https://via.placeholder.com/180x180/da70d6/ffffff?text=beauty+7" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">princess dress</div>
+                            </div>
+                        </a>
+                        <a href="play.html?game=beauty8" class="game-card" data-game="beauty8">
+                            <img src="https://via.placeholder.com/180x180/ba55d3/ffffff?text=beauty+8" alt="game">
+                            <div class="game-card-overlay">
+                                <div class="game-card-title">jewelry maker</div>
+                            </div>
+                        </a>
+                    </div>
+                    <button class="scroll-btn" onclick="scrollgames('beauty', 1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // theme definitions with full color schemes
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            blue: {
+                primaryBg: '#0f1624',
+                secondaryBg: '#1a2332',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0f1624',
+                gradientMiddle: '#1a2332',
+                gradientEnd: '#162a4a'
+            },
+            pink: {
+                primaryBg: '#1a0f14',
+                secondaryBg: '#2d1a2e',
+                cardBg: 'rgba(219, 112, 147, 0.15)',
+                inputBg: 'rgba(219, 112, 147, 0.2)',
+                gradientStart: '#1a0f14',
+                gradientMiddle: '#2d1a2e',
+                gradientEnd: '#3e1621'
+            },
+            green: {
+                primaryBg: '#0f1a0f',
+                secondaryBg: '#1a2e1a',
+                cardBg: 'rgba(60, 179, 113, 0.15)',
+                inputBg: 'rgba(60, 179, 113, 0.2)',
+                gradientStart: '#0f1a0f',
+                gradientMiddle: '#1a2e1a',
+                gradientEnd: '#163e1c'
+            },
+            purple: {
+                primaryBg: '#1a0f24',
+                secondaryBg: '#2a1a2e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f24',
+                gradientMiddle: '#2a1a2e',
+                gradientEnd: '#3e1636'
+            }
+        };
+
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localStorage.getItem('veintetheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            
+            // Update all CSS variables
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            // Also update intro page background
+            const introPage = document.getElementById('introPage');
+            if (introPage) {
+                introPage.style.background = `linear-gradient(135deg, ${theme.gradientStart} 0%, ${theme.gradientMiddle} 50%, ${theme.gradientEnd} 100%)`;
+            }
+
+            // save theme to localStorage
+            localStorage.setItem('veintetheme', themeName);
+        }
+
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
+            }
+        }
+
+        // mouse shadow follower
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
+        });
+
+        // intro animation
+        function startintro() {
+            const welcometext = document.getElementById('welcomeText');
+            const nicknamecontainer = document.getElementById('nicknameContainer');
+            
+            // show welcome text
+            welcometext.classList.add('show');
+            
+            // after 2 seconds, fade out welcome and show nickname input
+            setTimeout(() => {
+                welcometext.classList.remove('show');
+                welcometext.classList.add('hide');
+                
+                setTimeout(() => {
+                    welcometext.style.display = 'none';
+                    nicknamecontainer.style.display = 'flex';
+                    document.getElementById('nicknameInput').focus();
+                }, 1000);
+            }, 2000);
+        }
+
+        // handle nickname input
+        document.getElementById('nicknameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const nickname = e.target.value;
+                localStorage.setItem('veintenickname', nickname);
+                entermainsite();
+            }
+        });
+
+        function entermainsite() {
+            const introPage = document.getElementById('introPage');
+            const maincontainer = document.getElementById('mainContainer');
+            
+            introPage.style.transition = 'opacity 1s ease-out';
+            introPage.style.opacity = '0';
+            
+            setTimeout(() => {
+                introPage.style.display = 'none';
+                maincontainer.style.display = 'block';
+                startslideshow();
+            }, 1000);
+        }
+
+        // slideshow functionality
+        let currentslide = 0;
+        let slideshowinterval;
+
+        function startslideshow() {
+            const slides = document.querySelectorAll('.slide');
+            
+            slideshowinterval = setInterval(() => {
+                slides[currentslide].classList.remove('active');
+                currentslide = (currentslide + 1) % slides.length;
+                slides[currentslide].classList.add('active');
+            }, 4000);
+        }
+
+        // scroll games in catalog
+        function scrollgames(category, direction) {
+            const row = document.getElementById(category + 'games');
+            const scrollamount = 750;
+            row.scrollBy({ left: direction * scrollamount, behavior: 'smooth' });
+        }
+
+        // initialize on load
+        window.addEventListener('load', () => {
+            applysavedtheme();
+            createparticles();
+            startintro();
+        });
+    </script>
+</body>
+</html>
+
+For home.html I want you to add to the sidebar, remove the Proxy Button, and from there, add a Movies Button that will lead you to /theattic/pages/m.html when clicked. And also add a Chat Button to the sidebar and it takes you to /theattic/pages/c.html and also change the link to every button or game to /theattic/ and then whatever it was /pages/ or whatever. Also change the name of the Tab Name to "The Attic | Home" if it's one the Home Page. And fix where if I'm on the Tools Page, it makes it so the button is shaded on the tools button, not the game button, that's an error.
+Also change the FavIcon to every page to /img/TheAtticIcon.png
