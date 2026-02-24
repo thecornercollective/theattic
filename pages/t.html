@@ -1,16 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>veinte - tools</title>
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twentyfolds/veinte@main/img/VeinteLogo.png">
+    <title>The Attic | Tools</title>
+    <link rel="icon" type="image/png" href="/img/TheAtticIcon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link id="favicon" rel="icon" href="" type="image/x-icon">
     <style>
         * {
             margin: 0;
@@ -26,6 +24,7 @@
             --text-color: #ffffff;
             --sidebar-bg: rgba(255, 255, 255, 0.1);
             --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
             --gradient-start: #000000;
             --gradient-middle: #1a1a1a;
             --gradient-end: #000000;
@@ -220,9 +219,9 @@
         }
 
         .tool-card-title {
-            font-weight: 400;
             text-align: center;
             font-size: 1rem;
+            font-weight: 600;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
             white-space: nowrap;
             overflow: hidden;
@@ -259,16 +258,45 @@
                 height: 70px;
                 transform: none;
                 flex-direction: row;
+                z-index: 200;
             }
 
             .page {
                 padding-left: 20px;
+                padding-right: 20px;
                 padding-bottom: 100px;
             }
 
             .tools-grid {
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .tools-grid {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                gap: 12px;
+            }
+
+            .tool-card-title {
+                font-size: 0.85rem;
+            }
+
+            .sidebar {
+                gap: 15px;
+                padding: 15px 0;
+            }
+
+            .sidebar-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -283,20 +311,26 @@
     <div class="main-container">
         <!-- sidebar -->
         <nav class="sidebar">
-            <a href="https://twentyfolds.github.io/veinte/home" class="sidebar-icon" title="home">
+            <a href="/theattic/home.html" class="sidebar-icon" title="Home">
                 <i class="fas fa-home"></i>
             </a>
-            <a href="/veinte/pages/g" class="sidebar-icon" title="games">
+            <a href="/theattic/pages/g.html" class="sidebar-icon" title="Games">
                 <i class="fas fa-gamepad"></i>
             </a>
-            <a href="/veinte/pages/p" class="sidebar-icon" title="proxy">
+            <a href="/theattic/pages/p.html" class="sidebar-icon" title="Proxy">
                 <i class="fas fa-search"></i>
             </a>
-            <a href="/veinte/pages/t" class="sidebar-icon active" title="tools">
+            <a href="/theattic/pages/t.html" class="sidebar-icon active" title="Tools">
                 <i class="fas fa-tools"></i>
             </a>
-            <a href="/veinte/pages/s" class="sidebar-icon" title="settings">
+            <a href="/theattic/pages/s.html" class="sidebar-icon" title="Settings">
                 <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
             </a>
         </nav>
 
@@ -311,63 +345,77 @@
     <script>
         // all tools data with images
         const tools = [
-            { id: 'calculator', name: 'calculator', img: 'https://via.placeholder.com/180x180/ff6b6b/ffffff?text=Calculator', category: 'utility' },
-            { id: 'notes', name: 'notes', img: 'https://via.placeholder.com/180x180/4ecdc4/ffffff?text=Notes', category: 'utility' },
-            { id: 'timer', name: 'timer', img: 'https://via.placeholder.com/180x180/45b7d1/ffffff?text=Timer', category: 'utility' },
-            { id: 'weather', name: 'weather', img: 'https://via.placeholder.com/180x180/96ceb4/ffffff?text=Weather', category: 'utility' },
-            { id: 'calendar', name: 'calendar', img: 'https://via.placeholder.com/180x180/ffeaa7/ffffff?text=Calendar', category: 'utility' },
-            { id: 'converter', name: 'converter', img: 'https://via.placeholder.com/180x180/dfe6e9/333333?text=Converter', category: 'utility' },
-            { id: 'stopwatch', name: 'stopwatch', img: 'https://via.placeholder.com/180x180/74b9ff/ffffff?text=Stopwatch', category: 'utility' },
-            { id: 'todo', name: 'todo list', img: 'https://via.placeholder.com/180x180/a29bfe/ffffff?text=To+Do', category: 'productivity' }
+            { id: 'calculator', name: 'Calculator', img: 'https://via.placeholder.com/180x180/ff6b6b/ffffff?text=Calculator', category: 'utility' },
+            { id: 'notes', name: 'Notes', img: 'https://via.placeholder.com/180x180/4ecdc4/ffffff?text=Notes', category: 'utility' },
+            { id: 'timer', name: 'Timer', img: 'https://via.placeholder.com/180x180/45b7d1/ffffff?text=Timer', category: 'utility' },
+            { id: 'weather', name: 'Weather', img: 'https://via.placeholder.com/180x180/96ceb4/ffffff?text=Weather', category: 'utility' },
+            { id: 'calendar', name: 'Calendar', img: 'https://via.placeholder.com/180x180/ffeaa7/ffffff?text=Calendar', category: 'utility' },
+            { id: 'converter', name: 'Converter', img: 'https://via.placeholder.com/180x180/dfe6e9/333333?text=Converter', category: 'utility' },
+            { id: 'stopwatch', name: 'Stopwatch', img: 'https://via.placeholder.com/180x180/74b9ff/ffffff?text=Stopwatch', category: 'utility' },
+            { id: 'todo', name: 'To Do List', img: 'https://via.placeholder.com/180x180/a29bfe/ffffff?text=To+Do', category: 'productivity' }
         ];
 
-        // theme definitions with full color schemes
+        // theme definitions
         const themes = {
             default: {
                 primaryBg: '#000000',
                 secondaryBg: '#1a1a1a',
                 cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
                 gradientStart: '#000000',
                 gradientMiddle: '#1a1a1a',
                 gradientEnd: '#000000'
             },
-            blue: {
-                primaryBg: '#0f1624',
-                secondaryBg: '#1a2332',
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
                 cardBg: 'rgba(100, 149, 237, 0.15)',
-                gradientStart: '#0f1624',
-                gradientMiddle: '#1a2332',
-                gradientEnd: '#162a4a'
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847'
             },
-            pink: {
-                primaryBg: '#1a0f14',
-                secondaryBg: '#2d1a2e',
-                cardBg: 'rgba(219, 112, 147, 0.15)',
-                gradientStart: '#1a0f14',
-                gradientMiddle: '#2d1a2e',
-                gradientEnd: '#3e1621'
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636'
             },
-            green: {
-                primaryBg: '#0f1a0f',
-                secondaryBg: '#1a2e1a',
-                cardBg: 'rgba(60, 179, 113, 0.15)',
-                gradientStart: '#0f1a0f',
-                gradientMiddle: '#1a2e1a',
-                gradientEnd: '#163e1c'
-            },
-            purple: {
-                primaryBg: '#1a0f24',
-                secondaryBg: '#2a1a2e',
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
                 cardBg: 'rgba(147, 112, 219, 0.15)',
-                gradientStart: '#1a0f24',
-                gradientMiddle: '#2a1a2e',
-                gradientEnd: '#3e1636'
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28'
             }
         };
 
         // apply saved theme
         function applysavedtheme() {
-            const savedtheme = localStorage.getItem('veintetheme');
+            const savedtheme = localStorage.getItem('atticTheme');
             if (savedtheme) {
                 applytheme(savedtheme);
             }
@@ -379,23 +427,22 @@
 
             const root = document.documentElement;
             
-            // Update all CSS variables
             root.style.setProperty('--primary-bg', theme.primaryBg);
             root.style.setProperty('--secondary-bg', theme.secondaryBg);
             root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
             root.style.setProperty('--gradient-start', theme.gradientStart);
             root.style.setProperty('--gradient-middle', theme.gradientMiddle);
             root.style.setProperty('--gradient-end', theme.gradientEnd);
 
-            // save theme to localStorage
-            localStorage.setItem('veintetheme', themeName);
+            localStorage.setItem('atticTheme', themeName);
         }
 
         // populate tools grid
         function populatetools() {
             const grid = document.getElementById('toolsGrid');
             grid.innerHTML = tools.map(tool => `
-                <a href="play.html?tool=${tool.id}" class="tool-card">
+                <a href="/theattic/play/${tool.id}.html" class="tool-card">
                     <img src="${tool.img}" alt="${tool.name}">
                     <div class="tool-card-overlay">
                         <div class="tool-card-title">${tool.name}</div>
