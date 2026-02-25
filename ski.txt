@@ -1,0 +1,3750 @@
+here are my codes that I need updated. home.html: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Attic | Home</title>
+    <link rel="icon" type="image/png" href="/theattic/img/TheAtticIcon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+            --shadow-color: rgba(255, 255, 255, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+            z-index: -2;
+            transition: background 0.5s ease;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        /* intro page */
+        .intro-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+            transition: opacity 0.5s ease;
+        }
+
+        .intro-logo {
+            width: 500px;
+            height: 500px;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .intro-logo.show {
+            opacity: 1;
+        }
+
+        .intro-page.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* main container */
+        .main-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .main-container.show {
+            display: block;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* page content */
+        .page {
+            padding-left: 110px;
+            padding-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* welcome section */
+        .welcome-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+        }
+
+        .nickname-input {
+            width: 300px;
+            padding: 15px 25px;
+            background: var(--input-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .nickname-input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* trending section */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-left: 10px;
+            border-left: 4px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .trending-section {
+            margin-bottom: 60px;
+        }
+
+        .trending-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .trending-slides {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .trending-slide {
+            min-width: 100%;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trending-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .trending-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+        }
+
+        .trending-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .trending-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .carousel-nav.prev {
+            left: 20px;
+        }
+
+        .carousel-nav.next {
+            right: 20px;
+        }
+
+        /* game sections */
+        .game-section {
+            margin-bottom: 60px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            padding: 10px 0;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: white;
+            position: relative;
+            aspect-ratio: 4/3;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .game-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .game-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            opacity: 0;
+        }
+
+        .game-card:hover .game-card-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .game-card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .game-tags {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .game-tag {
+            padding: 3px 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* glow effect */
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+            border-radius: 22px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+                z-index: 200;
+            }
+
+            .page {
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-bottom: 100px;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 1rem;
+            }
+
+            .nickname-input {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px;
+            }
+
+            .trending-slide {
+                height: 250px;
+            }
+
+            .trending-title {
+                font-size: 1.5rem;
+            }
+
+            .trending-description {
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .carousel-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .welcome-title {
+                font-size: 1.5rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .nickname-input {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 12px;
+            }
+
+            .game-card-title {
+                font-size: 0.85rem;
+            }
+
+            .game-tag {
+                font-size: 0.6rem;
+                padding: 2px 6px;
+            }
+
+            .trending-slide {
+                height: 200px;
+            }
+
+            .trending-title {
+                font-size: 1.2rem;
+            }
+
+            .trending-description {
+                font-size: 0.8rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .sidebar {
+                gap: 15px;
+                padding: 15px 0;
+            }
+
+            .sidebar-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="particles" id="particles"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+
+    <!-- intro page -->
+    <div class="intro-page" id="introPage">
+        <img src="/theattic/img/TheAtticIntro.png" alt="The Attic Logo" class="intro-logo" id="introLogo">
+    </div>
+
+    <!-- main container -->
+    <div class="main-container" id="mainContainer">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="/theattic/home.html" class="sidebar-icon active" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="/theattic/pages/g.html" class="sidebar-icon" title="Games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="/theattic/pages/p.html" class="sidebar-icon" title="Proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="/theattic/pages/t.html" class="sidebar-icon" title="Tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="/theattic/pages/s.html" class="sidebar-icon" title="Settings">
+                <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
+            </a>
+        </nav>
+
+        <!-- home page -->
+        <div class="page">
+            <!-- welcome section -->
+            <div class="welcome-section">
+                <h1 class="welcome-title">Welcome to The Attic</h1>
+                <p class="welcome-subtitle">Your cozy hangout for games, apps, and good vibes</p>
+                <input type="text" class="nickname-input" id="nicknameInput" placeholder="Enter your nickname...">
+            </div>
+
+            <!-- trending section -->
+            <div class="trending-section">
+                <h2 class="section-title">Trending Now</h2>
+                <div class="trending-carousel">
+                    <button class="carousel-nav prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+                    <div class="trending-slides" id="trendingSlides">
+                        <!-- slides populated by js -->
+                    </div>
+                    <button class="carousel-nav next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- game categories -->
+            <div class="game-section">
+                <h2 class="section-title">Popular Games</h2>
+                <div class="games-grid" id="popularGames">
+                    <!-- games populated by js -->
+                </div>
+            </div>
+
+            <div class="game-section">
+                <h2 class="section-title">Action Games</h2>
+                <div class="games-grid" id="actionGames">
+                    <!-- games populated by js -->
+                </div>
+            </div>
+
+            <div class="game-section">
+                <h2 class="section-title">Horror Games</h2>
+                <div class="games-grid" id="horrorGames">
+                    <!-- games populated by js -->
+                </div>
+            </div>
+
+            <div class="game-section">
+                <h2 class="section-title">Running Games</h2>
+                <div class="games-grid" id="runningGames">
+                    <!-- games populated by js -->
+                </div>
+            </div>
+
+            <div class="game-section">
+                <h2 class="section-title">Beauty Games</h2>
+                <div class="games-grid" id="beautyGames">
+                    <!-- games populated by js -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // trending slides data
+        const trendingSlides = [
+            { title: 'Minecraft Classic', desc: 'Build, explore, and survive in the original sandbox game', img: 'https://via.placeholder.com/1200x400/4CAF50/ffffff?text=Minecraft+Classic', link: '/theattic/play/minecraft.html' },
+            { title: 'Among Us', desc: 'Find the imposter among the crew', img: 'https://via.placeholder.com/1200x400/2196F3/ffffff?text=Among+Us', link: '/theattic/play/amongus.html' },
+            { title: 'Subway Surfers', desc: 'Run, jump, and dodge trains in this endless runner', img: 'https://via.placeholder.com/1200x400/FF9800/ffffff?text=Subway+Surfers', link: '/theattic/play/subwaysurfers.html' }
+        ];
+
+        // games data with full categories
+        const games = [
+            { id: 'minecraft', name: 'Minecraft Classic', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Minecraft', category: 'popular', tags: ['sandbox', 'multiplayer'] },
+            { id: 'amongus', name: 'Among Us', img: 'https://via.placeholder.com/200x150/2196F3/ffffff?text=Among+Us', category: 'popular', tags: ['social', 'multiplayer'] },
+            { id: 'subwaysurfers', name: 'Subway Surfers', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Subway+Surfers', category: ['popular', 'running'], tags: ['runner', 'endless'] },
+            { id: 'temple-run', name: 'Temple Run', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=Temple+Run', category: ['popular', 'running'], tags: ['runner', 'adventure'] },
+            { id: 'crossy-road', name: 'Crossy Road', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Crossy+Road', category: 'popular', tags: ['arcade', 'casual'] },
+            { id: 'geometry-dash', name: 'Geometry Dash', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Geometry+Dash', category: ['popular', 'action'], tags: ['rhythm', 'platformer'] },
+            { id: 'slither-io', name: 'Slither.io', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Slither.io', category: 'popular', tags: ['io', 'multiplayer'] },
+            { id: 'agario', name: 'Agar.io', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Agar.io', category: 'popular', tags: ['io', 'multiplayer'] },
+            { id: 'stickman-hook', name: 'Stickman Hook', img: 'https://via.placeholder.com/200x150/FF5722/ffffff?text=Stickman+Hook', category: ['popular', 'action'], tags: ['physics', 'skill'] },
+            { id: 'vex', name: 'VEX', img: 'https://via.placeholder.com/200x150/607D8B/ffffff?text=VEX', category: ['popular', 'action'], tags: ['platformer', 'skill'] },
+            { id: 'shell-shockers', name: 'Shell Shockers', img: 'https://via.placeholder.com/200x150/F44336/ffffff?text=Shell+Shockers', category: ['popular', 'action'], tags: ['fps', 'multiplayer'] },
+            { id: 'krunker', name: 'Krunker.io', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Krunker', category: ['action', 'popular'], tags: ['fps', 'io'] },
+            { id: '1v1-lol', name: '1v1.LOL', img: 'https://via.placeholder.com/200x150/3F51B5/ffffff?text=1v1.LOL', category: 'action', tags: ['fps', 'building'] },
+            { id: 'fortnite', name: 'Fortnite', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Fortnite', category: 'action', tags: ['battle-royale', 'multiplayer'] },
+            { id: 'pubg', name: 'PUBG', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=PUBG', category: 'action', tags: ['battle-royale', 'shooter'] },
+            { id: 'roblox', name: 'Roblox', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Roblox', category: ['action', 'popular'], tags: ['sandbox', 'multiplayer'] },
+            { id: 'gta', name: 'GTA V', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=GTA+V', category: 'action', tags: ['open-world', 'action'] },
+            { id: 'five-nights', name: 'Five Nights at Freddy\'s', img: 'https://via.placeholder.com/200x150/9E9E9E/ffffff?text=FNAF', category: 'horror', tags: ['survival', 'jumpscare'] },
+            { id: ' slenderman', name: 'Slenderman', img: 'https://via.placeholder.com/200x150/212121/ffffff?text=Slenderman', category: 'horror', tags: ['survival', 'horror'] },
+            { id: 'granny', name: 'Granny', img: 'https://via.placeholder.com/200x150/8D6E63/ffffff?text=Granny', category: 'horror', tags: ['escape', 'horror'] },
+            { id: 'baldi', name: 'Baldi\'s Basics', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Baldi', category: 'horror', tags: ['educational', 'horror'] },
+            { id: 'poppy-playtime', name: 'Poppy Playtime', img: 'https://via.placeholder.com/200x150/2196F3/ffffff?text=Poppy+Playtime', category: 'horror', tags: ['puzzle', 'horror'] },
+            { id: 'sonic-exe', name: 'Sonic.EXE', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Sonic.EXE', category: 'horror', tags: ['horror', 'platformer'] },
+            { id: 'runner-3d', name: 'Runner 3D', img: 'https://via.placeholder.com/200x150/009688/ffffff?text=Runner+3D', category: ['running', 'popular'], tags: ['3d', 'runner'] },
+            { id: 'parkour-rush', name: 'Parkour Rush', img: 'https://via.placeholder.com/200x150/FF5722/ffffff?text=Parkour+Rush', category: 'running', tags: ['parkour', 'skill'] },
+            { id: 'ninja-run', name: 'Ninja Run', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Ninja+Run', category: 'running', tags: ['ninja', 'action'] },
+            { id: 'subway-surf', name: 'Subway Surf', img: 'https://via.placeholder.com/200x150/FFC107/ffffff?text=Subway+Surf', category: ['running', 'popular'], tags: ['surfing', 'endless'] },
+            { id: 'makeover-studio', name: 'Makeover Studio', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Makeover+Studio', category: 'beauty', tags: ['dress-up', 'makeover'] },
+            { id: 'hair-salon', name: 'Hair Salon', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Hair+Salon', category: 'beauty', tags: ['styling', 'casual'] },
+            { id: 'nail-art', name: 'Nail Art', img: 'https://via.placeholder.com/200x150/673AB7/ffffff?text=Nail+Art', category: 'beauty', tags: ['design', 'creative'] },
+            { id: 'fashion-dress', name: 'Fashion Dress', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Fashion+Dress', category: 'beauty', tags: ['fashion', 'dress-up'] },
+            { id: 'makeup-master', name: 'Makeup Master', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=Makeup+Master', category: 'beauty', tags: ['makeup', 'beauty'] },
+            { id: 'princess-spa', name: 'Princess Spa', img: 'https://via.placeholder.com/200x150/607D8B/ffffff?text=Princess+Spa', category: 'beauty', tags: ['spa', 'relax'] },
+            { id: 'wedding-dress', name: 'Wedding Dress', img: 'https://via.placeholder.com/200x150/F44336/ffffff?text=Wedding+Dress', category: 'beauty', tags: ['wedding', 'dress-up'] },
+            { id: 'beauty-contest', name: 'Beauty Contest', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Beauty+Contest', category: 'beauty', tags: ['contest', 'style'] }
+        ];
+
+        // theme definitions
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847'
+            },
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636'
+            },
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28'
+            }
+        };
+
+        let currentSlide = 0;
+
+        // initialize carousel
+        function initCarousel() {
+            const slidesContainer = document.getElementById('trendingSlides');
+            slidesContainer.innerHTML = trendingSlides.map(slide => `
+                <div class="trending-slide">
+                    <a href="${slide.link}">
+                        <img src="${slide.img}" alt="${slide.title}">
+                        <div class="trending-overlay">
+                            <h3 class="trending-title">${slide.title}</h3>
+                            <p class="trending-description">${slide.desc}</p>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function updateCarousel() {
+            const slidesContainer = document.getElementById('trendingSlides');
+            slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % trendingSlides.length;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + trendingSlides.length) % trendingSlides.length;
+            updateCarousel();
+        }
+
+        // populate game grids
+        function populateGames() {
+            const categories = {
+                popular: 'popularGames',
+                action: 'actionGames',
+                horror: 'horrorGames',
+                running: 'runningGames',
+                beauty: 'beautyGames'
+            };
+
+            Object.keys(categories).forEach(category => {
+                const container = document.getElementById(categories[category]);
+                if (!container) return;
+
+                const categoryGames = games.filter(game => {
+                    const gameCats = Array.isArray(game.category) ? game.category : [game.category];
+                    return gameCats.includes(category);
+                });
+
+                container.innerHTML = categoryGames.map(game => `
+                    <a href="/theattic/play/${game.id}.html" class="game-card">
+                        <img src="${game.img}" alt="${game.name}">
+                        <div class="game-card-overlay">
+                            <div class="game-card-title">${game.name}</div>
+                            <div class="game-tags">
+                                ${game.tags.slice(0, 2).map(tag => `<span class="game-tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </a>
+                `).join('');
+            });
+        }
+
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localStorage.getItem('atticTheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            localStorage.setItem('atticTheme', themeName);
+        }
+
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
+            }
+        }
+
+        // mouse shadow follower
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
+        });
+
+        // intro animation
+        function playIntro() {
+            const introPage = document.getElementById('introPage');
+            const introLogo = document.getElementById('introLogo');
+            const mainContainer = document.getElementById('mainContainer');
+
+            setTimeout(() => {
+                introLogo.classList.add('show');
+            }, 500);
+
+            setTimeout(() => {
+                introLogo.classList.remove('show');
+            }, 3500);
+
+            setTimeout(() => {
+                introPage.classList.add('hidden');
+                mainContainer.classList.add('show');
+            }, 4500);
+        }
+
+        // load nickname
+        function loadNickname() {
+            const savedNickname = localStorage.getItem('atticNickname');
+            if (savedNickname) {
+                const input = document.getElementById('nicknameInput');
+                if (input) {
+                    input.value = savedNickname;
+                }
+            }
+        }
+
+        // save nickname
+        function saveNickname() {
+            const input = document.getElementById('nicknameInput');
+            if (input) {
+                localStorage.setItem('atticNickname', input.value);
+            }
+        }
+
+        document.getElementById('nicknameInput')?.addEventListener('change', saveNickname);
+
+        // initialize on load
+        window.addEventListener('load', () => {
+            applysavedtheme();
+            createparticles();
+            initCarousel();
+            populateGames();
+            loadNickname();
+            playIntro();
+        });
+
+        // auto-rotate carousel
+        setInterval(nextSlide, 5000);
+    </script>
+</body>
+</html> I want you to remove the tools button and profile button on the sidebar on every page html code I give you and also make it so when you click on the notification button on the sidebar, it brings a low transparency popup the same color as the user changed the theme changer, I will get to that later, but also make the notifications popup be a news center with todays news, or the last news published and the name of the person who did it, message of the day, bible verse of the day and the date the news was published and the news title and news. make sections like v0, v1, for all the different versions and stuff we updated in those versions. here is g.html <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Attic | Games</title>
+    <link rel="icon" type="image/png" href="/img/TheAtticIcon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+            z-index: -2;
+            transition: background 0.5s ease;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        /* main container */
+        .main-container {
+            min-height: 100vh;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* page content */
+        .page {
+            padding-left: 110px;
+            padding-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* search section */
+        .search-section {
+            margin-bottom: 40px;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 25px;
+            background: var(--input-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+        }
+
+        /* search results popup */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .search-result-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .search-result-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .search-result-category {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* category filters */
+        .category-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            background: var(--card-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        /* section title */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-left: 10px;
+            border-left: 4px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* games grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            padding: 10px 0;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: white;
+            position: relative;
+            aspect-ratio: 4/3;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .game-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .game-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            opacity: 0;
+        }
+
+        .game-card:hover .game-card-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .game-card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .game-tags {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .game-tag {
+            padding: 3px 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* glow effect */
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+            border-radius: 22px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+                z-index: 200;
+            }
+
+            .page {
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-bottom: 100px;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px;
+            }
+
+            .category-filters {
+                gap: 10px;
+            }
+
+            .filter-btn {
+                padding: 8px 20px;
+                font-size: 0.8rem;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 12px;
+            }
+
+            .game-card-title {
+                font-size: 0.85rem;
+            }
+
+            .game-tag {
+                font-size: 0.6rem;
+                padding: 2px 6px;
+            }
+
+            .category-filters {
+                gap: 8px;
+            }
+
+            .filter-btn {
+                padding: 6px 15px;
+                font-size: 0.75rem;
+            }
+
+            .search-input {
+                padding: 12px 45px 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .search-icon {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .sidebar {
+                gap: 15px;
+                padding: 15px 0;
+            }
+
+            .sidebar-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="particles" id="particles"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+
+    <!-- main container -->
+    <div class="main-container">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="/theattic/home.html" class="sidebar-icon" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="/theattic/pages/g.html" class="sidebar-icon active" title="Games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="/theattic/pages/p.html" class="sidebar-icon" title="Proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="/theattic/pages/t.html" class="sidebar-icon" title="Tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="/theattic/pages/s.html" class="sidebar-icon" title="Settings">
+                <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
+            </a>
+        </nav>
+
+        <!-- games page -->
+        <div class="page">
+            <!-- search section -->
+            <div class="search-section">
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search games...">
+                    <i class="fas fa-search search-icon"></i>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+            </div>
+
+            <!-- category filters -->
+            <div class="category-filters">
+                <button class="filter-btn active" data-category="all">All Games</button>
+                <button class="filter-btn" data-category="popular">Popular</button>
+                <button class="filter-btn" data-category="action">Action</button>
+                <button class="filter-btn" data-category="horror">Horror</button>
+                <button class="filter-btn" data-category="running">Running</button>
+                <button class="filter-btn" data-category="beauty">Beauty</button>
+            </div>
+
+            <!-- games grid -->
+            <h2 class="section-title">All Games</h2>
+            <div class="games-grid" id="gamesGrid">
+                <!-- games populated by js -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // all games data with full categories
+        const games = [
+            { id: 'minecraft', name: 'Minecraft Classic', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Minecraft', category: ['popular', 'action'], tags: ['sandbox', 'multiplayer'] },
+            { id: 'amongus', name: 'Among Us', img: 'https://via.placeholder.com/200x150/2196F3/ffffff?text=Among+Us', category: ['popular', 'action'], tags: ['social', 'multiplayer'] },
+            { id: 'subwaysurfers', name: 'Subway Surfers', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Subway+Surfers', category: ['popular', 'running'], tags: ['runner', 'endless'] },
+            { id: 'temple-run', name: 'Temple Run', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=Temple+Run', category: ['popular', 'running'], tags: ['runner', 'adventure'] },
+            { id: 'crossy-road', name: 'Crossy Road', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Crossy+Road', category: 'popular', tags: ['arcade', 'casual'] },
+            { id: 'geometry-dash', name: 'Geometry Dash', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Geometry+Dash', category: ['popular', 'action'], tags: ['rhythm', 'platformer'] },
+            { id: 'slither-io', name: 'Slither.io', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Slither.io', category: 'popular', tags: ['io', 'multiplayer'] },
+            { id: 'agario', name: 'Agar.io', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Agar.io', category: 'popular', tags: ['io', 'multiplayer'] },
+            { id: 'stickman-hook', name: 'Stickman Hook', img: 'https://via.placeholder.com/200x150/FF5722/ffffff?text=Stickman+Hook', category: ['popular', 'action'], tags: ['physics', 'skill'] },
+            { id: 'vex', name: 'VEX', img: 'https://via.placeholder.com/200x150/607D8B/ffffff?text=VEX', category: ['popular', 'action'], tags: ['platformer', 'skill'] },
+            { id: 'shell-shockers', name: 'Shell Shockers', img: 'https://via.placeholder.com/200x150/F44336/ffffff?text=Shell+Shockers', category: ['popular', 'action'], tags: ['fps', 'multiplayer'] },
+            { id: 'krunker', name: 'Krunker.io', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Krunker', category: ['action', 'popular'], tags: ['fps', 'io'] },
+            { id: '1v1-lol', name: '1v1.LOL', img: 'https://via.placeholder.com/200x150/3F51B5/ffffff?text=1v1.LOL', category: 'action', tags: ['fps', 'building'] },
+            { id: 'fortnite', name: 'Fortnite', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Fortnite', category: 'action', tags: ['battle-royale', 'multiplayer'] },
+            { id: 'pubg', name: 'PUBG', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=PUBG', category: 'action', tags: ['battle-royale', 'shooter'] },
+            { id: 'roblox', name: 'Roblox', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Roblox', category: ['action', 'popular'], tags: ['sandbox', 'multiplayer'] },
+            { id: 'gta', name: 'GTA V', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=GTA+V', category: 'action', tags: ['open-world', 'action'] },
+            { id: 'five-nights', name: 'Five Nights at Freddy\'s', img: 'https://via.placeholder.com/200x150/9E9E9E/ffffff?text=FNAF', category: 'horror', tags: ['survival', 'jumpscare'] },
+            { id: 'slenderman', name: 'Slenderman', img: 'https://via.placeholder.com/200x150/212121/ffffff?text=Slenderman', category: 'horror', tags: ['survival', 'horror'] },
+            { id: 'granny', name: 'Granny', img: 'https://via.placeholder.com/200x150/8D6E63/ffffff?text=Granny', category: 'horror', tags: ['escape', 'horror'] },
+            { id: 'baldi', name: 'Baldi\'s Basics', img: 'https://via.placeholder.com/200x150/4CAF50/ffffff?text=Baldi', category: 'horror', tags: ['educational', 'horror'] },
+            { id: 'poppy-playtime', name: 'Poppy Playtime', img: 'https://via.placeholder.com/200x150/2196F3/ffffff?text=Poppy+Playtime', category: 'horror', tags: ['puzzle', 'horror'] },
+            { id: 'sonic-exe', name: 'Sonic.EXE', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Sonic.EXE', category: 'horror', tags: ['horror', 'platformer'] },
+            { id: 'runner-3d', name: 'Runner 3D', img: 'https://via.placeholder.com/200x150/009688/ffffff?text=Runner+3D', category: ['running', 'popular'], tags: ['3d', 'runner'] },
+            { id: 'parkour-rush', name: 'Parkour Rush', img: 'https://via.placeholder.com/200x150/FF5722/ffffff?text=Parkour+Rush', category: 'running', tags: ['parkour', 'skill'] },
+            { id: 'ninja-run', name: 'Ninja Run', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Ninja+Run', category: 'running', tags: ['ninja', 'action'] },
+            { id: 'subway-surf', name: 'Subway Surf', img: 'https://via.placeholder.com/200x150/FFC107/ffffff?text=Subway+Surf', category: ['running', 'popular'], tags: ['surfing', 'endless'] },
+            { id: 'makeover-studio', name: 'Makeover Studio', img: 'https://via.placeholder.com/200x150/E91E63/ffffff?text=Makeover+Studio', category: 'beauty', tags: ['dress-up', 'makeover'] },
+            { id: 'hair-salon', name: 'Hair Salon', img: 'https://via.placeholder.com/200x150/9C27B0/ffffff?text=Hair+Salon', category: 'beauty', tags: ['styling', 'casual'] },
+            { id: 'nail-art', name: 'Nail Art', img: 'https://via.placeholder.com/200x150/673AB7/ffffff?text=Nail+Art', category: 'beauty', tags: ['design', 'creative'] },
+            { id: 'fashion-dress', name: 'Fashion Dress', img: 'https://via.placeholder.com/200x150/FF9800/ffffff?text=Fashion+Dress', category: 'beauty', tags: ['fashion', 'dress-up'] },
+            { id: 'makeup-master', name: 'Makeup Master', img: 'https://via.placeholder.com/200x150/795548/ffffff?text=Makeup+Master', category: 'beauty', tags: ['makeup', 'beauty'] },
+            { id: 'princess-spa', name: 'Princess Spa', img: 'https://via.placeholder.com/200x150/607D8B/ffffff?text=Princess+Spa', category: 'beauty', tags: ['spa', 'relax'] },
+            { id: 'wedding-dress', name: 'Wedding Dress', img: 'https://via.placeholder.com/200x150/F44336/ffffff?text=Wedding+Dress', category: 'beauty', tags: ['wedding', 'dress-up'] },
+            { id: 'beauty-contest', name: 'Beauty Contest', img: 'https://via.placeholder.com/200x150/00BCD4/ffffff?text=Beauty+Contest', category: 'beauty', tags: ['contest', 'style'] }
+        ];
+
+        // theme definitions
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847'
+            },
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636'
+            },
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28'
+            }
+        };
+
+        let currentCategory = 'all';
+
+        // populate games grid
+        function populateGames(category = 'all') {
+            const grid = document.getElementById('gamesGrid');
+            if (!grid) return;
+
+            let filteredGames = games;
+            if (category !== 'all') {
+                filteredGames = games.filter(game => {
+                    const gameCats = Array.isArray(game.category) ? game.category : [game.category];
+                    return gameCats.includes(category);
+                });
+            }
+
+            grid.innerHTML = filteredGames.map(game => `
+                <a href="/theattic/play/${game.id}.html" class="game-card">
+                    <img src="${game.img}" alt="${game.name}">
+                    <div class="game-card-overlay">
+                        <div class="game-card-title">${game.name}</div>
+                        <div class="game-tags">
+                            ${game.tags.slice(0, 2).map(tag => `<span class="game-tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // search functionality
+        function handleSearch(query) {
+            const resultsContainer = document.getElementById('searchResults');
+            if (!resultsContainer) return;
+
+            if (query.length < 2) {
+                resultsContainer.classList.remove('show');
+                return;
+            }
+
+            const results = games.filter(game => 
+                game.name.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="search-result-item">No games found</div>';
+            } else {
+                resultsContainer.innerHTML = results.map(game => `
+                    <a href="/theattic/play/${game.id}.html" class="search-result-item">
+                        <img src="${game.img}" alt="${game.name}" class="search-result-img">
+                        <div class="search-result-info">
+                            <div class="search-result-title">${game.name}</div>
+                            <div class="search-result-category">${Array.isArray(game.category) ? game.category[0] : game.category}</div>
+                        </div>
+                    </a>
+                `).join('');
+            }
+
+            resultsContainer.classList.add('show');
+        }
+
+        // category filter functionality
+        function setupCategoryFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.dataset.category;
+                    populateGames(currentCategory);
+                });
+            });
+        }
+
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localStorage.getItem('atticTheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            localStorage.setItem('atticTheme', themeName);
+        }
+
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
+            }
+        }
+
+        // mouse shadow follower
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
+        });
+
+        // search input event listener
+        document.getElementById('searchInput')?.addEventListener('input', (e) => {
+            handleSearch(e.target.value);
+        });
+
+        // close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            const searchContainer = document.querySelector('.search-container');
+            const searchResults = document.getElementById('searchResults');
+            if (searchContainer && searchResults && !searchContainer.contains(e.target)) {
+                searchResults.classList.remove('show');
+            }
+        });
+
+        // initialize on load
+        window.addEventListener('load', () => {
+            applysavedtheme();
+            createparticles();
+            populateGames();
+            setupCategoryFilters();
+        });
+    </script>
+</body>
+</html> I just want you to update the favicon address to be /theattic/img/TheAtticIcon.png on every page I give you and toadd the notifications popup work on all pages I give you also.where is p.html <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Attic | Browser</title>
+    <link rel="icon" type="image/png" href="/img/TheAtticIcon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+            z-index: -2;
+            transition: background 0.5s ease;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* main container */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 110px 20px 110px;
+            gap: 15px;
+            height: 100vh;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* browser container */
+        .browser-container {
+            flex: 1;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* tabs bar */
+        .tabs-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 10px;
+            min-width: 150px;
+            max-width: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .tab-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .tab-title {
+            flex: 1;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tab-close {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .tab-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .new-tab-btn {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .new-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* browser toolbar */
+        .browser-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .toolbar-btn {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .toolbar-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .url-bar {
+            flex: 1;
+            padding: 10px 20px;
+            background: var(--input-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .url-bar:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* browser content */
+        .browser-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .browser-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* new tab page */
+        .new-tab-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: var(--primary-bg);
+        }
+
+        .new-tab-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .new-tab-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .new-tab-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .quick-link {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .quick-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .quick-link-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .quick-link-title {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* tab animations */
+        .tab {
+            animation: tabSlideIn 0.3s ease;
+        }
+
+        @keyframes tabSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .tab.closing {
+            animation: tabSlideOut 0.3s ease forwards;
+        }
+
+        @keyframes tabSlideOut {
+            to {
+                opacity: 0;
+                transform: translateX(-20px);
+                width: 0;
+                padding: 0;
+                margin: 0;
+            }
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+                z-index: 200;
+            }
+
+            .main-container {
+                padding: 10px 10px 90px 10px;
+                gap: 10px;
+            }
+
+            .tab {
+                min-width: 120px;
+                max-width: 150px;
+                padding: 8px 12px;
+            }
+
+            .tab-title {
+                font-size: 0.75rem;
+            }
+
+            .browser-toolbar {
+                flex-wrap: wrap;
+            }
+
+            .url-bar {
+                order: 3;
+                width: 100%;
+                margin-top: 5px;
+            }
+
+            .new-tab-title {
+                font-size: 1.5rem;
+            }
+
+            .quick-links {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 10px;
+            }
+
+            .quick-link {
+                padding: 12px;
+            }
+
+            .quick-link-icon {
+                font-size: 1.2rem;
+            }
+
+            .quick-link-title {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab {
+                min-width: 100px;
+                max-width: 120px;
+            }
+
+            .toolbar-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+
+            .new-tab-logo {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="particles" id="particles"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+
+    <!-- main container -->
+    <div class="main-container">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="/theattic/home.html" class="sidebar-icon" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="/theattic/pages/g.html" class="sidebar-icon" title="Games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="/theattic/pages/p.html" class="sidebar-icon active" title="Proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="/theattic/pages/t.html" class="sidebar-icon" title="Tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="/theattic/pages/s.html" class="sidebar-icon" title="Settings">
+                <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/c.html" class="sidebar-icon" title="Chat">
+                <i class="fas fa-comments"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
+            </a>
+        </nav>
+
+        <!-- browser container -->
+        <div class="browser-container">
+            <!-- tabs bar -->
+            <div class="tabs-bar" id="tabsBar">
+                <button class="new-tab-btn" id="newTabBtn" title="New Tab">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+
+            <!-- browser toolbar -->
+            <div class="browser-toolbar">
+                <button class="toolbar-btn" id="backBtn" title="Go Back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button class="toolbar-btn" id="forwardBtn" title="Go Forward">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="toolbar-btn" id="refreshBtn" title="Refresh">
+                    <i class="fas fa-redo"></i>
+                </button>
+                <button class="toolbar-btn" id="homeBtn" title="Home">
+                    <i class="fas fa-home"></i>
+                </button>
+                <input type="text" class="url-bar" id="urlBar" placeholder="Search or enter URL...">
+            </div>
+
+            <!-- browser content -->
+            <div class="browser-content" id="browserContent">
+                <!-- tabs and iframes will be managed by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Scramjet proxy configuration
+        const scramjetConfig = {
+            server: 'https://scramjet-proxy-server.example.com', // Replace with actual Scramjet server
+            prefix: '/proxy/'
+        };
+
+        // Tab management
+        let tabs = [];
+        let activeTabId = null;
+        let tabCounter = 0;
+
+        // Theme definitions
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847'
+            },
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636'
+            },
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28'
+            }
+        };
+
+        // Create new tab
+        function createTab(url = null) {
+            const tabId = ++tabCounter;
+            const tab = {
+                id: tabId,
+                title: 'New Tab',
+                url: url,
+                favicon: '/img/TheAtticIcon.png'
+            };
+            
+            tabs.push(tab);
+            renderTabs();
+            switchTab(tabId);
+            
+            if (url) {
+                navigateTo(url);
+            }
+        }
+
+        // Close tab
+        function closeTab(tabId, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            
+            const tabIndex = tabs.findIndex(t => t.id === tabId);
+            if (tabIndex === -1) return;
+            
+            // Animate tab closing
+            const tabElement = document.querySelector(`.tab[data-tab-id="${tabId}"]`);
+            if (tabElement) {
+                tabElement.classList.add('closing');
+                setTimeout(() => {
+                    tabs = tabs.filter(t => t.id !== tabId);
+                    
+                    // Remove iframe
+                    const iframe = document.getElementById(`iframe-${tabId}`);
+                    if (iframe) {
+                        iframe.remove();
+                    }
+                    
+                    // If closing active tab, switch to another
+                    if (activeTabId === tabId) {
+                        if (tabs.length > 0) {
+                            const newIndex = Math.min(tabIndex, tabs.length - 1);
+                            switchTab(tabs[newIndex].id);
+                        } else {
+                            activeTabId = null;
+                            createTab();
+                        }
+                    }
+                    
+                    renderTabs();
+                }, 300);
+            }
+        }
+
+        // Switch to tab
+        function switchTab(tabId) {
+            activeTabId = tabId;
+            
+            // Update tab UI
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeTabElement = document.querySelector(`.tab[data-tab-id="${tabId}"]`);
+            if (activeTabElement) {
+                activeTabElement.classList.add('active');
+            }
+            
+            // Show/hide iframes
+            document.querySelectorAll('.browser-frame').forEach(iframe => {
+                iframe.style.display = 'none';
+            });
+            const activeIframe = document.getElementById(`iframe-${tabId}`);
+            if (activeIframe) {
+                activeIframe.style.display = 'block';
+            }
+            
+            // Update URL bar
+            const tab = tabs.find(t => t.id === tabId);
+            if (tab && tab.url) {
+                document.getElementById('urlBar').value = tab.url;
+            } else {
+                document.getElementById('urlBar').value = '';
+            }
+        }
+
+        // Render tabs
+        function renderTabs() {
+            const tabsBar = document.getElementById('tabsBar');
+            const newTabBtn = document.getElementById('newTabBtn');
+            
+            // Remove existing tabs (keep new tab button)
+            tabsBar.querySelectorAll('.tab').forEach(tab => tab.remove());
+            
+            // Add tabs before new tab button
+            tabs.forEach(tab => {
+                const tabElement = document.createElement('div');
+                tabElement.className = `tab ${tab.id === activeTabId ? 'active' : ''}`;
+                tabElement.dataset.tabId = tab.id;
+                tabElement.innerHTML = `
+                    <img src="${tab.favicon}" alt="" class="tab-icon">
+                    <span class="tab-title">${tab.title}</span>
+                    <div class="tab-close" onclick="closeTab(${tab.id}, event)">
+                        <i class="fas fa-times"></i>
+                    </div>
+                `;
+                tabElement.addEventListener('click', () => switchTab(tab.id));
+                tabsBar.insertBefore(tabElement, newTabBtn);
+            });
+        }
+
+        // Navigate to URL
+        function navigateTo(url) {
+            if (!url) return;
+            
+            // Add protocol if missing
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            
+            const tab = tabs.find(t => t.id === activeTabId);
+            if (!tab) return;
+            
+            tab.url = url;
+            
+            // Update URL bar
+            document.getElementById('urlBar').value = url;
+            
+            // Create or update iframe with Scramjet proxy
+            let iframe = document.getElementById(`iframe-${tab.id}`);
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.id = `iframe-${tab.id}`;
+                iframe.className = 'browser-frame';
+                iframe.style.display = 'none';
+                document.getElementById('browserContent').appendChild(iframe);
+            }
+            
+            // Use Scramjet proxy
+            const proxiedUrl = scramjetConfig.server + scramjetConfig.prefix + url;
+            iframe.src = proxiedUrl;
+            iframe.style.display = 'block';
+            
+            // Update tab title
+            tab.title = new URL(url).hostname;
+            renderTabs();
+        }
+
+        // Quick link functionality
+        function setupQuickLinks() {
+            const quickLinks = [
+                { url: 'https://www.google.com', icon: 'fab fa-google', title: 'Google' },
+                { url: 'https://www.youtube.com', icon: 'fab fa-youtube', title: 'YouTube' },
+                { url: 'https://www.twitter.com', icon: 'fab fa-twitter', title: 'Twitter' },
+                { url: 'https://www.reddit.com', icon: 'fab fa-reddit', title: 'Reddit' },
+                { url: 'https://www.github.com', icon: 'fab fa-github', title: 'GitHub' },
+                { url: 'https://www.discord.com', icon: 'fab fa-discord', title: 'Discord' }
+            ];
+            
+            const newTabPage = document.querySelector('.new-tab-page');
+            if (newTabPage) {
+                const quickLinksContainer = newTabPage.querySelector('.quick-links');
+                if (quickLinksContainer) {
+                    quickLinksContainer.innerHTML = quickLinks.map(link => `
+                        <a href="#" class="quick-link" data-url="${link.url}">
+                            <i class="${link.icon} quick-link-icon"></i>
+                            <div class="quick-link-title">${link.title}</div>
+                        </a>
+                    `).join('');
+                    
+                    quickLinksContainer.querySelectorAll('.quick-link').forEach(link => {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            navigateTo(link.dataset.url);
+                        });
+                    });
+                }
+            }
+        }
+
+        // Show new tab page
+        function showNewTabPage() {
+            const browserContent = document.getElementById('browserContent');
+            
+            // Hide all iframes
+            document.querySelectorAll('.browser-frame').forEach(iframe => {
+                iframe.style.display = 'none';
+            });
+            
+            // Create or show new tab page
+            let newTabPage = document.querySelector('.new-tab-page');
+            if (!newTabPage) {
+                newTabPage = document.createElement('div');
+                newTabPage.className = 'new-tab-page';
+                newTabPage.innerHTML = `
+                    <img src="/img/TheAtticLogo.png" alt="The Attic Logo" class="new-tab-logo">
+                    <h1 class="new-tab-title">The Attic Browser</h1>
+                    <p class="new-tab-subtitle">Your private browsing experience</p>
+                    <div class="quick-links"></div>
+                `;
+                browserContent.appendChild(newTabPage);
+                setupQuickLinks();
+            }
+            
+            newTabPage.style.display = 'flex';
+        }
+
+        // Apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localStorage.getItem('atticTheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            localStorage.setItem('atticTheme', themeName);
+        }
+
+        // Initialize particles
+        function createparticles() {
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
+            }
+        }
+
+        // Mouse shadow follower
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
+        });
+
+        // Event listeners
+        document.getElementById('newTabBtn')?.addEventListener('click', () => {
+            createTab();
+            showNewTabPage();
+        });
+
+        document.getElementById('urlBar')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                navigateTo(e.target.value);
+            }
+        });
+
+        document.getElementById('backBtn')?.addEventListener('click', () => {
+            const iframe = document.getElementById(`iframe-${activeTabId}`);
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.history.back();
+            }
+        });
+
+        document.getElementById('forwardBtn')?.addEventListener('click', () => {
+            const iframe = document.getElementById(`iframe-${activeTabId}`);
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.history.forward();
+            }
+        });
+
+        document.getElementById('refreshBtn')?.addEventListener('click', () => {
+            const iframe = document.getElementById(`iframe-${activeTabId}`);
+            if (iframe) {
+                iframe.src = iframe.src;
+            }
+        });
+
+        document.getElementById('homeBtn')?.addEventListener('click', () => {
+            showNewTabPage();
+        });
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            applysavedtheme();
+            createparticles();
+            createTab();
+            showNewTabPage();
+        });
+    </script>
+</body>
+</html> on this page make it sowhere is no chat button on the sidebar, remove all profile buttons on the sidebar and iupdate the favicon and notifications popup, here is s.html  and also remove tools, s.html: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Attic | Settings</title>
+    <link rel="icon" type="image/png" href="/img/TheAtticIcon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+            z-index: -2;
+            transition: background 0.5s ease;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* main container */
+        .main-container {
+            min-height: 100vh;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* page content */
+        .page {
+            padding-left: 110px;
+            padding-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* settings sections */
+        .settings-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* theme selector */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .theme-btn {
+            height: 80px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .theme-btn.active {
+            border-color: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-btn::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+        }
+
+        /* tab cloaker */
+        .cloaker-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-input {
+            padding: 12px 20px;
+            background: var(--input-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .form-select {
+            padding: 12px 20px;
+            background: var(--input-bg);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-select option {
+            background: var(--secondary-bg);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* about section */
+        .about-content {
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .about-content p {
+            margin-bottom: 15px;
+        }
+
+        .about-content strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+                z-index: 200;
+            }
+
+            .page {
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-bottom: 100px;
+            }
+
+            .theme-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .settings-section {
+                padding: 20px;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .settings-section {
+                padding: 15px;
+            }
+
+            .theme-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 15px;
+            }
+
+            .theme-btn {
+                height: 60px;
+            }
+
+            .theme-btn::after {
+                font-size: 0.7rem;
+            }
+
+            .form-input, .form-select {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .sidebar {
+                gap: 15px;
+                padding: 15px 0;
+            }
+
+            .sidebar-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="particles" id="particles"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+
+    <!-- main container -->
+    <div class="main-container">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="/theattic/home.html" class="sidebar-icon" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="/theattic/pages/g.html" class="sidebar-icon" title="Games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="/theattic/pages/p.html" class="sidebar-icon" title="Proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="/theattic/pages/t.html" class="sidebar-icon" title="Tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="/theattic/pages/s.html" class="sidebar-icon active" title="Settings">
+                <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
+            </a>
+        </nav>
+
+        <!-- settings page -->
+        <div class="page">
+            <!-- theme section -->
+            <div class="settings-section">
+                <h2 class="section-title">Theme</h2>
+                <div class="theme-grid" id="themeGrid">
+                    <!-- themes populated by js -->
+                </div>
+            </div>
+
+            <!-- tab cloaker section -->
+            <div class="settings-section">
+                <h2 class="section-title">Tab Cloaker</h2>
+                <div class="cloaker-form">
+                    <div class="form-group">
+                        <label class="form-label">Preset</label>
+                        <select class="form-select" id="presetSelect">
+                            <option value="">Select a preset...</option>
+                            <option value="google-classroom">Google Classroom</option>
+                            <option value="ixl">IXL</option>
+                            <option value="deltamath">DeltaMath</option>
+                            <option value="canvas">Canvas</option>
+                            <option value="schoology">Schoology</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Custom Title</label>
+                        <input type="text" class="form-input" id="customTitle" placeholder="Enter custom title...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Custom Icon URL</label>
+                        <input type="text" class="form-input" id="customIcon" placeholder="Enter custom icon URL...">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="applyCloak">Apply</button>
+                        <button class="btn btn-secondary" id="resetCloak">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- about section -->
+            <div class="settings-section">
+                <h2 class="section-title">About</h2>
+                <div class="about-content">
+                    <p><strong>The Attic</strong> is your cozy hangout for games, apps, and good vibes.</p>
+                    <p>Built with love by <strong>Corner Collective</strong>.</p>
+                    <p>Version 1.0.0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // theme definitions
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000',
+                displayGradient: 'linear-gradient(135deg, #000000, #1a1a1a)'
+            },
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847',
+                displayGradient: 'linear-gradient(135deg, #0a1628, #1a2a4a)'
+            },
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636',
+                displayGradient: 'linear-gradient(135deg, #2a0f1a, #3d1a2e)'
+            },
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650',
+                displayGradient: 'linear-gradient(135deg, #1a0f2a, #2a1a3e)'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028',
+                displayGradient: 'linear-gradient(135deg, #1a1510, #2a2520)'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28',
+                displayGradient: 'linear-gradient(135deg, #0f1a10, #1a2a1e)'
+            }
+        };
+
+        // tab cloaker presets
+        const cloakerPresets = {
+            'google-classroom': {
+                title: 'Home',
+                icon: 'https://ssl.gstatic.com/classroom/favicon.png'
+            },
+            'ixl': {
+                title: 'IXL | Math, Language Arts, Science, Social Studies, and Spanish',
+                icon: 'https://www.ixl.com/favicon.ico'
+            },
+            'deltamath': {
+                title: 'DeltaMath',
+                icon: 'https://www.deltamath.com/favicon.ico'
+            },
+            'canvas': {
+                title: 'Dashboard',
+                icon: 'https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico'
+            },
+            'schoology': {
+                title: 'Home | Schoology',
+                icon: 'https://asset.schoology.com/sites/all/themes/schoology_theme/favicon.ico'
+            }
+        };
+
+        // populate theme grid
+        function populateThemes() {
+            const grid = document.getElementById('themeGrid');
+            if (!grid) return;
+
+            const themeNames = {
+                default: 'Default',
+                midnightBlue: 'Midnight Blue',
+                hotPink: 'Hot Pink',
+                galaxyPurple: 'Galaxy Purple',
+                icedCoffeeBrown: 'Iced Coffee Brown',
+                matchaGreen: 'Matcha Green'
+            };
+
+            grid.innerHTML = Object.keys(themes).map(themeKey => `
+                <div class="theme-btn ${localStorage.getItem('atticTheme') === themeKey ? 'active' : ''}" 
+                     data-theme="${themeKey}" 
+                     data-name="${themeNames[themeKey]}"
+                     style="background: ${themes[themeKey].displayGradient}">
+                </div>
+            `).join('');
+
+            // add click handlers
+            grid.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.dataset.theme;
+                    applytheme(theme);
+                    grid.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+        }
+
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localStorage.getItem('atticTheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            localStorage.setItem('atticTheme', themeName);
+        }
+
+        // tab cloaker functionality
+        function setupTabCloaker() {
+            const presetSelect = document.getElementById('presetSelect');
+            const customTitle = document.getElementById('customTitle');
+            const customIcon = document.getElementById('customIcon');
+            const applyBtn = document.getElementById('applyCloak');
+            const resetBtn = document.getElementById('resetCloak');
+
+            // preset selection
+            presetSelect?.addEventListener('change', () => {
+                const preset = cloakerPresets[presetSelect.value];
+                if (preset) {
+                    customTitle.value = preset.title;
+                    customIcon.value = preset.icon;
+                }
+            });
+
+            // apply cloaker
+            applyBtn?.addEventListener('click', () => {
+                if (customTitle.value) {
+                    document.title = customTitle.value;
+                }
+                if (customIcon.value) {
+                    const favicon = document.querySelector('link[rel="icon"]');
+                    if (favicon) {
+                        favicon.href = customIcon.value;
+                    }
+                }
+                alert('Tab cloaker applied!');
+            });
+
+            // reset cloaker
+            resetBtn?.addEventListener('click', () => {
+                document.title = 'The Attic | Settings';
+                const favicon = document.querySelector('link[rel="icon"]');
+                if (favicon) {
+                    favicon.href = '/img/TheAtticIcon.png';
+                }
+                presetSelect.value = '';
+                customTitle.value = '';
+                customIcon.value = '';
+                alert('Tab cloaker reset!');
+            });
+        }
+
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
+            }
+        }
+
+        // mouse shadow follower
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
+        });
+
+        // initialize on load
+        window.addEventListener('load', () => {
+            applysavedtheme();
+            createparticles();
+            populateThemes();
+            setupTabCloaker();
+        });
+    </script>
+</body>
+</html> nothing else to this than the faviconnotifications popup and rwemove tools, here 9is play.html: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Attic | Game</title>
+    <link rel="icon" type="image/png" href="/img/TheAtticIcon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+        }
+
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(200, 200, 200, 0.15);
+            --gradient-start: #000000;
+            --gradient-middle: #1a1a1a;
+            --gradient-end: #000000;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.5s ease;
+        }
+
+        /* grainy gradient background */
+        .grainy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+            z-index: -2;
+            transition: background 0.5s ease;
+        }
+
+        .grainy-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* mouse shadow follower */
+        .mouse-shadow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+
+        /* particle background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: moveRight 20s linear infinite;
+        }
+
+        @keyframes moveRight {
+            0% {
+                transform: translateX(-100px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        /* main container */
+        .play-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 110px 20px 110px;
+            height: calc(100vh - 40px);
+            gap: 15px;
+        }
+
+        /* sidebar */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-icon {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .sidebar-icon:hover, .sidebar-icon.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* game frame */
+        .game-frame {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.5s ease;
+        }
+
+        .game-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 20px;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                width: auto;
+                height: 70px;
+                transform: none;
+                flex-direction: row;
+                z-index: 200;
+            }
+
+            .play-container {
+                padding: 10px 10px 90px 10px;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .play-container {
+                padding: 10px 10px 90px 10px;
+            }
+
+            .sidebar {
+                gap: 15px;
+                padding: 15px 0;
+            }
+
+            .sidebar-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="grainy-bg"></div>
+    <div class="particles" id="particles"></div>
+    <div class="mouse-shadow" id="mouseShadow"></div>
+
+    <!-- main container -->
+    <div class="play-container">
+        <!-- sidebar -->
+        <nav class="sidebar">
+            <a href="/theattic/home.html" class="sidebar-icon" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="/theattic/pages/g.html" class="sidebar-icon" title="Games">
+                <i class="fas fa-gamepad"></i>
+            </a>
+            <a href="/theattic/pages/p.html" class="sidebar-icon" title="Proxy">
+                <i class="fas fa-search"></i>
+            </a>
+            <a href="/theattic/pages/t.html" class="sidebar-icon" title="Tools">
+                <i class="fas fa-tools"></i>
+            </a>
+            <a href="/theattic/pages/s.html" class="sidebar-icon" title="Settings">
+                <i class="fas fa-cog"></i>
+            </a>
+            <a href="/theattic/pages/c.html" class="sidebar-icon" title="Chat">
+                <i class="fas fa-comments"></i>
+            </a>
+            <a href="/theattic/pages/notifications.html" class="sidebar-icon" title="Notifications">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="/theattic/pages/profile.html" class="sidebar-icon" title="Profile">
+                <i class="fas fa-user"></i>
+            </a>
+        </nav>
+
+        <div class="game-frame">
+            <iframe id="gameFrame" src="GAME_URL_HERE"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // theme definitions with full color schemes
+        const themes = {
+            default: {
+                primaryBg: '#000000',
+                secondaryBg: '#1a1a1a',
+                cardBg: 'rgba(255, 255, 255, 0.1)',
+                inputBg: 'rgba(200, 200, 200, 0.15)',
+                gradientStart: '#000000',
+                gradientMiddle: '#1a1a1a',
+                gradientEnd: '#000000'
+            },
+            midnightBlue: {
+                primaryBg: '#0a1628',
+                secondaryBg: '#1a2a4a',
+                cardBg: 'rgba(100, 149, 237, 0.15)',
+                inputBg: 'rgba(100, 149, 237, 0.2)',
+                gradientStart: '#0a1628',
+                gradientMiddle: '#1a2a4a',
+                gradientEnd: '#0f2847'
+            },
+            hotPink: {
+                primaryBg: '#2a0f1a',
+                secondaryBg: '#3d1a2e',
+                cardBg: 'rgba(255, 105, 180, 0.15)',
+                inputBg: 'rgba(255, 105, 180, 0.2)',
+                gradientStart: '#2a0f1a',
+                gradientMiddle: '#3d1a2e',
+                gradientEnd: '#4a1636'
+            },
+            galaxyPurple: {
+                primaryBg: '#1a0f2a',
+                secondaryBg: '#2a1a3e',
+                cardBg: 'rgba(147, 112, 219, 0.15)',
+                inputBg: 'rgba(147, 112, 219, 0.2)',
+                gradientStart: '#1a0f2a',
+                gradientMiddle: '#2a1a3e',
+                gradientEnd: '#3e1650'
+            },
+            icedCoffeeBrown: {
+                primaryBg: '#1a1510',
+                secondaryBg: '#2a2520',
+                cardBg: 'rgba(210, 180, 140, 0.15)',
+                inputBg: 'rgba(210, 180, 140, 0.2)',
+                gradientStart: '#1a1510',
+                gradientMiddle: '#2a2520',
+                gradientEnd: '#3a3028'
+            },
+            matchaGreen: {
+                primaryBg: '#0f1a10',
+                secondaryBg: '#1a2a1e',
+                cardBg: 'rgba(128, 200, 128, 0.15)',
+                inputBg: 'rgba(128, 200, 128, 0.2)',
+                gradientStart: '#0f1a10',
+                gradientMiddle: '#1a2a1e',
+                gradientEnd: '#1e3a28'
+            }
+        };
+
+        // apply saved theme
+        function applysavedtheme() {
+            const savedtheme = localStorage.getItem('atticTheme');
+            if (savedtheme) {
+                applytheme(savedtheme);
+            }
+        }
+
+        function applytheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            
+            // Update all CSS variables
+            root.style.setProperty('--primary-bg', theme.primaryBg);
+            root.style.setProperty('--secondary-bg', theme.secondaryBg);
+            root.style.setProperty('--card-bg', theme.cardBg);
+            root.style.setProperty('--input-bg', theme.inputBg);
+            root.style.setProperty('--gradient-start', theme.gradientStart);
+            root.style.setProperty('--gradient-middle', theme.gradientMiddle);
+            root.style.setProperty('--gradient-end', theme.gradientEnd);
+
+            // save theme to localStorage
+            localStorage.setItem('atticTheme', themeName);
+        }
+
+        // initialize particles
+        function createparticles() {
+            const particlescontainer = document.getElementById('particles');
+            if (!particlescontainer) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlescontainer.appendChild(particle);
+            }
+        }
+
+        // mouse shadow follower
+        document.addEventListener('mousemove', (e) => {
+            const shadow = document.getElementById('mouseShadow');
+            if (shadow) {
+                shadow.style.left = e.clientX + 'px';
+                shadow.style.top = e.clientY + 'px';
+            }
+        });
+
+        // listen for theme changes from settings page
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'atticTheme') {
+                applytheme(e.newValue);
+            }
+        });
+
+        // initialize on load
+        window.addEventListener('load', () => {
+            applysavedtheme();
+            createparticles();
+        });
+    </script>
+</body>
+</html> same thing just add to that every page.
